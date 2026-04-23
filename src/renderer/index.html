@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'self';
+                   script-src 'self';
+                   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+                   font-src 'self' https://fonts.gstatic.com;
+                   img-src 'self' data: file:;">
+    <title>SEO Scripts — seohead.tech</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app-shell">
+
+    <!-- ═══════════════════════ TITLEBAR ═══════════════════════ -->
+    <header class="titlebar" id="titlebar">
+        <div class="titlebar-drag">
+            <div class="titlebar-brand">
+                <svg class="brand-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" fill="var(--md-sys-color-primary)"/>
+                    <path d="M9.5 8.5c0-.83.67-1.5 1.5-1.5h2c.83 0 1.5.67 1.5 1.5v1c0 .55-.29 1.03-.72 1.3L12 12l1.78 1.2c.43.27.72.75.72 1.3v1c0 .83-.67 1.5-1.5 1.5h-2c-.83 0-1.5-.67-1.5-1.5" stroke="var(--md-sys-color-on-primary)" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <span class="brand-name">SEO Scripts</span>
+                <span class="brand-by">by seohead.tech</span>
+            </div>
+        </div>
+
+        <!-- TABS -->
+        <nav class="titlebar-tabs" id="titlebar-tabs">
+            <button class="tab-item active" data-tab="redirect">
+                <span class="material-symbols-outlined tab-icon">swap_horiz</span>
+                <span class="tab-label">Redirect Builder</span>
+            </button>
+            <button class="tab-item" data-tab="optimizer">
+                <span class="material-symbols-outlined tab-icon">compress</span>
+                <span class="tab-label">Image Optimizer</span>
+            </button>
+            <button class="tab-item" data-tab="parser">
+                <span class="material-symbols-outlined tab-icon">travel_explore</span>
+                <span class="tab-label">SEO Parser</span>
+            </button>
+            <button class="tab-item" data-tab="downloader">
+                <span class="material-symbols-outlined tab-icon">download</span>
+                <span class="tab-label">Image Downloader</span>
+            </button>
+            <button class="tab-item" data-tab="clusterer">
+                <span class="material-symbols-outlined tab-icon">hub</span>
+                <span class="tab-label">Keyword Clusterer</span>
+            </button>
+            <button class="tab-item" data-tab="prompts">
+                <span class="material-symbols-outlined tab-icon">auto_stories</span>
+                <span class="tab-label">Prompt Library</span>
+            </button>
+        </nav>
+
+        <div class="titlebar-controls">
+            <button class="titlebar-btn" id="btn-minimize" title="Свернуть">
+                <span class="material-symbols-outlined" style="font-size:14px">remove</span>
+            </button>
+            <button class="titlebar-btn" id="btn-maximize" title="Развернуть">
+                <span class="material-symbols-outlined" style="font-size:14px">crop_square</span>
+            </button>
+            <button class="titlebar-btn titlebar-btn--close" id="btn-close" title="Закрыть">
+                <span class="material-symbols-outlined" style="font-size:14px">close</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- ═══════════════════════ TAB PANELS ═══════════════════════ -->
+    <main class="tab-panels">
+
+        <!-- ─────────────── 301 REDIRECT GENERATOR ─────────────── -->
+        <div class="tab-panel active" id="panel-redirect">
+            <div class="tool-layout">
+
+                <!-- LEFT: redirect list + actions -->
+                <aside class="tool-sidebar tool-sidebar--left">
+                    <div class="sidebar-header">
+                        <span class="material-symbols-outlined sidebar-header__icon">swap_horiz</span>
+                        <span class="sidebar-header__title">Редиректы</span>
+                        <span class="chip chip--accent" id="redirect-count">0</span>
+                    </div>
+                    <div class="sidebar-body" style="gap:8px; padding:10px">
+                        <button class="md-btn md-btn--filled md-btn--block" id="add-redirect-btn">
+                            <span class="material-symbols-outlined">add</span> Добавить
+                        </button>
+                        <button class="md-btn md-btn--outlined md-btn--block" id="import-excel-btn">
+                            <span class="material-symbols-outlined">upload_file</span> Импорт Excel
+                        </button>
+                        <button class="md-btn md-btn--outlined md-btn--block" id="clear-all-btn">
+                            <span class="material-symbols-outlined">delete_sweep</span> Очистить
+                        </button>
+                    </div>
+                </aside>
+
+                <!-- CENTER: mode tabs + table + generated rules -->
+                <section class="tool-main" style="display:flex; flex-direction:column;">
+                    <div class="mode-tabs" id="redirect-mode-tabs">
+                        <button class="mode-tab active" data-mode="edit">
+                            <span class="material-symbols-outlined" style="font-size:15px">edit</span> Редактирование
+                        </button>
+                        <button class="mode-tab" data-mode="paste">
+                            <span class="material-symbols-outlined" style="font-size:15px">content_paste</span> Массовая вставка
+                        </button>
+                    </div>
+
+                    <div class="mode-content active table-wrap" id="edit-mode" style="flex:1; overflow:auto;">
+                        <table class="data-table" id="redirects-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:4%"><input type="checkbox" id="select-all-checkbox" title="Выделить все"></th>
+                                    <th style="width:44%">Старый URL <small style="opacity:.5; font-weight:400">обрезается до пути</small></th>
+                                    <th style="width:44%">Новый URL <small style="opacity:.5; font-weight:400">с https://</small></th>
+                                    <th style="width:8%"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="redirects-tbody"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="mode-content" id="paste-mode">
+                        <div style="padding:10px 14px; display:flex; align-items:center; gap:8px; font-size:12.5px; color:var(--md-sys-color-on-surface-variant); border-bottom:1px solid var(--md-sys-color-outline-variant); flex-shrink:0;">
+                            <span class="material-symbols-outlined" style="font-size:16px; color:var(--tab-accent)">info</span>
+                            Вставьте (Ctrl+V): Старый URL [Tab] Новый URL, по одной строке
+                        </div>
+                        <div class="table-wrap" id="paste-table-container" style="flex:1; min-height:0; overflow:auto;">
+                            <table class="data-table" id="paste-table">
+                                <thead><tr><th>Старый URL</th><th>Новый URL</th></tr></thead>
+                                <tbody id="paste-tbody"></tbody>
+                            </table>
+                        </div>
+                        <div style="padding:10px; display:flex; gap:8px; border-top:1px solid var(--md-sys-color-outline-variant); flex-shrink:0;">
+                            <button class="md-btn md-btn--filled" id="apply-paste-btn">
+                                <span class="material-symbols-outlined">check</span> Применить (<span id="paste-count">0</span>)
+                            </button>
+                            <button class="md-btn md-btn--outlined" id="clear-paste-btn">
+                                <span class="material-symbols-outlined">delete</span> Очистить
+                            </button>
+                        </div>
+                    </div>
+
+                    <div style="flex-shrink:0; border-top:1px solid var(--md-sys-color-outline-variant);">
+                        <div style="display:flex; align-items:center; gap:8px; padding:8px 12px; background:var(--md-sys-color-surface-container-low);">
+                            <span style="font-size:12px; font-weight:600; color:var(--md-sys-color-on-surface-variant); text-transform:uppercase; letter-spacing:.5px; flex:1;">Сгенерированные правила</span>
+                            <button class="md-btn md-btn--tonal md-btn--sm" id="copy-results-btn">
+                                <span class="material-symbols-outlined">content_copy</span> Копировать
+                            </button>
+                            <button class="md-btn md-btn--outlined md-btn--sm" id="clear-results-btn">
+                                <span class="material-symbols-outlined">delete</span>
+                            </button>
+                        </div>
+                        <textarea id="results-textarea" class="output-code" readonly
+                            placeholder="Нажмите «Сгенерировать» чтобы получить правила…"></textarea>
+                    </div>
+                </section>
+
+                <aside class="tool-sidebar tool-sidebar--right">
+                    <div class="sidebar-header">
+                        <span class="material-symbols-outlined sidebar-header__icon">settings</span>
+                        <span class="sidebar-header__title">Настройки</span>
+                    </div>
+                    <div class="sidebar-body">
+
+                        <div class="form-group">
+                            <label class="form-label">Формат правила</label>
+                            <select class="md-field" id="format-select">
+                                <optgroup label="Apache (mod_alias)">
+                                    <option value="apache-redirect-301">Redirect 301</option>
+                                    <option value="apache-redirect-permanent">RedirectPermanent</option>
+                                    <option value="apache-redirectmatch-301">RedirectMatch 301</option>
+                                    <option value="apache-redirect-410">Redirect 410</option>
+                                </optgroup>
+                                <optgroup label="Apache (mod_rewrite)">
+                                    <option value="apache-rewrite-rule" selected>RewriteRule [R=301,L]</option>
+                                    <option value="apache-rewrite-cond-rule">RewriteCond + RewriteRule [NC]</option>
+                                    <option value="apache-rewrite-cond-rule-ne">RewriteCond + RewriteRule [NE]</option>
+                                    <option value="apache-rewrite-rule-with-qs">RewriteRule + Query String</option>
+                                    <option value="apache-rewrite-rule-gone">RewriteRule [G]</option>
+                                </optgroup>
+                                <optgroup label="Nginx">
+                                    <option value="nginx-return-301">return 301</option>
+                                    <option value="nginx-rewrite">rewrite permanent</option>
+                                    <option value="nginx-return-410">return 410</option>
+                                </optgroup>
+                                <optgroup label="Другое">
+                                    <option value="custom">Кастомный шаблон</option>
+                                </optgroup>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Предпросмотр <span class="chip" style="float:right">пример</span></label>
+                            <div id="preview-container" style="background:var(--md-sys-color-surface-container); border:1px solid var(--md-sys-color-outline-variant); border-radius:8px; padding:10px; font-size:12px;">
+                                <div style="display:flex; gap:6px; margin-bottom:4px; color:var(--md-sys-color-on-surface-variant);">
+                                    <span>Старый:</span><code style="color:var(--tab-accent)">/old-page</code>
+                                </div>
+                                <div id="preview-new-url" style="display:flex; gap:6px; margin-bottom:6px; color:var(--md-sys-color-on-surface-variant);">
+                                    <span>Новый:</span><code style="color:var(--tab-accent)">https://example.com/new-page</code>
+                                </div>
+                                <code id="preview-code-result" style="display:block; word-break:break-all; color:var(--md-sys-color-on-surface); font-family:'Roboto Mono',monospace;"></code>
+                                <div id="preview-info" style="display:none; align-items:center; gap:6px; margin-top:8px; font-size:12px; color:var(--md-sys-color-on-surface-variant);">
+                                    <span class="material-symbols-outlined" style="font-size:14px">info</span>
+                                    <span id="preview-info-text"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="custom-template-group" style="display:none">
+                            <label class="form-label">Кастомный шаблон</label>
+                            <textarea class="md-field" id="custom-template-textarea" rows="3"
+                                placeholder="Переменные: {oldUrl} и {newUrl}&#10;Пример: {oldUrl} -> {newUrl} [301]"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">URL по умолчанию</label>
+                            <input type="text" class="md-field" id="default-url-input" value="/" placeholder="/">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="md-checkbox">
+                                <input type="checkbox" id="enable-redirect-to-default-checkbox">
+                                <span>Режим редиректа на главную</span>
+                            </label>
+                            <div id="redirect-to-default-group" style="display:none; margin-top:6px;">
+                                <button class="md-btn md-btn--outlined md-btn--block" id="redirect-selected-btn">
+                                    <span class="material-symbols-outlined">home</span> Редирект выделенных
+                                </button>
+                            </div>
+                        </div>
+
+                        <button class="md-btn md-btn--filled md-btn--block md-btn--lg" id="generate-btn">
+                            <span class="material-symbols-outlined">bolt</span> Сгенерировать правила
+                        </button>
+
+                        <div class="divider"></div>
+                        <div class="section-label">Live Redirect Checker</div>
+
+                        <div class="form-group">
+                            <div style="display:flex; gap:6px;">
+                                <input class="md-field" id="checker-url-input" placeholder="https://example.com/old-page" style="flex:1;">
+                                <button class="md-btn md-btn--tonal" id="checker-run-btn" title="Проверить">
+                                    <span class="material-symbols-outlined">play_arrow</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="checker-chain-result" style="display:flex; flex-direction:column; gap:4px;"></div>
+
+                    </div>
+                </aside>
+
+            </div><!-- /.tool-layout -->
+        </div><!-- /#panel-redirect -->
+
+
+        <!-- ─────────────── OPTIMIZER (UJIMATOR) ─────────────── -->
+        <div class="tab-panel" id="panel-optimizer">
+            <div class="tool-layout">
+
+                <!-- LEFT: file list -->
+                <aside class="tool-sidebar tool-sidebar--left">
+                    <div class="sidebar-header">
+                        <span class="material-symbols-outlined sidebar-header__icon">folder</span>
+                        <span class="sidebar-header__title">Файлы</span>
+                        <span class="chip chip--accent" id="totalFiles">0</span>
+                    </div>
+                    <div style="display:flex; gap:6px; padding:8px 10px; border-bottom:1px solid var(--md-sys-color-outline-variant); flex-shrink:0;">
+                        <button class="md-btn md-btn--tonal md-btn--sm" id="btnSelectFiles">
+                            <span class="material-symbols-outlined">description</span> Файлы
+                        </button>
+                        <button class="md-btn md-btn--tonal md-btn--sm" id="btnSelectFolders">
+                            <span class="material-symbols-outlined">folder_open</span> Папки
+                        </button>
+                        <button class="md-btn md-btn--outlined md-btn--sm" id="btnClearFiles" title="Очистить">
+                            <span class="material-symbols-outlined">delete</span>
+                        </button>
+                    </div>
+                    <div class="file-list" id="fileList">
+                        <div class="empty-state" id="emptyState">
+                            <span class="material-symbols-outlined empty-state__icon">photo_library</span>
+                            <p>Перетащите файлы сюда</p>
+                        </div>
+                    </div>
+                </aside>
+
+                <section class="tool-main">
+                    <div class="drop-zone" id="dropZone">
+                        <span class="material-symbols-outlined drop-zone__icon">file_download</span>
+                        <div style="text-align:center;">
+                            <div style="font-size:18px; font-weight:500; margin-bottom:6px;">Перетащите изображения</div>
+                            <div style="font-size:13px; color:var(--md-sys-color-on-surface-variant);">JPG, PNG, WebP, GIF, SVG, TIFF</div>
+                        </div>
+                        <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center;">
+                            <button class="md-btn md-btn--filled" id="btnDropSelectFiles">
+                                <span class="material-symbols-outlined">description</span> Выбрать файлы
+                            </button>
+                            <button class="md-btn md-btn--outlined" id="btnDropSelectFolders">
+                                <span class="material-symbols-outlined">folder_open</span> Выбрать папки
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="comparison-wrap" id="previewContainer" style="display:none; flex:1; flex-direction:column; overflow:hidden; min-height:0;">
+                        <div class="comparison-wrap__header">
+                            <button class="md-btn md-btn--text md-btn--sm" id="btnBackToResults" style="display:none">
+                                <span class="material-symbols-outlined">arrow_back</span>
+                                Назад
+                            </button>
+                            <h2 style="flex:1;text-align:center;font-size:14px;font-weight:500">Сравнение</h2>
+                            <button class="md-btn md-btn--text md-btn--icon md-btn--sm" id="btnClosePreview" title="Закрыть">
+                                <span class="material-symbols-outlined">close</span>
+                            </button>
+                        </div>
+                        <div class="comparison-slider" id="comparisonSlider">
+                            <div class="comparison-before" id="comparisonBefore">
+                                <img id="imgBefore" alt="До">
+                                <span class="comparison-label">До</span>
+                            </div>
+                            <div class="comparison-after" id="comparisonAfter">
+                                <img id="imgAfter" alt="После">
+                                <span class="comparison-label">После</span>
+                            </div>
+                            <input type="range" class="comparison-range" id="comparisonRange" min="0" max="100" value="50">
+                            <div class="comparison-divider" id="comparisonDivider"></div>
+                        </div>
+                        <div class="comparison-info" id="previewInfo">
+                            <div class="info-chip">
+                                <span class="material-symbols-outlined" style="font-size:14px">photo_size_select_large</span>
+                                До: <strong id="sizeBefore">—</strong>
+                            </div>
+                            <div class="info-chip">
+                                <span class="material-symbols-outlined" style="font-size:14px">compress</span>
+                                После: <strong id="sizeAfter">—</strong>
+                            </div>
+                            <div class="info-chip info-chip--accent">
+                                <span class="material-symbols-outlined" style="font-size:14px">savings</span>
+                                Сэкономлено: <strong id="sizeSaved">—</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="results-summary" id="resultsSummary" style="display:none; flex:1; flex-direction:column; min-height:0; overflow-y:auto; padding:16px;">
+                        <div class="results-summary__header">
+                            <div class="summary-card">
+                                <span class="material-symbols-outlined summary-card__icon">check_circle</span>
+                                <div class="summary-card__body">
+                                    <div class="summary-card__title">Готово!</div>
+                                    <div class="summary-card__stats">
+                                        <span id="statOriginal">0 KB</span>
+                                        <span class="material-symbols-outlined" style="font-size:14px;opacity:.5">arrow_forward</span>
+                                        <span id="statOptimized">0 KB</span>
+                                        <span class="chip chip--accent">−<span id="statSaved">0%</span></span>
+                                    </div>
+                                </div>
+                                <div class="summary-card__actions">
+                                    <button class="md-btn md-btn--tonal md-btn--icon md-btn--sm" id="btnOpenFolder" title="Открыть папку">
+                                        <span class="material-symbols-outlined">folder_open</span>
+                                    </button>
+                                    <button class="md-btn md-btn--tonal md-btn--icon md-btn--sm" id="btnNewSession" title="Начать заново">
+                                        <span class="material-symbols-outlined">refresh</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-wrap" style="flex:1; min-height:0; overflow:auto;">
+                            <table class="data-table" id="resultsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Файл</th>
+                                        <th>Было</th>
+                                        <th>Стало</th>
+                                        <th>Экономия</th>
+                                        <th>Формат</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="resultsTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="progress-footer" id="progressContainer" style="display:none; flex-shrink:0;">
+                        <div class="progress-footer__info">
+                            <span class="progress-footer__status" id="progressStatus">Обработка…</span>
+                            <span class="progress-footer__file" id="progressFile">—</span>
+                            <span class="progress-footer__count" id="progressDetail">0 / 0</span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-fill" id="progressFill" style="width:0%"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <aside class="tool-sidebar tool-sidebar--right">
+                    <div class="sidebar-header">
+                        <span class="material-symbols-outlined sidebar-header__icon">tune</span>
+                        <span class="sidebar-header__title">Настройки</span>
+                    </div>
+                    <div class="sidebar-body">
+
+                        <div class="setting-group">
+                            <label class="setting-label">Пресет</label>
+                            <div class="preset-row" style="display:flex; gap:6px; flex-wrap:wrap;">
+                                <button class="preset-btn active" data-preset="optimal" id="presetOptimal">
+                                    <span class="material-symbols-outlined">bolt</span> Оптимально
+                                </button>
+                                <button class="preset-btn" data-preset="quality" id="presetQuality">
+                                    <span class="material-symbols-outlined">diamond</span> Качество
+                                </button>
+                                <button class="preset-btn" data-preset="size" id="presetSize">
+                                    <span class="material-symbols-outlined">inventory_2</span> Размер
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Quality -->
+                        <div class="setting-group">
+                            <label class="setting-label">Качество: <strong id="qualityValue">85</strong>%</label>
+                            <input type="range" class="md-range" id="qualityRange" min="10" max="100" value="85">
+                            <div class="range-hints"><span>Меньше</span><span>Лучше</span></div>
+                        </div>
+
+                        <!-- Level -->
+                        <div class="setting-group">
+                            <label class="setting-label">Сжатие: <strong id="levelValue">2</strong>/10</label>
+                            <input type="range" class="md-range" id="levelRange" min="0" max="10" value="2">
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <!-- Resize -->
+                        <div class="setting-group">
+                            <label class="setting-label">Изменение размера</label>
+                            <select class="md-select" id="resizeMode">
+                                <option value="none">Оригинальный размер</option>
+                                <option value="percent">Процент от оригинала</option>
+                                <option value="maxSide">Максимальная сторона</option>
+                                <option value="exact">Точные размеры</option>
+                            </select>
+                        </div>
+
+                        <div class="setting-group" id="resizeOptionsGroup" style="display:none">
+                            <div class="resize-option" id="resizePercent" style="display:none">
+                                <label class="setting-label">Масштаб: <strong id="percentValue">100</strong>%</label>
+                                <input type="range" class="md-range" id="percentRange" min="25" max="200" value="100" step="5">
+                            </div>
+                            <div class="resize-option" id="resizeMaxSide" style="display:none">
+                                <label class="setting-label">Максимум (px)</label>
+                                <input type="number" class="md-input" id="maxSideInput" value="1920" min="100" max="8000" step="100">
+                            </div>
+                            <div class="resize-option" id="resizeExact" style="display:none">
+                                <div class="row-2col">
+                                    <div>
+                                        <label class="setting-label">Ширина (px)</label>
+                                        <input type="number" class="md-input" id="exactWidthInput" value="1920" min="1" max="8000">
+                                    </div>
+                                    <div>
+                                        <label class="setting-label">Высота (px)</label>
+                                        <input type="number" class="md-input" id="exactHeightInput" value="1080" min="1" max="8000">
+                                    </div>
+                                </div>
+                                <label class="md-toggle-label" style="margin-top:8px">
+                                    <div class="md-switch">
+                                        <input type="checkbox" id="exactKeepAspect" checked>
+                                        <span class="md-switch__track"></span>
+                                    </div>
+                                    <span>Сохранять пропорции</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <!-- Convert -->
+                        <div class="setting-group">
+                            <label class="md-toggle-label">
+                                <div class="md-switch">
+                                    <input type="checkbox" id="toggleConvert">
+                                    <span class="md-switch__track"></span>
+                                </div>
+                                <span>Конвертировать формат</span>
+                            </label>
+                        </div>
+                        <div class="setting-group" id="convertFormatGroup" style="display:none">
+                            <label class="setting-label">Целевой формат</label>
+                            <select class="md-select" id="targetFormat">
+                                <option value="jpeg">JPEG</option>
+                                <option value="png">PNG</option>
+                                <option value="webp">WebP</option>
+                            </select>
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <!-- Toggles -->
+                        <div class="setting-group">
+                            <label class="md-toggle-label">
+                                <div class="md-switch">
+                                    <input type="checkbox" id="toggleBackup" checked>
+                                    <span class="md-switch__track"></span>
+                                </div>
+                                <span>Резервные копии</span>
+                            </label>
+                        </div>
+                        <div class="setting-group">
+                            <label class="md-toggle-label">
+                                <div class="md-switch">
+                                    <input type="checkbox" id="toggleResolution" checked>
+                                    <span class="md-switch__track"></span>
+                                </div>
+                                <span>Сохранять размер</span>
+                            </label>
+                        </div>
+                        <div class="setting-group">
+                            <label class="md-toggle-label">
+                                <div class="md-switch">
+                                    <input type="checkbox" id="toggleMetadata" checked>
+                                    <span class="md-switch__track"></span>
+                                </div>
+                                <span>Удалять EXIF</span>
+                            </label>
+                        </div>
+                        <div class="setting-group">
+                            <label class="md-toggle-label">
+                                <div class="md-switch">
+                                    <input type="checkbox" id="toggleSlug">
+                                    <span class="md-switch__track"></span>
+                                </div>
+                                <span>ЧПУ имена</span>
+                            </label>
+                        </div>
+
+                        <!-- Backup folder -->
+                        <div class="setting-group" id="backupFolderGroup">
+                            <label class="setting-label">Папка бэкапов</label>
+                            <div class="folder-row" style="display:flex; gap:6px;">
+                                <input type="text" class="md-input" id="backupFolderInput" placeholder="./backup" style="flex:1;" readonly>
+                                <button class="md-btn md-btn--tonal" id="btnSelectBackupFolder" title="Выбрать папку">
+                                    <span class="material-symbols-outlined">folder_open</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <button class="md-btn md-btn--filled md-btn--block md-btn--lg" id="btnOptimize" disabled>
+                            <span class="material-symbols-outlined">rocket_launch</span> Оптимизировать
+                        </button>
+                    </div>
+                </aside>
+
+            </div><!-- /.tool-layout -->
+        </div><!-- /#panel-optimizer -->
+
+
+        <!-- ─────────────── SEO PARSER ─────────────── -->
+        <div class="tab-panel" id="panel-parser">
+            <div class="tool-layout">
+
+                <!-- LEFT: настройки -->
+                <aside class="tool-sidebar tool-sidebar--left">
+                    <div class="sidebar-header">
+                        <span class="material-symbols-outlined sidebar-header__icon">travel_explore</span>
+                        <span class="sidebar-header__title">Настройки парсинга</span>
+                    </div>
+                    <div class="sidebar-body">
+                        <div class="form-group">
+                            <label class="form-label">URL или список URL</label>
+                            <textarea class="md-field" id="parser-urls" rows="6"
+                                placeholder="https://example.com&#10;https://example.com/page2&#10;..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Режим загрузки</label>
+                            <label class="md-radio">
+                                <input type="radio" name="parser-mode" value="http" checked>
+                                <span>HTTP (быстро)</span>
+                            </label>
+                            <label class="md-radio">
+                                <input type="radio" name="parser-mode" value="js">
+                                <span>JS-рендеринг (SPA/React)</span>
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">User-Agent</label>
+                            <select class="md-field" id="parser-ua">
+                                <option value="googlebot">Googlebot</option>
+                                <option value="chrome" selected>Chrome 124</option>
+                                <option value="firefox">Firefox 125</option>
+                                <option value="mobile">Chrome Mobile</option>
+                                <option value="custom">Кастомный</option>
+                            </select>
+                        </div>
+                        <div id="parser-ua-custom" style="display:none">
+                            <input class="md-field" id="parser-ua-value" placeholder="Mozilla/5.0 ...">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Что извлекать</label>
+                            <label class="md-checkbox"><input type="checkbox" id="pex-meta" checked><span>Title, Description</span></label>
+                            <label class="md-checkbox"><input type="checkbox" id="pex-og" checked><span>OG / Twitter теги</span></label>
+                            <label class="md-checkbox"><input type="checkbox" id="pex-headings" checked><span>Заголовки H1–H6</span></label>
+                            <label class="md-checkbox"><input type="checkbox" id="pex-canonical" checked><span>Canonical, Robots</span></label>
+                            <label class="md-checkbox"><input type="checkbox" id="pex-jsonld" checked><span>JSON-LD схемы</span></label>
+                            <label class="md-checkbox"><input type="checkbox" id="pex-links" checked><span>Ссылки (внутренние / внешние)</span></label>
+                            <label class="md-checkbox"><input type="checkbox" id="pex-text" checked><span>Текст страницы</span></label>
+                            <label class="md-checkbox"><input type="checkbox" id="pex-images"><span>Изображения (src + alt)</span></label>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Формат вывода</label>
+                            <label class="md-radio">
+                                <input type="radio" name="parser-output" value="single" checked>
+                                <span>Один MD файл (все URL)</span>
+                            </label>
+                            <label class="md-radio">
+                                <input type="radio" name="parser-output" value="multi">
+                                <span>По файлу на каждый URL</span>
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Задержка между запросами</label>
+                            <select class="md-field" id="parser-delay">
+                                <option value="0">Без задержки</option>
+                                <option value="500" selected>0.5 сек</option>
+                                <option value="1000">1 сек</option>
+                                <option value="2000">2 сек</option>
+                                <option value="3000">3 сек</option>
+                            </select>
+                        </div>
+
+                        <button class="md-btn md-btn--filled md-btn--block md-btn--lg" id="parser-run-btn">
+                            <span class="material-symbols-outlined">play_arrow</span>
+                            Запустить парсинг
+                        </button>
+                        <button class="md-btn md-btn--outlined md-btn--block" id="parser-save-btn" disabled>
+                            <span class="material-symbols-outlined">save</span>
+                            Сохранить MD
+                        </button>
+                    </div>
+                </aside>
+
+                <!-- CENTER: результаты -->
+                <section class="tool-main">
+                    <div class="mode-tabs">
+                        <button class="mode-tab active" data-pane="parser-cards">Карточки</button>
+                        <button class="mode-tab" data-pane="parser-log">Лог</button>
+                        <button class="mode-tab" data-pane="parser-md">MD превью</button>
+                    </div>
+                    <div class="right-pane active" id="parser-cards">
+                        <div class="parser-results" id="parser-cards-list">
+                            <div class="empty-state">
+                                <span class="material-symbols-outlined">travel_explore</span>
+                                <div class="empty-state__title">Введите URL и запустите парсинг</div>
+                                <div class="empty-state__sub">Поддерживается HTTP и JS-рендеринг</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="right-pane" id="parser-log">
+                        <div class="parser-log" id="parser-log-area"></div>
+                    </div>
+                    <div class="right-pane" id="parser-md">
+                        <div class="tool-toolbar">
+                            <button class="md-btn md-btn--tonal md-btn--sm" id="parser-copy-md-btn">
+                                <span class="material-symbols-outlined">content_copy</span> Копировать
+                            </button>
+                        </div>
+                        <div class="md-preview" id="parser-md-preview"></div>
+                    </div>
+                </section>
+
+                <aside class="tool-sidebar tool-sidebar--right">
+                    <div class="sidebar-header">
+                        <span class="material-symbols-outlined sidebar-header__icon">tips_and_updates</span>
+                        <span class="sidebar-header__title">Советы</span>
+                    </div>
+                    <div class="sidebar-body">
+                        <p class="text-muted" style="font-size:12.5px;line-height:1.55">Для длинного списка URL увеличьте задержку между запросами. JS-рендер (SPA) заметно дольше HTTP.</p>
+                    </div>
+                </aside>
+
+            </div>
+        </div><!-- /#panel-parser -->
+
+
+        <!-- ─────────────── IMAGE DOWNLOADER ─────────────── -->
+        <div class="tab-panel" id="panel-downloader">
+            <div class="tool-layout">
+
+                <!-- LEFT: настройки -->
+                <aside class="tool-sidebar tool-sidebar--left">
+                    <div class="sidebar-header">
+                        <span class="material-symbols-outlined sidebar-header__icon">download</span>
+                        <span class="sidebar-header__title">Загрузка изображений</span>
+                    </div>
+                    <div class="sidebar-body">
+                        <div class="form-group">
+                            <label class="form-label">Список URL изображений</label>
+                            <textarea class="md-field" id="dl-urls" rows="8"
+                                placeholder="https://example.com/images/photo.jpg&#10;https://cdn.site.com/img/hero.webp&#10;..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Папка сохранения</label>
+                            <div style="display:flex;gap:6px">
+                                <input class="md-field" id="dl-output-dir" placeholder="Выберите папку..." readonly style="flex:1">
+                                <button class="md-btn md-btn--tonal" id="dl-browse-btn">
+                                    <span class="material-symbols-outlined">folder_open</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Структура папок</label>
+                            <label class="md-radio">
+                                <input type="radio" name="dl-structure" value="domain-path" checked>
+                                <span>domain / path / file (как на сервере)</span>
+                            </label>
+                            <label class="md-radio">
+                                <input type="radio" name="dl-structure" value="flat">
+                                <span>Всё в одну папку</span>
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Параллельных потоков</label>
+                            <select class="md-field" id="dl-concurrency">
+                                <option value="1">1 (медленно, осторожно)</option>
+                                <option value="3" selected>3 (оптимально)</option>
+                                <option value="5">5 (быстро)</option>
+                                <option value="10">10 (агрессивно)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="md-checkbox"><input type="checkbox" id="dl-skip-existing" checked><span>Пропускать существующие</span></label>
+                            <label class="md-checkbox"><input type="checkbox" id="dl-webp-convert"><span>Конвертировать в WebP</span></label>
+                        </div>
+
+                        <button class="md-btn md-btn--filled md-btn--block md-btn--lg" id="dl-run-btn">
+                            <span class="material-symbols-outlined">download</span>
+                            Скачать изображения
+                        </button>
+                        <button class="md-btn md-btn--outlined md-btn--block" id="dl-open-folder-btn" disabled>
+                            <span class="material-symbols-outlined">folder_open</span>
+                            Открыть папку
+                        </button>
+                    </div>
+                </aside>
+
+                <!-- CENTER: очередь + прогресс -->
+                <section class="tool-main">
+                    <div class="tool-toolbar">
+                        <span id="dl-total-count" class="text-muted" style="font-size:13px">Добавьте URL для начала</span>
+                        <div class="tool-toolbar__spacer"></div>
+                        <button class="md-btn md-btn--outlined md-btn--sm" id="dl-clear-btn">
+                            <span class="material-symbols-outlined">delete_sweep</span> Очистить
+                        </button>
+                    </div>
+                    <div class="dl-queue" id="dl-queue-list">
+                        <div class="empty-state">
+                            <span class="material-symbols-outlined">photo_library</span>
+                            <div class="empty-state__title">Вставьте URL картинок</div>
+                            <div class="empty-state__sub">Поддерживаются jpg, png, webp, gif, svg</div>
+                        </div>
+                    </div>
+                    <div class="dl-summary" id="dl-summary">
+                        <div class="dl-summary__stat">
+                            <span class="dl-summary__val" id="dl-stat-done">0</span>
+                            <span class="dl-summary__lbl">Скачано</span>
+                        </div>
+                        <div class="dl-summary__stat">
+                            <span class="dl-summary__val" id="dl-stat-error">0</span>
+                            <span class="dl-summary__lbl">Ошибок</span>
+                        </div>
+                        <div class="dl-summary__stat">
+                            <span class="dl-summary__val" id="dl-stat-size">0 MB</span>
+                            <span class="dl-summary__lbl">Размер</span>
+                        </div>
+                        <div class="tool-toolbar__spacer"></div>
+                        <div class="progress-track" style="width:200px">
+                            <div class="progress-fill" id="dl-progress-fill" style="width:0%"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <aside class="tool-sidebar tool-sidebar--right">
+                    <div class="sidebar-header">
+                        <span class="material-symbols-outlined sidebar-header__icon">tips_and_updates</span>
+                        <span class="sidebar-header__title">Советы</span>
+                    </div>
+                    <div class="sidebar-body">
+                        <p class="text-muted" style="font-size:12.5px;line-height:1.55">Параллельные потоки ускоряют скачивание; при ошибках 429/503 снизьте значение. «Пропускать существующие» удобна для дозагрузки.</p>
+                    </div>
+                </aside>
+
+            </div>
+        </div><!-- /#panel-downloader -->
+
+
+        <!-- ─────────────── KEYWORD CLUSTERER ─────────────── -->
+        <div class="tab-panel" id="panel-clusterer">
+            <div class="tool-layout">
+
+                <!-- LEFT: настройки -->
+                <aside class="tool-sidebar tool-sidebar--left">
+                    <div class="sidebar-header">
+                        <span class="material-symbols-outlined sidebar-header__icon">hub</span>
+                        <span class="sidebar-header__title">Кластеризация ключей</span>
+                    </div>
+                    <div class="sidebar-body">
+                        <!-- Python status -->
+                        <div class="py-banner" id="py-status-banner">
+                            <span class="material-symbols-outlined spin">sync</span>
+                            <span>Проверка Python...</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Файл с ключевыми фразами</label>
+                            <div style="display:flex;gap:6px">
+                                <input class="md-field" id="cl-file-path" placeholder="CSV или TXT файл..." readonly style="flex:1">
+                                <button class="md-btn md-btn--tonal" id="cl-browse-btn">
+                                    <span class="material-symbols-outlined">upload_file</span>
+                                </button>
+                            </div>
+                            <small class="text-muted" style="font-size:11px">CSV (первая колонка) или TXT (по строке)</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Язык ключей</label>
+                            <select class="md-field" id="cl-language">
+                                <option value="russian" selected>Русский</option>
+                                <option value="english">Английский</option>
+                                <option value="auto">Автоопределение</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Метод кластеризации</label>
+                            <select class="md-field" id="cl-method">
+                                <option value="kmeans" selected>K-Means (быстро, нужно указать кол-во кластеров)</option>
+                                <option value="dbscan">DBSCAN (авто, хуже на большом объёме)</option>
+                                <option value="agglomerative">Agglomerative (качественно, медленно)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" id="cl-k-group">
+                            <label class="form-label">Количество кластеров</label>
+                            <div style="display:flex;gap:8px;align-items:center">
+                                <input type="number" class="md-field" id="cl-k-value" value="20" min="2" max="500" style="width:80px">
+                                <label class="md-checkbox"><input type="checkbox" id="cl-k-auto"><span>Авто (elbow)</span></label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Макс. признаков TF-IDF</label>
+                            <select class="md-field" id="cl-features">
+                                <option value="5000">5 000</option>
+                                <option value="10000" selected>10 000</option>
+                                <option value="20000">20 000</option>
+                                <option value="50000">50 000</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="md-checkbox"><input type="checkbox" id="cl-stem" checked><span>Стемминг слов</span></label>
+                            <label class="md-checkbox"><input type="checkbox" id="cl-stopwords" checked><span>Удалять стоп-слова</span></label>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Вывод</label>
+                            <label class="md-radio">
+                                <input type="radio" name="cl-output" value="csv" checked>
+                                <span>CSV (ключ, кластер, название)</span>
+                            </label>
+                            <label class="md-radio">
+                                <input type="radio" name="cl-output" value="xlsx">
+                                <span>XLSX (по листам)</span>
+                            </label>
+                        </div>
+
+                        <button class="md-btn md-btn--filled md-btn--block md-btn--lg" id="cl-run-btn">
+                            <span class="material-symbols-outlined">hub</span>
+                            Кластеризовать
+                        </button>
+                        <button class="md-btn md-btn--outlined md-btn--block" id="cl-save-btn" disabled>
+                            <span class="material-symbols-outlined">save</span>
+                            Сохранить результат
+                        </button>
+                    </div>
+                </aside>
+
+                <!-- CENTER: результаты -->
+                <section class="tool-main">
+                    <div class="tool-toolbar">
+                        <span id="cl-stats-label" class="text-muted" style="font-size:13px">Загрузите файл с ключами</span>
+                        <div class="tool-toolbar__spacer"></div>
+                        <button class="md-btn md-btn--outlined md-btn--sm" id="cl-expand-all-btn" style="display:none">
+                            <span class="material-symbols-outlined">unfold_more</span> Развернуть все
+                        </button>
+                    </div>
+                    <div class="cluster-result" id="cl-result-list">
+                        <div class="empty-state">
+                            <span class="material-symbols-outlined">hub</span>
+                            <div class="empty-state__title">Результаты кластеризации</div>
+                            <div class="empty-state__sub">Поддерживает до 50 000+ ключей</div>
+                        </div>
+                    </div>
+                </section>
+
+                <aside class="tool-sidebar tool-sidebar--right">
+                    <div class="sidebar-header">
+                        <span class="material-symbols-outlined sidebar-header__icon">tips_and_updates</span>
+                        <span class="sidebar-header__title">Советы</span>
+                    </div>
+                    <div class="sidebar-body">
+                        <p class="text-muted" style="font-size:12.5px;line-height:1.55">Нужен Python 3 на ПК. Для большого числа фраз K-Means с авто «elbow» снижает ручной подбор числа кластеров.</p>
+                    </div>
+                </aside>
+
+            </div>
+        </div><!-- /#panel-clusterer -->
+
+        <!-- ─────────────── PROMPT LIBRARY ─────────────── -->
+        <div class="tab-panel" id="panel-prompts">
+            <div class="tool-layout">
+                <aside class="tool-sidebar tool-sidebar--left">
+                    <div class="sidebar-header">
+                        <span class="material-symbols-outlined sidebar-header__icon">auto_stories</span>
+                        <span class="sidebar-header__title">Промпты</span>
+                    </div>
+                    <div class="sidebar-body" style="gap:8px; padding:10px;">
+                        <input type="search" class="md-field" id="pl-search" placeholder="Поиск по промптам…" style="width:100%;">
+                    </div>
+                    <div class="cat-tree" id="pl-cat-tree" style="padding:0 6px; flex:1; min-height:0; overflow-y:auto;">
+                        <div class="cat-tree__all" id="pl-cat-all" data-cat="all" role="button" tabindex="0">Все промпты</div>
+                    </div>
+                    <div class="sidebar-body" id="pl-stats" style="padding:10px; border-top:1px solid var(--md-sys-color-outline-variant); flex-shrink:0; gap:4px; font-size:11px;">
+                    </div>
+                </aside>
+
+                <section class="tool-main">
+                    <div class="prompts-toolbar">
+                        <div style="position:relative;">
+                            <button type="button" class="md-btn md-btn--outlined md-btn--sm" id="pl-tags-btn" aria-haspopup="true" aria-expanded="false">
+                                <span class="material-symbols-outlined" style="font-size:16px">label</span> Все теги
+                            </button>
+                            <div id="pl-tag-popover" class="pl-tag-menu" style="display:none; position:absolute; top:100%; left:0; z-index:20; background:var(--md-sys-color-surface-container); border:1px solid var(--md-sys-color-outline-variant); border-radius:8px; margin-top:4px; box-shadow:0 4px 12px rgba(0,0,0,.35);"></div>
+                        </div>
+                        <div class="flex-gap-8" id="pl-model-filters">
+                            <button type="button" class="md-btn md-btn--outlined md-btn--sm model-btn" data-model="ChatGPT">ChatGPT</button>
+                            <button type="button" class="md-btn md-btn--outlined md-btn--sm model-btn" data-model="Claude">Claude</button>
+                            <button type="button" class="md-btn md-btn--outlined md-btn--sm model-btn" data-model="Gemini">Gemini</button>
+                        </div>
+                        <div class="prompts-toolbar__spacer"></div>
+                        <div class="prompts-view-toggle">
+                            <button type="button" class="md-btn md-btn--tonal md-btn--sm" id="pl-view-list" title="Список">
+                                <span class="material-symbols-outlined" style="font-size:16px">view_list</span>
+                            </button>
+                            <button type="button" class="md-btn md-btn--outlined md-btn--sm" id="pl-view-grid" title="Сетка">
+                                <span class="material-symbols-outlined" style="font-size:16px">grid_view</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="prompts-list-wrap" id="pl-cards">
+                        <div class="pl-empty" id="pl-empty">Нет подходящих промптов</div>
+                    </div>
+                </section>
+
+                <aside class="tool-sidebar tool-sidebar--right prompt-preview-right" id="pl-preview-aside">
+                    <div class="sidebar-header" style="align-items:flex-start;">
+                        <span class="material-symbols-outlined sidebar-header__icon" style="margin-top:2px">settings_suggest</span>
+                        <span class="sidebar-header__title" id="pl-pv-title" style="white-space:normal;">Выберите промпт</span>
+                    </div>
+                    <div class="sidebar-body" id="pl-preview-body" style="display:none;">
+                        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px;">
+                            <button type="button" class="md-btn md-btn--tonal md-btn--sm" id="pl-copy-btn">
+                                <span class="material-symbols-outlined" style="font-size:16px">content_paste</span> Копировать
+                            </button>
+                            <button type="button" class="md-btn md-btn--outlined md-btn--sm" id="pl-save-md-btn">
+                                <span class="material-symbols-outlined" style="font-size:16px">save</span> Сохр. MD
+                            </button>
+                        </div>
+                        <div id="pl-pv-meta" class="text-muted" style="font-size:12px; line-height:1.5; margin-bottom:10px; padding-bottom:10px; border-bottom:1px solid var(--md-sys-color-outline-variant);"></div>
+                        <div class="form-label" id="pl-vars-header" style="display:none;">Переменные</div>
+                        <div id="pl-var-inputs"></div>
+                        <div class="form-label" style="margin-top:4px;">Промпт (с подстановкой)</div>
+                        <textarea class="prompt-preview-area" id="pl-pv-prompt" readonly></textarea>
+                        <div class="form-label" style="margin-top:8px;">Пример результата</div>
+                        <p id="pl-pv-ex-out" class="text-muted" style="font-size:12.5px; line-height:1.5;"></p>
+                    </div>
+                </aside>
+            </div>
+        </div><!-- /#panel-prompts -->
+
+    </main><!-- /.tab-panels -->
+
+    <!-- Toast -->
+    <div class="toast-container" id="toastContainer"></div>
+</div><!-- /.app-shell -->
+
+<script src="app.js"></script>
+<script src="redirect-app.js"></script>
+<script src="ujimator-app.js"></script>
+<script src="parser-app.js"></script>
+<script src="downloader-app.js"></script>
+<script src="clusterer-app.js"></script>
+<script src="prompts-data.js"></script>
+<script src="prompts-app.js"></script>
+</body>
+</html>

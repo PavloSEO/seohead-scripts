@@ -1,0 +1,77 @@
+{
+  "name": "seo-scripts",
+  "version": "1.0.0",
+  "description": "SEO Scripts by seohead.tech — набор инструментов для SEO-специалиста",
+  "main": "src/main/main.js",
+  "author": "seohead.tech",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "build:unpacked": "electron-builder --win --x64 --dir",
+    "build:installer": "electron-builder --win --x64 --config.win.target=nsis",
+    "build:all": "npm run build:unpacked && npm run build:installer"
+  },
+  "dependencies": {
+    "electron-store": "^8.1.0",
+    "klaw": "^4.1.0",
+    "sharp": "^0.33.5",
+    "svgo": "^3.2.0",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1"
+  },
+  "build": {
+    "appId": "tech.seohead.seo-scripts",
+    "productName": "SEO Scripts",
+    "forceCodeSigning": false,
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "package.json",
+      "node_modules/**/*",
+      "!node_modules/*/{CHANGELOG.md,README.md,readme.md,README,readme}",
+      "!node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
+      "!node_modules/.cache/**/*",
+      "!src/main/clusterer.py"
+    ],
+    "asar": true,
+    "asarUnpack": [
+      "node_modules/sharp/**/*"
+    ],
+    "win": {
+      "target": "dir",
+      "sign": false,
+      "signDlls": false,
+      "verifyUpdateCodeSignature": false,
+      "signAndEditExecutable": false,
+      "icon": "src/assets/icon.svg"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "SEO Scripts",
+      "deleteAppDataOnUninstall": false,
+      "warningsAsErrors": false,
+      "artifactName": "${productName}-${version}-Setup.${ext}"
+    },
+    "portable": {
+      "artifactName": "${productName}-${version}-portable.${ext}",
+      "requestExecutionLevel": "user"
+    },
+    "extraResources": [
+      {
+        "from": "build-resources/clusterer.exe",
+        "to": "clusterer.exe",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ]
+  }
+}
