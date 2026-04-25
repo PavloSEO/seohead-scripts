@@ -645,7 +645,7 @@
                 </aside>
 
                 <!-- CENTER: результаты -->
-                <section class="tool-main">
+                <section class="tool-main tool-main--readable">
                     <div class="mode-tabs">
                         <button class="mode-tab active" data-pane="parser-cards">Карточки</button>
                         <button class="mode-tab" data-pane="parser-log">Лог</button>
@@ -675,11 +675,72 @@
 
                 <aside class="tool-sidebar tool-sidebar--right">
                     <div class="sidebar-header">
-                        <span class="material-symbols-outlined sidebar-header__icon">tips_and_updates</span>
-                        <span class="sidebar-header__title">Советы</span>
+                        <span class="material-symbols-outlined sidebar-header__icon">travel_explore</span>
+                        <span class="sidebar-header__title">Справка</span>
                     </div>
                     <div class="sidebar-body">
-                        <p class="text-muted" style="font-size:12.5px;line-height:1.55">Для длинного списка URL увеличьте задержку между запросами. JS-рендер (SPA) заметно дольше HTTP.</p>
+                        <div class="sidebar-section__title">Карта извлечения</div>
+                        <p class="extract-map__hint" style="margin-bottom:8px">Совпадает с чекбоксами слева. Строка кликабельна — включает или выключает блок.</p>
+                        <div class="extract-map" id="parser-extract-map">
+                            <div class="extract-map__row" data-pex="pex-meta" role="button" tabindex="0">
+                                <span class="material-symbols-outlined extract-map__icon">title</span>
+                                <div class="extract-map__text">
+                                    <div class="extract-map__name">Title, Description</div>
+                                    <div class="extract-map__hint">Мета-теги в &lt;head&gt;</div>
+                                </div>
+                            </div>
+                            <div class="extract-map__row" data-pex="pex-og" role="button" tabindex="0">
+                                <span class="material-symbols-outlined extract-map__icon">share</span>
+                                <div class="extract-map__text">
+                                    <div class="extract-map__name">OG / Twitter</div>
+                                    <div class="extract-map__hint">Open Graph и карточки соцсетей</div>
+                                </div>
+                            </div>
+                            <div class="extract-map__row" data-pex="pex-headings" role="button" tabindex="0">
+                                <span class="material-symbols-outlined extract-map__icon">view_agenda</span>
+                                <div class="extract-map__text">
+                                    <div class="extract-map__name">Заголовки H1–H6</div>
+                                    <div class="extract-map__hint">Иерархия заголовков на странице</div>
+                                </div>
+                            </div>
+                            <div class="extract-map__row" data-pex="pex-canonical" role="button" tabindex="0">
+                                <span class="material-symbols-outlined extract-map__icon">link</span>
+                                <div class="extract-map__text">
+                                    <div class="extract-map__name">Canonical, Robots</div>
+                                    <div class="extract-map__hint">Индексация и канонический URL</div>
+                                </div>
+                            </div>
+                            <div class="extract-map__row" data-pex="pex-jsonld" role="button" tabindex="0">
+                                <span class="material-symbols-outlined extract-map__icon">data_object</span>
+                                <div class="extract-map__text">
+                                    <div class="extract-map__name">JSON-LD</div>
+                                    <div class="extract-map__hint">Структурированные схемы</div>
+                                </div>
+                            </div>
+                            <div class="extract-map__row" data-pex="pex-links" role="button" tabindex="0">
+                                <span class="material-symbols-outlined extract-map__icon">hub</span>
+                                <div class="extract-map__text">
+                                    <div class="extract-map__name">Ссылки</div>
+                                    <div class="extract-map__hint">Внутренние и внешние URL</div>
+                                </div>
+                            </div>
+                            <div class="extract-map__row" data-pex="pex-text" role="button" tabindex="0">
+                                <span class="material-symbols-outlined extract-map__icon">article</span>
+                                <div class="extract-map__text">
+                                    <div class="extract-map__name">Текст страницы</div>
+                                    <div class="extract-map__hint">Основной видимый текст</div>
+                                </div>
+                            </div>
+                            <div class="extract-map__row" data-pex="pex-images" role="button" tabindex="0">
+                                <span class="material-symbols-outlined extract-map__icon">image</span>
+                                <div class="extract-map__text">
+                                    <div class="extract-map__name">Изображения</div>
+                                    <div class="extract-map__hint">src и alt для картинок</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sidebar-section__title" style="margin-top:12px">Советы</div>
+                        <p class="sidebar-prose">Для длинного списка URL увеличьте задержку между запросами. JS-рендер (SPA) заметно дольше HTTP.</p>
                     </div>
                 </aside>
 
@@ -753,7 +814,7 @@
                 </aside>
 
                 <!-- CENTER: очередь + прогресс -->
-                <section class="tool-main">
+                <section class="tool-main tool-main--readable">
                     <div class="tool-toolbar">
                         <span id="dl-total-count" class="text-muted" style="font-size:13px">Добавьте URL для начала</span>
                         <div class="tool-toolbar__spacer"></div>
@@ -794,7 +855,8 @@
                         <span class="sidebar-header__title">Советы</span>
                     </div>
                     <div class="sidebar-body">
-                        <p class="text-muted" style="font-size:12.5px;line-height:1.55">Параллельные потоки ускоряют скачивание; при ошибках 429/503 снизьте значение. «Пропускать существующие» удобна для дозагрузки.</p>
+                        <div class="sidebar-section__title">Кратко</div>
+                        <p class="sidebar-prose">Параллельные потоки ускоряют скачивание; при ошибках 429/503 снизьте значение. «Пропускать существующие» удобна для дозагрузки.</p>
                     </div>
                 </aside>
 
@@ -895,7 +957,7 @@
                 </aside>
 
                 <!-- CENTER: результаты -->
-                <section class="tool-main">
+                <section class="tool-main tool-main--readable">
                     <div class="tool-toolbar">
                         <span id="cl-stats-label" class="text-muted" style="font-size:13px">Загрузите файл с ключами</span>
                         <div class="tool-toolbar__spacer"></div>
@@ -918,7 +980,8 @@
                         <span class="sidebar-header__title">Советы</span>
                     </div>
                     <div class="sidebar-body">
-                        <p class="text-muted" style="font-size:12.5px;line-height:1.55">Нужен Python 3 на ПК. Для большого числа фраз K-Means с авто «elbow» снижает ручной подбор числа кластеров.</p>
+                        <div class="sidebar-section__title">Кратко</div>
+                        <p class="sidebar-prose">Нужен Python 3 на ПК. Для большого числа фраз K-Means с авто «elbow» снижает ручной подбор числа кластеров.</p>
                     </div>
                 </aside>
 
@@ -939,11 +1002,11 @@
                     <div class="cat-tree" id="pl-cat-tree" style="padding:0 6px; flex:1; min-height:0; overflow-y:auto;">
                         <div class="cat-tree__all" id="pl-cat-all" data-cat="all" role="button" tabindex="0">Все промпты</div>
                     </div>
-                    <div class="sidebar-body" id="pl-stats" style="padding:10px; border-top:1px solid var(--md-sys-color-outline-variant); flex-shrink:0; gap:4px; font-size:11px;">
+                    <div class="sidebar-body" id="pl-stats" style="padding:10px 14px; border-top:1px solid var(--md-sys-color-outline-variant); flex-shrink:0; gap:4px;">
                     </div>
                 </aside>
 
-                <section class="tool-main">
+                <section class="tool-main tool-main--readable">
                     <div class="prompts-toolbar">
                         <div style="position:relative;">
                             <button type="button" class="md-btn md-btn--outlined md-btn--sm" id="pl-tags-btn" aria-haspopup="true" aria-expanded="false">

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Testimonials — MD3 Site Kit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+body{background:var(--md-sys-color-background);}
+.ds-label{font-size:11px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--md-sys-color-primary);margin-bottom:var(--space-2);}
+.ds-title{font-size:22px;font-weight:400;color:var(--md-sys-color-on-surface);margin:0 0 var(--space-2);}
+.ds-desc{font-size:14px;color:var(--md-sys-color-on-surface-variant);margin:0;}
+.section-header{max-width:1200px;margin:0 auto;padding:var(--space-12) var(--space-8) var(--space-8);}
+.ds-divider{border:none;border-top:1px solid var(--md-sys-color-outline-variant);}
+
+/* STARS */
+.stars{display:flex;gap:2px;color:#F5B100;font-size:18px;}
+.stars .material-symbols-outlined{font-size:18px;font-variation-settings:'FILL' 1;}
+
+/* AVATAR PLACEHOLDER */
+.ava{width:48px;height:48px;border-radius:50%;background:var(--md-sys-color-primary-container);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:500;color:var(--md-sys-color-primary);flex-shrink:0;}
+
+/* ── A: CAROUSEL ── */
+.testi-carousel{max-width:800px;margin:0 auto;position:relative;}
+.testi-carousel__track{overflow:hidden;}
+.testi-carousel__slides{display:flex;transition:transform .45s cubic-bezier(.4,0,.2,1);}
+.testi-carousel__slide{flex:0 0 100%;}
+.testi-card{background:var(--md-sys-color-surface);border-radius:var(--md-sys-shape-corner-extra-large);padding:var(--space-8);box-shadow:var(--md-sys-elevation-1);text-align:center;}
+.testi-card__quote-icon{font-size:48px;color:var(--md-sys-color-primary-container);line-height:1;margin-bottom:var(--space-4);font-family:Georgia,serif;font-weight:700;}
+.testi-card__text{font-size:18px;line-height:1.7;color:var(--md-sys-color-on-surface-variant);margin:0 0 var(--space-6);font-style:italic;}
+.testi-card__author{display:flex;align-items:center;justify-content:center;gap:var(--space-4);}
+.testi-card__author-info{text-align:left;}
+.testi-card__name{font-size:15px;font-weight:500;color:var(--md-sys-color-on-surface);}
+.testi-card__role{font-size:13px;color:var(--md-sys-color-on-surface-variant);}
+.testi-carousel__nav{display:flex;justify-content:center;align-items:center;gap:var(--space-4);margin-top:var(--space-6);}
+.testi-carousel__btn{width:40px;height:40px;border-radius:50%;border:1px solid var(--md-sys-color-outline-variant);background:var(--md-sys-color-surface);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--md-sys-color-on-surface);transition:background .2s;}
+.testi-carousel__btn:hover{background:var(--md-sys-color-surface-container);}
+.testi-carousel__dots{display:flex;gap:var(--space-2);}
+.testi-carousel__dot{width:8px;height:8px;border-radius:50%;background:var(--md-sys-color-outline-variant);border:none;cursor:pointer;transition:all .2s;}
+.testi-carousel__dot--active{background:var(--md-sys-color-primary);width:24px;border-radius:4px;}
+
+/* ── B: 3-COL GRID ── */
+.review-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-6);max-width:1200px;margin:0 auto;padding:0 var(--space-8);}
+.review-card{background:var(--md-sys-color-surface);border-radius:var(--md-sys-shape-corner-extra-large);padding:var(--space-6);border:1px solid var(--md-sys-color-outline-variant);transition:box-shadow .25s;}
+.review-card:hover{box-shadow:var(--md-sys-elevation-2);}
+.review-card__header{display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-4);}
+.review-card__meta{flex:1;}
+.review-card__name{font-size:14px;font-weight:500;color:var(--md-sys-color-on-surface);}
+.review-card__date{font-size:12px;color:var(--md-sys-color-on-surface-variant);}
+.review-card__platform{font-size:11px;color:var(--md-sys-color-on-surface-variant);padding:2px 8px;border-radius:var(--md-sys-shape-corner-full);background:var(--md-sys-color-surface-container);}
+.review-card__text{font-size:14px;color:var(--md-sys-color-on-surface-variant);line-height:1.65;margin:0;}
+@media(max-width:900px){.review-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:600px){.review-grid{grid-template-columns:1fr;}}
+
+/* ── C: FEATURED + MINI ── */
+.featured-section{max-width:1200px;margin:0 auto;padding:0 var(--space-8);}
+.featured-quote{background:var(--md-sys-color-primary);border-radius:var(--md-sys-shape-corner-extra-large);padding:var(--space-12) var(--space-12);margin-bottom:var(--space-6);position:relative;overflow:hidden;}
+.featured-quote::before{content:'\201C';position:absolute;top:-20px;left:var(--space-6);font-size:200px;font-family:Georgia,serif;color:rgba(255,255,255,.1);line-height:1;}
+.featured-quote__text{font-size:28px;font-weight:300;line-height:1.55;color:#fff;margin:0 0 var(--space-8);position:relative;}
+.featured-quote__author{display:flex;align-items:center;gap:var(--space-4);}
+.featured-quote__ava{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:500;color:#fff;border:2px solid rgba(255,255,255,.5);}
+.featured-quote__name{font-size:17px;font-weight:500;color:#fff;}
+.featured-quote__role{font-size:14px;color:rgba(255,255,255,.7);}
+.featured-quote__company{font-size:13px;color:rgba(255,255,255,.6);}
+.featured-quote__stars{display:flex;gap:2px;color:rgba(255,200,0,.9);margin-bottom:var(--space-2);}
+.featured-quote__stars .material-symbols-outlined{font-size:20px;font-variation-settings:'FILL' 1;}
+.mini-quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-4);}
+.mini-card{background:var(--md-sys-color-surface);border-radius:var(--md-sys-shape-corner-large);padding:var(--space-5);border:1px solid var(--md-sys-color-outline-variant);}
+.mini-card__text{font-size:14px;color:var(--md-sys-color-on-surface-variant);line-height:1.6;margin:0 0 var(--space-4);font-style:italic;}
+.mini-card__author{display:flex;align-items:center;gap:var(--space-3);}
+.mini-card__ava{width:36px;height:36px;border-radius:50%;background:var(--md-sys-color-secondary-container);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:var(--md-sys-color-on-secondary-container);}
+.mini-card__name{font-size:13px;font-weight:500;color:var(--md-sys-color-on-surface);}
+.mini-card__role{font-size:11px;color:var(--md-sys-color-on-surface-variant);}
+@media(max-width:768px){.mini-quotes{grid-template-columns:1fr;}.featured-quote{padding:var(--space-8);}. featured-quote__text{font-size:22px;}}
+</style>
+</head>
+<body>
+
+<!-- A: Carousel -->
+<div class="section-header">
+  <div class="ds-label">Testimonials A</div>
+  <h2 class="ds-title">Testimonial Carousel</h2>
+  <p class="ds-desc">Цитата + аватар + имя + должность + звёзды, автопрокрутка</p>
+</div>
+<div style="max-width:1200px;margin:0 auto;padding:0 var(--space-8) var(--space-12);">
+  <div class="testi-carousel">
+    <div class="testi-carousel__track">
+      <div class="testi-carousel__slides" id="testiTrack">
+        <div class="testi-carousel__slide">
+          <div class="testi-card">
+            <div class="testi-card__quote-icon">"</div>
+            <div class="stars" style="justify-content:center;margin-bottom:var(--space-4);">
+              <span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span>
+            </div>
+            <p class="testi-card__text">За полгода работы органический трафик вырос на 340%. Команда чётко выполняет план, объясняет каждый шаг и не уходит в технические дебри без необходимости. Именно так и должно работать SEO-агентство.</p>
+            <div class="testi-card__author">
+              <div class="ava">ИК</div>
+              <div class="testi-card__author-info">
+                <p class="testi-card__name">Иван Козлов</p>
+                <p class="testi-card__role">Директор по маркетингу, TechMart</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="testi-carousel__slide">
+          <div class="testi-card">
+            <div class="testi-card__quote-icon">"</div>
+            <div class="stars" style="justify-content:center;margin-bottom:var(--space-4);">
+              <span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span>
+            </div>
+            <p class="testi-card__text">Работаем уже 2 года. За это время сайт вышел в ТОП-3 по 80% коммерческих запросов ниши. Менеджер всегда на связи, отчёты понятны даже владельцу без технической экспертизы.</p>
+            <div class="testi-card__author">
+              <div class="ava" style="background:var(--md-sys-color-tertiary-container);color:var(--md-sys-color-tertiary);">АС</div>
+              <div class="testi-card__author-info">
+                <p class="testi-card__name">Анна Смирнова</p>
+                <p class="testi-card__role">Владелец, «Интерьер Про»</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="testi-carousel__slide">
+          <div class="testi-card">
+            <div class="testi-card__quote-icon">"</div>
+            <div class="stars" style="justify-content:center;margin-bottom:var(--space-4);">
+              <span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star_half</span>
+            </div>
+            <p class="testi-card__text">Наконец-то агентство, которое не обещает ТОП за месяц. Честный план, реальные сроки и результат, который мы видим в GSC каждую неделю. Рекомендуем коллегам без оговорок.</p>
+            <div class="testi-card__author">
+              <div class="ava" style="background:#B7F0CC;color:#002112;">МВ</div>
+              <div class="testi-card__author-info">
+                <p class="testi-card__name">Михаил Воронов</p>
+                <p class="testi-card__role">CEO, «Здрав-Оптика»</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-carousel__nav">
+      <button class="testi-carousel__btn" onclick="testiMove(-1)"><span class="material-symbols-outlined">chevron_left</span></button>
+      <div class="testi-carousel__dots">
+        <button class="testi-carousel__dot testi-carousel__dot--active" id="td0" onclick="testiGo(0)"></button>
+        <button class="testi-carousel__dot" id="td1" onclick="testiGo(1)"></button>
+        <button class="testi-carousel__dot" id="td2" onclick="testiGo(2)"></button>
+      </div>
+      <button class="testi-carousel__btn" onclick="testiMove(1)"><span class="material-symbols-outlined">chevron_right</span></button>
+    </div>
+  </div>
+</div>
+
+<hr class="ds-divider">
+
+<!-- B: 3-col Grid -->
+<div class="section-header">
+  <div class="ds-label">Testimonials B</div>
+  <h2 class="ds-title">3-Column Review Cards</h2>
+  <p class="ds-desc">Звёзды + цитата + автор, карточки с платформой</p>
+</div>
+<div class="review-grid" style="padding-bottom:var(--space-12);">
+  <div class="review-card">
+    <div class="review-card__header">
+      <div class="ava">ОП</div>
+      <div class="review-card__meta">
+        <p class="review-card__name">Ольга Петрова</p>
+        <p class="review-card__date">февраль 2025</p>
+      </div>
+      <span class="review-card__platform">Яндекс</span>
+    </div>
+    <div class="stars" style="margin-bottom:var(--space-3);"><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span></div>
+    <p class="review-card__text">Профессиональная команда. Подобрали стратегию точно под наш бюджет, не навязывали лишнего. Через 4 месяца заметили рост звонков с органики.</p>
+  </div>
+  <div class="review-card">
+    <div class="review-card__header">
+      <div class="ava" style="background:var(--md-sys-color-tertiary-container);color:var(--md-sys-color-tertiary);">ДН</div>
+      <div class="review-card__meta">
+        <p class="review-card__name">Дмитрий Новиков</p>
+        <p class="review-card__date">март 2025</p>
+      </div>
+      <span class="review-card__platform">Google</span>
+    </div>
+    <div class="stars" style="margin-bottom:var(--space-3);"><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span></div>
+    <p class="review-card__text">Работаем 1,5 года. Контент-стратегия дала удвоение трафика без единой копейки на контекст. Менеджер объясняет каждое действие, нет ощущения «чёрного ящика».</p>
+  </div>
+  <div class="review-card">
+    <div class="review-card__header">
+      <div class="ava" style="background:#FFD8E7;color:#3A001C;">ЕС</div>
+      <div class="review-card__meta">
+        <p class="review-card__name">Елена Соколова</p>
+        <p class="review-card__date">апрель 2025</p>
+      </div>
+      <span class="review-card__platform">2ГИС</span>
+    </div>
+    <div class="stars" style="margin-bottom:var(--space-3);"><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star_half</span></div>
+    <p class="review-card__text">Изначально скептически относилась к SEO, но результаты говорят сами за себя. За полгода интернет-магазин вышел в ТОП-5 по 120 ключевым запросам.</p>
+  </div>
+  <div class="review-card">
+    <div class="review-card__header">
+      <div class="ava" style="background:#D3E4FF;color:#001D36;">ВГ</div>
+      <div class="review-card__meta">
+        <p class="review-card__name">Виктор Григорьев</p>
+        <p class="review-card__date">январь 2025</p>
+      </div>
+      <span class="review-card__platform">Яндекс</span>
+    </div>
+    <div class="stars" style="margin-bottom:var(--space-3);"><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span></div>
+    <p class="review-card__text">Лучшее соотношение цены и качества среди агентств, с которыми работал. Честная аналитика, никаких накруток. Рекомендую без оговорок.</p>
+  </div>
+  <div class="review-card">
+    <div class="review-card__header">
+      <div class="ava" style="background:#FFDBCA;color:#2C1200;">ТМ</div>
+      <div class="review-card__meta">
+        <p class="review-card__name">Татьяна Морозова</p>
+        <p class="review-card__date">март 2025</p>
+      </div>
+      <span class="review-card__platform">Google</span>
+    </div>
+    <div class="stars" style="margin-bottom:var(--space-3);"><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span></div>
+    <p class="review-card__text">Отличная коммуникация. Всегда объясняют зачем делают то или иное. За год подняли сайт клиники с 8-й страницы в ТОП-10 по всем ключевым запросам.</p>
+  </div>
+  <div class="review-card">
+    <div class="review-card__header">
+      <div class="ava" style="background:#B7F0CC;color:#002112;">АЛ</div>
+      <div class="review-card__meta">
+        <p class="review-card__name">Алексей Лебедев</p>
+        <p class="review-card__date">февраль 2025</p>
+      </div>
+      <span class="review-card__platform">Яндекс</span>
+    </div>
+    <div class="stars" style="margin-bottom:var(--space-3);"><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span></div>
+    <p class="review-card__text">Сотрудничаем уже 3 года. Агентство выросло вместе с нашим проектом — расширили пакет услуг по мере роста задач. Именно это и называется долгосрочным партнёрством.</p>
+  </div>
+</div>
+
+<hr class="ds-divider">
+
+<!-- C: Featured + Mini -->
+<div class="section-header">
+  <div class="ds-label">Testimonials C</div>
+  <h2 class="ds-title">Featured Hero Quote + 3 Mini</h2>
+  <p class="ds-desc">Большая pull-quote на основном цвете + три мини-карточки</p>
+</div>
+<div class="featured-section" style="padding-bottom:var(--space-12);">
+  <div class="featured-quote">
+    <div class="featured-quote__stars">
+      <span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span>
+    </div>
+    <p class="featured-quote__text">«Мы пробовали трёх подрядчиков за два года — каждый раз получали красивые отчёты и нулевой результат. С этой командой всё иначе: за 9 месяцев органика выросла в 4 раза, а доля SEO в общей выручке достигла 62%. Теперь это наш основной канал привлечения клиентов.»</p>
+    <div class="featured-quote__author">
+      <div class="featured-quote__ava">РА</div>
+      <div>
+        <p class="featured-quote__name">Роман Алексеев</p>
+        <p class="featured-quote__role">Генеральный директор</p>
+        <p class="featured-quote__company">«МедТехника Плюс» — сеть из 12 магазинов</p>
+      </div>
+    </div>
+  </div>
+  <div class="mini-quotes">
+    <div class="mini-card">
+      <div class="stars" style="margin-bottom:var(--space-3);"><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span></div>
+      <p class="mini-card__text">«Трафик с нуля до 50 000 визитов в месяц за год. Команда работает как часы.»</p>
+      <div class="mini-card__author">
+        <div class="mini-card__ava">НС</div>
+        <div><p class="mini-card__name">Наталья Семёнова</p><p class="mini-card__role">E-commerce, товары для дома</p></div>
+      </div>
+    </div>
+    <div class="mini-card">
+      <div class="stars" style="margin-bottom:var(--space-3);"><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span></div>
+      <p class="mini-card__text">«Наконец понял, что такое SEO и зачем оно нужно. Менеджер объясняет так, что всё становится понятным.»</p>
+      <div class="mini-card__author">
+        <div class="mini-card__ava" style="background:var(--md-sys-color-tertiary-container);color:var(--md-sys-color-tertiary);">ПК</div>
+        <div><p class="mini-card__name">Павел Крылов</p><p class="mini-card__role">Юридические услуги</p></div>
+      </div>
+    </div>
+    <div class="mini-card">
+      <div class="stars" style="margin-bottom:var(--space-3);"><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star_half</span></div>
+      <p class="mini-card__text">«Начали с малого пакета, через 6 месяцев перешли на максимальный. Результат — +180% к органике.»</p>
+      <div class="mini-card__author">
+        <div class="mini-card__ava" style="background:#B7F0CC;color:#002112;">ЛВ</div>
+        <div><p class="mini-card__name">Людмила Власова</p><p class="mini-card__role">Стоматология, Москва</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let ti=0;
+const TESTI=3;
+function testiRender(){
+  document.getElementById('testiTrack').style.transform=`translateX(-${ti*100}%)`;
+  [0,1,2].forEach(i=>{
+    document.getElementById('td'+i).classList.toggle('testi-carousel__dot--active',i===ti);
+  });
+}
+function testiMove(d){ti=(ti+d+TESTI)%TESTI;testiRender();}
+function testiGo(i){ti=i;testiRender();}
+setInterval(()=>testiMove(1),5000);
+</script>
+</body>
+</html>

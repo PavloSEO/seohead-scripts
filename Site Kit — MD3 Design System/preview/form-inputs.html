@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin: 0; background: #FDFCFF; padding: 20px 24px; font-family: 'Roboto', sans-serif; }
+  .group { margin-bottom: 18px; }
+  .group-title { font-size: 10px; font-weight: 500; letter-spacing: 0.5px; color: #79747E; text-transform: uppercase; margin-bottom: 10px; }
+  .row { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
+
+  /* Text Field */
+  .field { display: flex; flex-direction: column; gap: 4px; min-width: 200px; }
+  .field-label { font-size: 12px; font-weight: 500; letter-spacing: 0.5px; color: #49454F; }
+  .field-wrap { position: relative; }
+  .field-input {
+    width: 100%; padding: 14px 16px; border-radius: 4px 4px 0 0;
+    background: #EDEAF2; border: none; border-bottom: 1px solid #49454F;
+    font-family: 'Roboto', sans-serif; font-size: 16px; color: #1C1B1F;
+    outline: none; box-sizing: border-box; transition: border-color 150ms;
+  }
+  .field-input:focus { border-bottom: 2px solid #1565C0; }
+  .field-input::placeholder { color: #79747E; }
+  .field-support { font-size: 12px; color: #49454F; padding: 4px 16px 0; }
+  .field-support.error { color: #B3261E; }
+
+  /* Outlined field */
+  .field-outlined {
+    width: 100%; padding: 14px 16px; border-radius: 4px;
+    background: transparent; border: 1px solid #79747E;
+    font-family: 'Roboto', sans-serif; font-size: 16px; color: #1C1B1F;
+    outline: none; box-sizing: border-box; transition: border-color 150ms, border-width 150ms;
+  }
+  .field-outlined:focus { border: 2px solid #1565C0; }
+  .field-outlined::placeholder { color: #79747E; }
+
+  /* Select */
+  .field-select {
+    width: 100%; padding: 14px 40px 14px 16px; border-radius: 4px;
+    background: transparent; border: 1px solid #79747E;
+    font-family: 'Roboto', sans-serif; font-size: 16px; color: #1C1B1F;
+    outline: none; box-sizing: border-box; appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath fill='%2379747E' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 12px center;
+  }
+
+  /* Checkbox + Radio + Switch */
+  .ctrl { display: flex; align-items: center; gap: 12px; font-size: 14px; color: #1C1B1F; cursor: pointer; }
+  .cb { width: 18px; height: 18px; border-radius: 2px; border: 2px solid #79747E; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .cb.checked { background: #1565C0; border-color: #1565C0; color: #fff; font-size: 14px; }
+  .rb { width: 20px; height: 20px; border-radius: 50%; border: 2px solid #79747E; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .rb.checked { border-color: #1565C0; }
+  .rb.checked::after { content: ''; width: 10px; height: 10px; background: #1565C0; border-radius: 50%; }
+
+  .sw { width: 52px; height: 32px; border-radius: 16px; border: 2px solid #79747E; background: #E7E0EC; position: relative; cursor: pointer; flex-shrink: 0; transition: background 200ms, border-color 200ms; }
+  .sw.on { background: #1565C0; border-color: #1565C0; }
+  .sw::after { content: ''; width: 16px; height: 16px; border-radius: 50%; background: #79747E; position: absolute; top: 50%; left: 6px; transform: translateY(-50%); transition: left 200ms, width 200ms, background 200ms; }
+  .sw.on::after { left: 26px; background: #fff; width: 24px; top: 50%; transform: translate(-2px, -50%); }
+</style>
+</head>
+<body>
+
+<div class="group">
+  <div class="group-title">Text field — filled style</div>
+  <div class="row">
+    <div class="field">
+      <input class="field-input" type="text" placeholder="Введите запрос">
+      <div class="field-support">Вспомогательный текст</div>
+    </div>
+    <div class="field">
+      <input class="field-input" type="text" value="Технический аудит">
+    </div>
+    <div class="field">
+      <input class="field-input" type="text" placeholder="Email" style="border-bottom:2px solid #B3261E">
+      <div class="field-support error">Введите корректный email</div>
+    </div>
+  </div>
+</div>
+
+<div class="group">
+  <div class="group-title">Text field — outlined style</div>
+  <div class="row">
+    <div class="field">
+      <input class="field-outlined" type="text" placeholder="Имя">
+    </div>
+    <div class="field">
+      <input class="field-outlined" type="text" placeholder="Email">
+    </div>
+    <div class="field">
+      <select class="field-select">
+        <option>Выберите категорию</option>
+        <option>SEO-аудит</option>
+        <option>Контент-маркетинг</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<div class="group">
+  <div class="group-title">Checkbox · Radio · Switch</div>
+  <div class="row">
+    <label class="ctrl"><div class="cb checked"><span class="material-symbols-outlined" style="font-size:14px;line-height:1">check</span></div>Подтверждаю условия</label>
+    <label class="ctrl"><div class="cb"></div>Получать рассылку</label>
+    <label class="ctrl"><div class="rb checked"></div>Ежемесячно</label>
+    <label class="ctrl"><div class="rb"></div>Ежегодно</label>
+    <label class="ctrl"><div class="sw on"></div>Уведомления включены</label>
+    <label class="ctrl"><div class="sw"></div>Уведомления</label>
+  </div>
+</div>
+
+</body>
+</html>

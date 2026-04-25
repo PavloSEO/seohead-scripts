@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Carousel — MD3 Site Kit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+/* ── PAGE SHELL ── */
+.ds-page { max-width: 1200px; margin: 0 auto; padding: var(--space-8); }
+.ds-label { font-size: 11px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase;
+  color: var(--md-sys-color-primary); margin-bottom: var(--space-2); }
+.ds-section { margin-bottom: var(--space-16); }
+.ds-section__title { font-size: 22px; font-weight: 400; color: var(--md-sys-color-on-surface);
+  margin: 0 0 var(--space-2); }
+.ds-section__desc { font-size: 14px; color: var(--md-sys-color-on-surface-variant);
+  margin: 0 0 var(--space-6); }
+.ds-divider { border: none; border-top: 1px solid var(--md-sys-color-outline-variant);
+  margin: var(--space-12) 0; }
+
+/* ── A: IMAGE GALLERY CAROUSEL ── */
+.img-carousel { position: relative; border-radius: var(--md-sys-shape-corner-large);
+  overflow: hidden; background: var(--md-sys-color-surface-container); }
+.img-carousel__track-wrap { overflow: hidden; }
+.img-carousel__track { display: flex; transition: transform .4s cubic-bezier(.4,0,.2,1); }
+.img-carousel__slide { flex: 0 0 100%; }
+.img-carousel__img { width: 100%; height: 420px; object-fit: cover; display: block;
+  background: var(--md-sys-color-surface-container-high); }
+.img-carousel__img-ph { width: 100%; height: 420px; display: flex; align-items: center;
+  justify-content: center; font-size: 13px; color: var(--md-sys-color-on-surface-variant);
+  font-family: monospace; background: var(--md-sys-color-surface-container-high);
+  background-image: repeating-linear-gradient(
+    45deg, transparent, transparent 10px,
+    var(--md-sys-color-surface-container-highest) 10px,
+    var(--md-sys-color-surface-container-highest) 11px); }
+.img-carousel__caption { padding: var(--space-3) var(--space-4);
+  background: var(--md-sys-color-surface-container-low);
+  font-size: 14px; color: var(--md-sys-color-on-surface-variant); }
+.img-carousel__btn { position: absolute; top: 50%; transform: translateY(-50%);
+  width: 48px; height: 48px; border-radius: 50%; border: none; cursor: pointer;
+  background: var(--md-sys-color-surface); box-shadow: var(--md-sys-elevation-2);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--md-sys-color-on-surface); transition: background .2s; z-index: 2; }
+.img-carousel__btn:hover { background: var(--md-sys-color-surface-container); }
+.img-carousel__btn--prev { left: var(--space-4); }
+.img-carousel__btn--next { right: var(--space-4); }
+.img-carousel__dots { display: flex; gap: var(--space-2); justify-content: center;
+  padding: var(--space-3) 0; background: var(--md-sys-color-surface-container-low); }
+.img-carousel__dot { width: 8px; height: 8px; border-radius: 50%; border: none;
+  background: var(--md-sys-color-outline-variant); cursor: pointer; transition: all .2s; }
+.img-carousel__dot--active { background: var(--md-sys-color-primary); width: 24px; border-radius: 4px; }
+.img-carousel__thumbs { display: flex; gap: var(--space-2); padding: var(--space-2);
+  background: var(--md-sys-color-surface-container-low); overflow-x: auto; }
+.img-carousel__thumb { width: 72px; height: 52px; flex: 0 0 72px; border-radius: var(--md-sys-shape-corner-small);
+  border: 2px solid transparent; cursor: pointer; overflow: hidden; transition: border-color .2s; }
+.img-carousel__thumb-ph { width: 100%; height: 100%; display: flex; align-items: center;
+  justify-content: center; font-size: 10px; color: var(--md-sys-color-on-surface-variant);
+  background: var(--md-sys-color-surface-container-high);
+  background-image: repeating-linear-gradient(
+    45deg, transparent, transparent 5px,
+    var(--md-sys-color-surface-container-highest) 5px,
+    var(--md-sys-color-surface-container-highest) 6px); }
+.img-carousel__thumb--active { border-color: var(--md-sys-color-primary); }
+
+/* ── B: CARD CAROUSEL ── */
+.card-carousel { position: relative; }
+.card-carousel__wrap { overflow: hidden; }
+.card-carousel__track { display: flex; gap: var(--space-4); transition: transform .4s cubic-bezier(.4,0,.2,1); }
+.card-carousel__card { flex: 0 0 calc(33.333% - 11px); background: var(--md-sys-color-surface);
+  border-radius: var(--md-sys-shape-corner-large); box-shadow: var(--md-sys-elevation-1);
+  overflow: hidden; }
+.card-carousel__card-img { height: 180px; background: var(--md-sys-color-surface-container-high);
+  background-image: repeating-linear-gradient(
+    45deg, transparent, transparent 10px,
+    var(--md-sys-color-surface-container-highest) 10px,
+    var(--md-sys-color-surface-container-highest) 11px);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--md-sys-color-on-surface-variant); font-size: 12px; font-family: monospace; }
+.card-carousel__card-body { padding: var(--space-4); }
+.card-carousel__card-tag { display: inline-block; padding: 2px var(--space-2);
+  background: var(--md-sys-color-primary-container); color: var(--md-sys-color-on-primary-container);
+  border-radius: var(--md-sys-shape-corner-full); font-size: 11px; font-weight: 500;
+  margin-bottom: var(--space-2); }
+.card-carousel__card-title { font-size: 16px; font-weight: 500; margin: 0 0 var(--space-2);
+  color: var(--md-sys-color-on-surface); }
+.card-carousel__card-text { font-size: 14px; color: var(--md-sys-color-on-surface-variant); margin: 0; }
+.card-carousel__nav { display: flex; justify-content: flex-end; gap: var(--space-2);
+  margin-top: var(--space-4); }
+.card-carousel__btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--md-sys-color-outline-variant);
+  background: var(--md-sys-color-surface); cursor: pointer; display: flex; align-items: center;
+  justify-content: center; color: var(--md-sys-color-on-surface); transition: background .2s; }
+.card-carousel__btn:hover { background: var(--md-sys-color-surface-container); }
+@media(max-width:768px){
+  .card-carousel__card { flex: 0 0 calc(100% - 0px); }
+}
+
+/* ── C: HERO SLIDER ── */
+.hero-slider { position: relative; border-radius: var(--md-sys-shape-corner-large);
+  overflow: hidden; }
+.hero-slider__track { display: flex; }
+.hero-slider__slide { flex: 0 0 100%; position: relative; min-height: 480px;
+  display: flex; align-items: center; justify-content: center; }
+.hero-slider__bg { position: absolute; inset: 0; background: var(--md-sys-color-surface-container-high);
+  background-image: repeating-linear-gradient(
+    135deg, transparent, transparent 20px,
+    var(--md-sys-color-surface-container-highest) 20px,
+    var(--md-sys-color-surface-container-highest) 21px); }
+.hero-slider__overlay { position: absolute; inset: 0; background: linear-gradient(
+  to top, rgba(0,0,0,.65) 0%, rgba(0,0,0,.2) 60%, transparent 100%); }
+.hero-slider__content { position: relative; z-index: 1; text-align: center;
+  padding: var(--space-8); max-width: 680px; }
+.hero-slider__eyebrow { display: inline-block; padding: 4px 14px;
+  background: var(--md-sys-color-primary); color: #fff;
+  border-radius: var(--md-sys-shape-corner-full); font-size: 12px; font-weight: 500;
+  letter-spacing: .5px; margin-bottom: var(--space-4); }
+.hero-slider__title { font-size: 40px; font-weight: 400; line-height: 1.15;
+  color: #fff; margin: 0 0 var(--space-4); text-shadow: 0 2px 8px rgba(0,0,0,.3); }
+.hero-slider__lead { font-size: 18px; color: rgba(255,255,255,.85); margin: 0 0 var(--space-6); }
+.hero-slider__cta { display: inline-flex; align-items: center; gap: var(--space-2);
+  padding: 14px 28px; background: var(--md-sys-color-primary); color: #fff;
+  border-radius: var(--md-sys-shape-corner-full); font-size: 14px; font-weight: 500;
+  text-decoration: none; border: none; cursor: pointer; letter-spacing: .25px;
+  transition: opacity .2s; }
+.hero-slider__cta:hover { opacity: .88; }
+/* slide color variants */
+.hero-slider__slide:nth-child(1) .hero-slider__bg { background-color: #1a3a6b; }
+.hero-slider__slide:nth-child(2) .hero-slider__bg { background-color: #1a4a30; }
+.hero-slider__slide:nth-child(3) .hero-slider__bg { background-color: #3a1a5c; }
+.hero-slider__controls { position: absolute; bottom: var(--space-6); left: 50%;
+  transform: translateX(-50%); display: flex; align-items: center; gap: var(--space-4); z-index: 3; }
+.hero-slider__dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,.5);
+  border: none; cursor: pointer; transition: all .25s; }
+.hero-slider__dot--active { background: #fff; width: 24px; border-radius: 4px; }
+.hero-slider__arrow { width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.5);
+  background: rgba(255,255,255,.15); backdrop-filter: blur(8px); cursor: pointer;
+  display: flex; align-items: center; justify-content: center; color: #fff;
+  transition: background .2s; }
+.hero-slider__arrow:hover { background: rgba(255,255,255,.3); }
+.hero-slider__pause { position: absolute; top: var(--space-4); right: var(--space-4);
+  width: 36px; height: 36px; border-radius: 50%; background: rgba(0,0,0,.35);
+  border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  color: #fff; z-index: 3; transition: background .2s; }
+.hero-slider__pause:hover { background: rgba(0,0,0,.55); }
+</style>
+</head>
+<body>
+<div class="ds-page">
+
+  <!-- A: Image Gallery Carousel -->
+  <div class="ds-section">
+    <div class="ds-label">Carousel A</div>
+    <h2 class="ds-section__title">Image Gallery Carousel</h2>
+    <p class="ds-section__desc">Стрелки навигации, точки-индикаторы, полоса миниатюр</p>
+
+    <div class="img-carousel" id="imgCarousel">
+      <div class="img-carousel__track-wrap">
+        <div class="img-carousel__track" id="imgTrack">
+          <div class="img-carousel__slide">
+            <div class="img-carousel__img-ph">[ фото 1 — интерьер офиса 1280×420 ]</div>
+            <div class="img-carousel__caption">Современный переговорный зал — вид с высоты птичьего полёта</div>
+          </div>
+          <div class="img-carousel__slide">
+            <div class="img-carousel__img-ph">[ фото 2 — команда в работе 1280×420 ]</div>
+            <div class="img-carousel__caption">Ежеквартальный стратегический ретрит команды</div>
+          </div>
+          <div class="img-carousel__slide">
+            <div class="img-carousel__img-ph">[ фото 3 — результат проекта 1280×420 ]</div>
+            <div class="img-carousel__caption">Финальная презентация кейса для клиента из e-commerce</div>
+          </div>
+          <div class="img-carousel__slide">
+            <div class="img-carousel__img-ph">[ фото 4 — рабочее пространство 1280×420 ]</div>
+            <div class="img-carousel__caption">Open-space зона с акустическими панелями</div>
+          </div>
+        </div>
+      </div>
+      <button class="img-carousel__btn img-carousel__btn--prev" onclick="imgMove(-1)" aria-label="Назад">
+        <span class="material-symbols-outlined">chevron_left</span>
+      </button>
+      <button class="img-carousel__btn img-carousel__btn--next" onclick="imgMove(1)" aria-label="Вперёд">
+        <span class="material-symbols-outlined">chevron_right</span>
+      </button>
+      <div class="img-carousel__dots" id="imgDots"></div>
+      <div class="img-carousel__thumbs" id="imgThumbs"></div>
+    </div>
+  </div>
+
+  <hr class="ds-divider">
+
+  <!-- B: Card Carousel -->
+  <div class="ds-section">
+    <div class="ds-label">Carousel B</div>
+    <h2 class="ds-section__title">Card Carousel</h2>
+    <p class="ds-section__desc">3 карточки видимы, прокрутка по 1, стрелки справа</p>
+
+    <div class="card-carousel" id="cardCarousel">
+      <div class="card-carousel__wrap">
+        <div class="card-carousel__track" id="cardTrack">
+          <div class="card-carousel__card">
+            <div class="card-carousel__card-img">[ обложка статьи 1 ]</div>
+            <div class="card-carousel__card-body">
+              <span class="card-carousel__card-tag">SEO</span>
+              <h3 class="card-carousel__card-title">Семантическое ядро для e-commerce в 2025 году</h3>
+              <p class="card-carousel__card-text">Рыба-текст используется в печатной и вёрстке с XVI века, когда неизвестный типограф...</p>
+            </div>
+          </div>
+          <div class="card-carousel__card">
+            <div class="card-carousel__card-img">[ обложка статьи 2 ]</div>
+            <div class="card-carousel__card-body">
+              <span class="card-carousel__card-tag">Контент</span>
+              <h3 class="card-carousel__card-title">Как писать мета-теги, которые работают в 2025</h3>
+              <p class="card-carousel__card-text">Многие думают, что Lorem Ipsum — случайный текст, но он имеет корни в классической латыни...</p>
+            </div>
+          </div>
+          <div class="card-carousel__card">
+            <div class="card-carousel__card-img">[ обложка статьи 3 ]</div>
+            <div class="card-carousel__card-body">
+              <span class="card-carousel__card-tag">Аналитика</span>
+              <h3 class="card-carousel__card-title">Читаем Google Search Console без паники</h3>
+              <p class="card-carousel__card-text">Стандартный фрагмент Lorem Ipsum, используемый с 1500-х годов, выглядит следующим образом...</p>
+            </div>
+          </div>
+          <div class="card-carousel__card">
+            <div class="card-carousel__card-img">[ обложка статьи 4 ]</div>
+            <div class="card-carousel__card-body">
+              <span class="card-carousel__card-tag">Технический SEO</span>
+              <h3 class="card-carousel__card-title">Core Web Vitals: полный чеклист 2025</h3>
+              <p class="card-carousel__card-text">Lorem Ipsum — это текст-рыба, часто используемый в печати и вёрстке для заполнения пространства...</p>
+            </div>
+          </div>
+          <div class="card-carousel__card">
+            <div class="card-carousel__card-img">[ обложка статьи 5 ]</div>
+            <div class="card-carousel__card-body">
+              <span class="card-carousel__card-tag">Ссылки</span>
+              <h3 class="card-carousel__card-title">Крауд-маркетинг: мифы и реальность</h3>
+              <p class="card-carousel__card-text">Существует много вариаций Lorem Ipsum, но большинство из них в той или иной форме...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-carousel__nav">
+        <button class="card-carousel__btn" onclick="cardMove(-1)" aria-label="Назад">
+          <span class="material-symbols-outlined">chevron_left</span>
+        </button>
+        <button class="card-carousel__btn" onclick="cardMove(1)" aria-label="Вперёд">
+          <span class="material-symbols-outlined">chevron_right</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <hr class="ds-divider">
+
+  <!-- C: Hero Full-Screen Slider -->
+  <div class="ds-section">
+    <div class="ds-label">Carousel C</div>
+    <h2 class="ds-section__title">Full-Screen Hero Slider</h2>
+    <p class="ds-section__desc">Fade-переход, автовоспроизведение, пауза при наведении</p>
+
+    <div class="hero-slider" id="heroSlider"
+         onmouseenter="heroStop()" onmouseleave="heroStart()">
+      <div class="hero-slider__track" id="heroTrack" style="position:relative; min-height:480px;">
+        <div class="hero-slider__slide" id="hs0" style="position:absolute;inset:0;opacity:1;transition:opacity .7s;">
+          <div class="hero-slider__bg"></div>
+          <div class="hero-slider__overlay"></div>
+          <div class="hero-slider__content">
+            <span class="hero-slider__eyebrow">Новинка сезона</span>
+            <h2 class="hero-slider__title">Полный SEO-аудит за&nbsp;48 часов</h2>
+            <p class="hero-slider__lead">Находим точки роста, которые конкуренты пропустили. Результат — в&nbsp;понятном отчёте.</p>
+            <a href="#" class="hero-slider__cta">Заказать аудит <span class="material-symbols-outlined icon-sm">arrow_forward</span></a>
+          </div>
+        </div>
+        <div class="hero-slider__slide" id="hs1" style="position:absolute;inset:0;opacity:0;transition:opacity .7s;">
+          <div class="hero-slider__bg"></div>
+          <div class="hero-slider__overlay"></div>
+          <div class="hero-slider__content">
+            <span class="hero-slider__eyebrow">Кейс месяца</span>
+            <h2 class="hero-slider__title">+340% органического трафика за&nbsp;6&nbsp;месяцев</h2>
+            <p class="hero-slider__lead">Интернет-магазин бытовой техники. Без PPC, только контент и&nbsp;ссылки.</p>
+            <a href="#" class="hero-slider__cta">Читать кейс <span class="material-symbols-outlined icon-sm">arrow_forward</span></a>
+          </div>
+        </div>
+        <div class="hero-slider__slide" id="hs2" style="position:absolute;inset:0;opacity:0;transition:opacity .7s;">
+          <div class="hero-slider__bg"></div>
+          <div class="hero-slider__overlay"></div>
+          <div class="hero-slider__content">
+            <span class="hero-slider__eyebrow">Бесплатно</span>
+            <h2 class="hero-slider__title">SEO-словарь: 200+ терминов простым языком</h2>
+            <p class="hero-slider__lead">Объясняем алгоритмы, метрики и инструменты без жаргона. Обновлено в&nbsp;2025.</p>
+            <a href="#" class="hero-slider__cta">Перейти к словарю <span class="material-symbols-outlined icon-sm">arrow_forward</span></a>
+          </div>
+        </div>
+      </div>
+      <button class="hero-slider__pause" id="heroPlayBtn" onclick="heroToggle()" aria-label="Пауза">
+        <span class="material-symbols-outlined icon-sm" id="heroPlayIcon">pause</span>
+      </button>
+      <div class="hero-slider__controls">
+        <button class="hero-slider__arrow" onclick="heroMove(-1)" aria-label="Назад">
+          <span class="material-symbols-outlined icon-sm">chevron_left</span>
+        </button>
+        <button class="hero-slider__dot hero-slider__dot--active" id="hd0" onclick="heroGo(0)"></button>
+        <button class="hero-slider__dot" id="hd1" onclick="heroGo(1)"></button>
+        <button class="hero-slider__dot" id="hd2" onclick="heroGo(2)"></button>
+        <button class="hero-slider__arrow" onclick="heroMove(1)" aria-label="Вперёд">
+          <span class="material-symbols-outlined icon-sm">chevron_right</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ── A: Image Carousel ── */
+const IMG_COUNT = 4;
+let imgIdx = 0;
+const imgTrack = document.getElementById('imgTrack');
+const imgDots = document.getElementById('imgDots');
+const imgThumbs = document.getElementById('imgThumbs');
+
+for(let i=0;i<IMG_COUNT;i++){
+  const d = document.createElement('button');
+  d.className = 'img-carousel__dot' + (i===0?' img-carousel__dot--active':'');
+  d.onclick = ()=>imgGo(i); imgDots.appendChild(d);
+  const t = document.createElement('div');
+  t.className = 'img-carousel__thumb' + (i===0?' img-carousel__thumb--active':'');
+  t.onclick = ()=>imgGo(i);
+  t.innerHTML = `<div class="img-carousel__thumb-ph">${i+1}</div>`;
+  imgThumbs.appendChild(t);
+}
+function imgRender(){
+  imgTrack.style.transform = `translateX(-${imgIdx*100}%)`;
+  document.querySelectorAll('.img-carousel__dot').forEach((d,i)=>
+    d.classList.toggle('img-carousel__dot--active',i===imgIdx));
+  document.querySelectorAll('.img-carousel__thumb').forEach((t,i)=>
+    t.classList.toggle('img-carousel__thumb--active',i===imgIdx));
+}
+function imgMove(d){ imgIdx=(imgIdx+d+IMG_COUNT)%IMG_COUNT; imgRender(); }
+function imgGo(i){ imgIdx=i; imgRender(); }
+
+/* ── B: Card Carousel ── */
+const CARD_TOTAL=5, CARD_VISIBLE=3;
+let cardIdx=0;
+const cardTrack=document.getElementById('cardTrack');
+function cardMove(d){
+  cardIdx=Math.max(0,Math.min(cardIdx+d,CARD_TOTAL-CARD_VISIBLE));
+  const w=(cardTrack.offsetWidth+16)/CARD_VISIBLE;
+  cardTrack.style.transform=`translateX(-${cardIdx*(w)}px)`;
+}
+
+/* ── C: Hero Slider ── */
+let heroIdx=0, heroTimer=null, heroPaused=false;
+const HERO_COUNT=3;
+function heroRender(){
+  for(let i=0;i<HERO_COUNT;i++){
+    document.getElementById('hs'+i).style.opacity=i===heroIdx?'1':'0';
+    document.getElementById('hs'+i).style.zIndex=i===heroIdx?'1':'0';
+    document.getElementById('hd'+i).classList.toggle('hero-slider__dot--active',i===heroIdx);
+  }
+}
+function heroGo(i){heroIdx=i;heroRender();}
+function heroMove(d){heroIdx=(heroIdx+d+HERO_COUNT)%HERO_COUNT;heroRender();}
+function heroStart(){
+  if(heroPaused)return;
+  heroTimer=setInterval(()=>{heroMove(1);},4500);
+}
+function heroStop(){ clearInterval(heroTimer); }
+function heroToggle(){
+  heroPaused=!heroPaused;
+  document.getElementById('heroPlayIcon').textContent=heroPaused?'play_arrow':'pause';
+  if(heroPaused) heroStop(); else heroStart();
+}
+heroStart();
+</script>
+</body>
+</html>

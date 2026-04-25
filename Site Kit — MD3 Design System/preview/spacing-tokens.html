@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin: 0; background: #FDFCFF; padding: 16px 20px; font-family: 'Roboto', sans-serif; }
+  .section { margin-bottom: 20px; }
+  .section-title { font-size: 10px; font-weight: 500; letter-spacing: 0.5px; color: #79747E; text-transform: uppercase; margin-bottom: 10px; }
+  .tokens { display: flex; flex-wrap: wrap; gap: 8px; }
+  .token { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .token-name { font-size: 10px; color: #79747E; text-align: center; }
+  .token-value { font-size: 10px; font-weight: 500; color: #49454F; }
+  /* spacing visual */
+  .sp-box { background: #1565C0; opacity: 0.15; }
+  .sp-inner { background: #1565C0; height: 100%; }
+  /* shape */
+  .shape-box { width: 56px; height: 40px; background: #D3E4FF; border: 1.5px solid #1565C0; }
+  /* elevation */
+  .elev-box { width: 72px; height: 52px; background: #FDFCFF; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; color: #49454F; }
+</style>
+</head>
+<body>
+  <div class="section">
+    <div class="section-title">Spacing scale (base 4px)</div>
+    <div class="tokens">
+      <div class="token">
+        <div style="display:flex;align-items:flex-end;gap:2px">
+          <div style="width:4px;height:4px;background:#1565C0;opacity:0.6"></div>
+        </div>
+        <div class="token-name">space-1</div>
+        <div class="token-value">4px</div>
+      </div>
+      <div class="token">
+        <div style="width:8px;height:8px;background:#1565C0;opacity:0.6"></div>
+        <div class="token-name">space-2</div>
+        <div class="token-value">8px</div>
+      </div>
+      <div class="token">
+        <div style="width:12px;height:12px;background:#1565C0;opacity:0.6"></div>
+        <div class="token-name">space-3</div>
+        <div class="token-value">12px</div>
+      </div>
+      <div class="token">
+        <div style="width:16px;height:16px;background:#1565C0;opacity:0.6"></div>
+        <div class="token-name">space-4</div>
+        <div class="token-value">16px</div>
+      </div>
+      <div class="token">
+        <div style="width:24px;height:24px;background:#1565C0;opacity:0.6"></div>
+        <div class="token-name">space-6</div>
+        <div class="token-value">24px</div>
+      </div>
+      <div class="token">
+        <div style="width:32px;height:32px;background:#1565C0;opacity:0.6"></div>
+        <div class="token-name">space-8</div>
+        <div class="token-value">32px</div>
+      </div>
+      <div class="token">
+        <div style="width:48px;height:24px;background:#1565C0;opacity:0.6"></div>
+        <div class="token-name">space-12</div>
+        <div class="token-value">48px</div>
+      </div>
+      <div class="token">
+        <div style="width:64px;height:16px;background:#1565C0;opacity:0.6"></div>
+        <div class="token-name">space-16</div>
+        <div class="token-value">64px</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Corner radii</div>
+    <div class="tokens">
+      <div class="token">
+        <div class="shape-box" style="border-radius:0px"></div>
+        <div class="token-name">none</div><div class="token-value">0px</div>
+      </div>
+      <div class="token">
+        <div class="shape-box" style="border-radius:4px"></div>
+        <div class="token-name">extra-small</div><div class="token-value">4px</div>
+      </div>
+      <div class="token">
+        <div class="shape-box" style="border-radius:8px"></div>
+        <div class="token-name">small</div><div class="token-value">8px</div>
+      </div>
+      <div class="token">
+        <div class="shape-box" style="border-radius:12px"></div>
+        <div class="token-name">medium</div><div class="token-value">12px</div>
+      </div>
+      <div class="token">
+        <div class="shape-box" style="border-radius:16px"></div>
+        <div class="token-name">large</div><div class="token-value">16px</div>
+      </div>
+      <div class="token">
+        <div class="shape-box" style="border-radius:28px"></div>
+        <div class="token-name">extra-large</div><div class="token-value">28px</div>
+      </div>
+      <div class="token">
+        <div class="shape-box" style="border-radius:9999px"></div>
+        <div class="token-name">full (pill)</div><div class="token-value">9999px</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Elevation levels (light theme)</div>
+    <div class="tokens">
+      <div class="token">
+        <div class="elev-box" style="box-shadow:none;background:#EDEAF2">Lv 0</div>
+        <div class="token-name">Level 0</div><div class="token-value">no shadow</div>
+      </div>
+      <div class="token">
+        <div class="elev-box" style="box-shadow:0 1px 2px rgba(0,0,0,0.3),0 1px 3px 1px rgba(0,0,0,0.15)">Lv 1</div>
+        <div class="token-name">Level 1</div><div class="token-value">cards at rest</div>
+      </div>
+      <div class="token">
+        <div class="elev-box" style="box-shadow:0 1px 2px rgba(0,0,0,0.3),0 2px 6px 2px rgba(0,0,0,0.15)">Lv 2</div>
+        <div class="token-name">Level 2</div><div class="token-value">cards hover</div>
+      </div>
+      <div class="token">
+        <div class="elev-box" style="box-shadow:0 4px 8px 3px rgba(0,0,0,0.15),0 1px 3px rgba(0,0,0,0.3)">Lv 3</div>
+        <div class="token-name">Level 3</div><div class="token-value">dialogs</div>
+      </div>
+      <div class="token">
+        <div class="elev-box" style="box-shadow:0 6px 10px 4px rgba(0,0,0,0.15),0 2px 3px rgba(0,0,0,0.3)">Lv 4</div>
+        <div class="token-name">Level 4</div><div class="token-value">nav header</div>
+      </div>
+      <div class="token">
+        <div class="elev-box" style="box-shadow:0 8px 12px 6px rgba(0,0,0,0.15),0 4px 4px rgba(0,0,0,0.3)">Lv 5</div>
+        <div class="token-name">Level 5</div><div class="token-value">tooltips</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

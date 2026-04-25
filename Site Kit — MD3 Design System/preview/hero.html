@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hero Variants — MD3 Site Kit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+body{background:var(--md-sys-color-background);}
+.ds-label{font-size:11px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--md-sys-color-primary);margin-bottom:var(--space-2);}
+.ds-title{font-size:20px;font-weight:400;color:var(--md-sys-color-on-surface);margin:0 0 var(--space-2);}
+.ds-desc{font-size:14px;color:var(--md-sys-color-on-surface-variant);margin:0;}
+.section-header{max-width:1200px;margin:0 auto;padding:var(--space-8) var(--space-8) var(--space-6);}
+.ds-divider{border:none;border-top:1px solid var(--md-sys-color-outline-variant);}
+.ph{background:var(--md-sys-color-surface-container-high);background-image:repeating-linear-gradient(45deg,transparent,transparent 12px,var(--md-sys-color-surface-container-highest) 12px,var(--md-sys-color-surface-container-highest) 13px);display:flex;align-items:center;justify-content:center;font-size:12px;font-family:monospace;color:var(--md-sys-color-on-surface-variant);text-align:center;padding:16px;}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:14px 32px;border-radius:var(--md-sys-shape-corner-full);font-size:15px;font-weight:500;border:none;cursor:pointer;text-decoration:none;transition:opacity .2s,background .2s;letter-spacing:.1px;}
+.btn--filled{background:var(--md-sys-color-primary);color:#fff;}
+.btn--filled:hover{opacity:.88;}
+.btn--outlined{background:transparent;color:var(--md-sys-color-primary);border:1.5px solid var(--md-sys-color-primary);}
+.btn--outlined:hover{background:var(--md-sys-color-primary-container);}
+.btn--white{background:#fff;color:var(--md-sys-color-primary);}
+.btn--white:hover{opacity:.88;}
+.btn--ghost{background:rgba(255,255,255,.15);backdrop-filter:blur(8px);color:#fff;border:1.5px solid rgba(255,255,255,.5);}
+.btn--ghost:hover{background:rgba(255,255,255,.28);}
+.cta-pair{display:flex;gap:var(--space-4);flex-wrap:wrap;}
+
+/* ── A: CENTERED ── */
+.hero-centered{padding:var(--space-16) var(--space-8);text-align:center;background:var(--md-sys-color-surface);}
+.hero-centered__inner{max-width:720px;margin:0 auto;}
+.hero-centered__eyebrow{display:inline-flex;align-items:center;gap:var(--space-2);padding:6px 16px;background:var(--md-sys-color-primary-container);color:var(--md-sys-color-on-primary-container);border-radius:var(--md-sys-shape-corner-full);font-size:13px;font-weight:500;margin-bottom:var(--space-6);}
+.hero-centered__h1{font-size:56px;font-weight:300;line-height:1.1;color:var(--md-sys-color-on-surface);margin:0 0 var(--space-6);letter-spacing:-1px;}
+.hero-centered__h1 strong{font-weight:700;color:var(--md-sys-color-primary);}
+.hero-centered__lead{font-size:18px;color:var(--md-sys-color-on-surface-variant);line-height:1.7;margin:0 0 var(--space-8);}
+.hero-centered__cta{justify-content:center;}
+.hero-centered__trust{margin-top:var(--space-8);display:flex;align-items:center;justify-content:center;gap:var(--space-6);flex-wrap:wrap;}
+.trust-item{display:flex;align-items:center;gap:var(--space-2);font-size:13px;color:var(--md-sys-color-on-surface-variant);}
+.trust-item .material-symbols-outlined{font-size:18px;color:var(--md-sys-color-primary);}
+
+/* ── B: SPLIT ── */
+.hero-split{display:grid;grid-template-columns:1fr 1fr;align-items:center;min-height:560px;}
+.hero-split__text{padding:var(--space-12) var(--space-12) var(--space-12) var(--space-8);max-width:600px;}
+.hero-split__eyebrow{font-size:12px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--md-sys-color-primary);margin:0 0 var(--space-4);}
+.hero-split__h1{font-size:44px;font-weight:400;line-height:1.15;color:var(--md-sys-color-on-surface);margin:0 0 var(--space-5);}
+.hero-split__lead{font-size:17px;color:var(--md-sys-color-on-surface-variant);line-height:1.65;margin:0 0 var(--space-8);}
+.hero-split__img{height:560px;}
+@media(max-width:900px){.hero-split{grid-template-columns:1fr;}.hero-split__img{height:300px;}.hero-split__text{padding:var(--space-8);}}
+
+/* ── C: ASYMMETRIC ── */
+.hero-asym{position:relative;overflow:hidden;min-height:580px;background:var(--md-ref-palette-primary10);}
+.hero-asym__band{position:absolute;top:0;bottom:0;left:0;right:40%;background:var(--md-sys-color-primary);clip-path:polygon(0 0,100% 0,88% 100%,0 100%);}
+.hero-asym__img{position:absolute;top:0;right:0;width:55%;height:100%;}
+.hero-asym__img .ph{height:100%;border-radius:0;}
+.hero-asym__content{position:relative;z-index:1;max-width:540px;padding:var(--space-16) var(--space-8);}
+.hero-asym__eyebrow{font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.7);margin:0 0 var(--space-4);}
+.hero-asym__h1{font-size:48px;font-weight:300;line-height:1.1;color:#fff;margin:0 0 var(--space-5);}
+.hero-asym__h1 em{font-style:normal;font-weight:700;}
+.hero-asym__lead{font-size:17px;color:rgba(255,255,255,.8);line-height:1.65;margin:0 0 var(--space-8);}
+@media(max-width:900px){.hero-asym__band{right:0;clip-path:none;}.hero-asym__img{display:none;}.hero-asym__content{max-width:100%;}}
+
+/* ── D: PERSONAL EXPERT ── */
+.hero-expert{background:var(--md-sys-color-surface-container-low);padding:var(--space-12) var(--space-8);}
+.hero-expert__inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:auto 1fr;gap:var(--space-12);align-items:center;}
+.hero-expert__photo{width:280px;height:340px;border-radius:var(--md-sys-shape-corner-extra-large);overflow:hidden;flex-shrink:0;}
+.hero-expert__photo .ph{height:100%;font-size:13px;}
+.hero-expert__eyebrow{font-size:12px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--md-sys-color-primary);margin:0 0 var(--space-3);}
+.hero-expert__name{font-size:44px;font-weight:300;line-height:1.1;color:var(--md-sys-color-on-surface);margin:0 0 var(--space-2);}
+.hero-expert__title{font-size:18px;color:var(--md-sys-color-on-surface-variant);margin:0 0 var(--space-6);}
+.hero-expert__lead{font-size:16px;color:var(--md-sys-color-on-surface-variant);line-height:1.7;margin:0 0 var(--space-8);}
+.expert-stats{display:flex;gap:var(--space-8);margin-bottom:var(--space-8);}
+.expert-stat__num{font-size:36px;font-weight:700;color:var(--md-sys-color-primary);line-height:1;}
+.expert-stat__label{font-size:13px;color:var(--md-sys-color-on-surface-variant);margin-top:4px;}
+@media(max-width:900px){.hero-expert__inner{grid-template-columns:1fr;}.hero-expert__photo{width:100%;height:280px;}}
+
+/* ── E: VIDEO BACKGROUND ── */
+.hero-video{position:relative;min-height:580px;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.hero-video__bg{position:absolute;inset:0;background:#0a1628;background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.02) 0,rgba(255,255,255,.02) 1px,transparent 1px,transparent 60px),repeating-linear-gradient(-45deg,rgba(255,255,255,.02) 0,rgba(255,255,255,.02) 1px,transparent 1px,transparent 60px);}
+.hero-video__overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(21,101,192,.6) 0%,rgba(0,0,0,.7) 100%);}
+.hero-video__play{position:absolute;top:var(--space-8);right:var(--space-8);width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.15);backdrop-filter:blur(8px);border:1.5px solid rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;color:#fff;cursor:pointer;transition:background .2s;}
+.hero-video__play:hover{background:rgba(255,255,255,.3);}
+.hero-video__content{position:relative;z-index:1;text-align:center;max-width:740px;padding:var(--space-8);}
+.hero-video__badge{display:inline-flex;align-items:center;gap:var(--space-2);padding:6px 16px;border:1px solid rgba(255,255,255,.3);border-radius:var(--md-sys-shape-corner-full);color:rgba(255,255,255,.8);font-size:13px;margin-bottom:var(--space-6);}
+.hero-video__h1{font-size:52px;font-weight:300;line-height:1.1;color:#fff;margin:0 0 var(--space-5);letter-spacing:-.5px;}
+.hero-video__h1 strong{font-weight:700;}
+.hero-video__lead{font-size:18px;color:rgba(255,255,255,.8);line-height:1.65;margin:0 0 var(--space-8);}
+.hero-video__cta{justify-content:center;}
+.hero-video__scroll{position:absolute;bottom:var(--space-6);left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:var(--space-2);color:rgba(255,255,255,.5);font-size:11px;letter-spacing:1px;text-transform:uppercase;}
+.hero-video__scroll .material-symbols-outlined{animation:bounce 2s infinite;}
+@keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(6px);}}
+</style>
+</head>
+<body>
+
+<!-- A: Centered -->
+<div class="section-header"><div class="ds-label">Hero A</div><h2 class="ds-title">Centered Hero</h2><p class="ds-desc">H1 + лид + пара CTA, без изображения, фокус на заголовке</p></div>
+<div class="hero-centered">
+  <div class="hero-centered__inner">
+    <div class="hero-centered__eyebrow"><span class="material-symbols-outlined icon-sm">verified</span> 10+ лет · 200+ проектов · Гарантия результата</div>
+    <h1 class="hero-centered__h1">SEO-продвижение, которое <strong>реально работает</strong></h1>
+    <p class="hero-centered__lead">Увеличиваем органический трафик и видимость сайта в Яндекс и Google. Прозрачная аналитика, понятные отчёты, результат — не позиции, а клиенты.</p>
+    <div class="cta-pair hero-centered__cta">
+      <a href="#" class="btn btn--filled">Получить бесплатный аудит <span class="material-symbols-outlined icon-sm">arrow_forward</span></a>
+      <a href="#" class="btn btn--outlined">Смотреть кейсы</a>
+    </div>
+    <div class="hero-centered__trust">
+      <div class="trust-item"><span class="material-symbols-outlined">check_circle</span>Без предоплаты</div>
+      <div class="trust-item"><span class="material-symbols-outlined">check_circle</span>Отчёт за 48 часов</div>
+      <div class="trust-item"><span class="material-symbols-outlined">check_circle</span>Договор с KPI</div>
+      <div class="trust-item"><span class="material-symbols-outlined">check_circle</span>NDA по запросу</div>
+    </div>
+  </div>
+</div>
+
+<hr class="ds-divider">
+
+<!-- B: Split -->
+<div class="section-header"><div class="ds-label">Hero B</div><h2 class="ds-title">Split Hero</h2><p class="ds-desc">Текст слева / изображение справа, 50/50</p></div>
+<div class="hero-split">
+  <div class="hero-split__text">
+    <p class="hero-split__eyebrow">SEO-агентство полного цикла</p>
+    <h1 class="hero-split__h1">Ваш сайт должен приносить клиентов, а не просто существовать</h1>
+    <p class="hero-split__lead">Рыба-текст используется в печатной и вёрстке с XVI века, когда неизвестный типограф взял гранку набора и перемешал её, создав книгу образцов шрифтов.</p>
+    <div class="cta-pair">
+      <a href="#" class="btn btn--filled">Начать проект</a>
+      <a href="#" class="btn btn--outlined">Узнать цены</a>
+    </div>
+  </div>
+  <div class="hero-split__img"><div class="ph" style="height:100%;min-height:560px">[ hero image — 960×560 ]</div></div>
+</div>
+
+<hr class="ds-divider">
+
+<!-- C: Asymmetric -->
+<div class="section-header"><div class="ds-label">Hero C</div><h2 class="ds-title">Asymmetric Hero</h2><p class="ds-desc">Цветная полоса с clip-path перекрывает изображение</p></div>
+<div class="hero-asym">
+  <div class="hero-asym__band"></div>
+  <div class="hero-asym__img"><div class="ph" style="height:580px">[ фото — 960×580 ]</div></div>
+  <div class="hero-asym__content">
+    <p class="hero-asym__eyebrow">Экспертное SEO</p>
+    <h1 class="hero-asym__h1">Больше трафика. <em>Больше клиентов.</em></h1>
+    <p class="hero-asym__lead">Стратегический подход к поисковому маркетингу. Не обещаем быстрых результатов — обещаем устойчивый рост.</p>
+    <div class="cta-pair">
+      <a href="#" class="btn btn--white">Обсудить проект</a>
+      <a href="#" class="btn btn--ghost">Наши кейсы</a>
+    </div>
+  </div>
+</div>
+
+<hr class="ds-divider">
+
+<!-- D: Personal Expert -->
+<div class="section-header"><div class="ds-label">Hero D</div><h2 class="ds-title">Personal Expert Hero</h2><p class="ds-desc">Фото + имя + должность + 3 статистики + CTA</p></div>
+<div class="hero-expert">
+  <div class="hero-expert__inner">
+    <div class="hero-expert__photo"><div class="ph">[ фото специалиста 280×340 ]</div></div>
+    <div>
+      <p class="hero-expert__eyebrow">SEO-консультант</p>
+      <h1 class="hero-expert__name">Алексей Громов</h1>
+      <p class="hero-expert__title">Эксперт по поисковому продвижению • 12 лет опыта</p>
+      <p class="hero-expert__lead">Помогаю e-commerce и B2B-компаниям выйти в ТОП и удержать позиции без «серых» схем. Работал с проектами с 0 до 2 млн визитов/мес.</p>
+      <div class="expert-stats">
+        <div><div class="expert-stat__num">200+</div><div class="expert-stat__label">Проектов</div></div>
+        <div><div class="expert-stat__num">12</div><div class="expert-stat__label">Лет опыта</div></div>
+        <div><div class="expert-stat__num">×4.2</div><div class="expert-stat__label">Средний рост трафика</div></div>
+      </div>
+      <div class="cta-pair">
+        <a href="#" class="btn btn--filled">Записаться на консультацию</a>
+        <a href="#" class="btn btn--outlined">Смотреть кейсы</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="ds-divider">
+
+<!-- E: Video Background -->
+<div class="section-header"><div class="ds-label">Hero E</div><h2 class="ds-title">Video Background Hero</h2><p class="ds-desc">Muted autoplay видео, текст поверх, постер-заглушка, кнопка паузы</p></div>
+<div class="hero-video">
+  <div class="hero-video__bg"></div>
+  <div class="hero-video__overlay"></div>
+  <button class="hero-video__play" aria-label="Пауза видео">
+    <span class="material-symbols-outlined icon-sm">pause</span>
+  </button>
+  <div class="hero-video__content">
+    <div class="hero-video__badge"><span class="material-symbols-outlined icon-sm">fiber_manual_record</span> SEO-агентство полного цикла</div>
+    <h1 class="hero-video__h1">Мы строим <strong>органический рост</strong> вашего бизнеса</h1>
+    <p class="hero-video__lead">Рыба-текст используется в печатной и вёрстке с XVI века, когда неизвестный типограф взял гранку набора и перемешал её, создав книгу образцов шрифтов.</p>
+    <div class="cta-pair hero-video__cta">
+      <a href="#" class="btn btn--white">Получить аудит <span class="material-symbols-outlined icon-sm">arrow_forward</span></a>
+      <a href="#" class="btn btn--ghost">Смотреть кейсы</a>
+    </div>
+  </div>
+  <div class="hero-video__scroll">
+    <span>Прокрутите вниз</span>
+    <span class="material-symbols-outlined icon-sm">keyboard_arrow_down</span>
+  </div>
+</div>
+
+</body>
+</html>

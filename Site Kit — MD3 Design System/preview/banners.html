@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Banners — MD3 Site Kit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+.ds-page{max-width:1200px;margin:0 auto;padding:var(--space-8);}
+.ds-label{font-size:11px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--md-sys-color-primary);margin-bottom:var(--space-2);}
+.ds-section{margin-bottom:var(--space-12);}
+.ds-section__title{font-size:22px;font-weight:400;color:var(--md-sys-color-on-surface);margin:0 0 var(--space-2);}
+.ds-section__desc{font-size:14px;color:var(--md-sys-color-on-surface-variant);margin:0 0 var(--space-6);}
+.ds-divider{border:none;border-top:1px solid var(--md-sys-color-outline-variant);margin:var(--space-12) 0;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 20px;border-radius:var(--md-sys-shape-corner-full);font-size:13px;font-weight:500;border:none;cursor:pointer;transition:opacity .2s;}
+.btn--filled{background:var(--md-sys-color-primary);color:#fff;}
+.btn--filled:hover{opacity:.88;}
+.btn--outlined{background:transparent;color:var(--md-sys-color-primary);border:1px solid var(--md-sys-color-outline);}
+.btn--outlined:hover{background:var(--md-sys-color-primary-container);}
+.btn--white{background:#fff;color:var(--md-sys-color-primary);}
+.btn--white:hover{opacity:.88;}
+.preview-note{font-size:12px;color:var(--md-sys-color-on-surface-variant);margin-bottom:var(--space-4);padding:var(--space-3) var(--space-4);background:var(--md-sys-color-surface-container-low);border-radius:var(--md-sys-shape-corner-small);}
+
+/* ── A: TOP BAR ANNOUNCEMENT ── */
+.top-bar{display:flex;align-items:center;justify-content:center;gap:var(--space-3);padding:10px var(--space-6);background:var(--md-sys-color-primary);color:#fff;font-size:14px;position:relative;flex-wrap:wrap;}
+.top-bar__text{flex:1;text-align:center;}
+.top-bar__link{color:#fff;font-weight:500;text-decoration:underline;text-underline-offset:3px;}
+.top-bar__close{position:absolute;right:var(--space-4);top:50%;transform:translateY(-50%);background:none;border:none;color:#fff;cursor:pointer;display:flex;align-items:center;padding:4px;border-radius:50%;transition:background .2s;}
+.top-bar__close:hover{background:rgba(255,255,255,.2);}
+.top-bar--tertiary{background:var(--md-sys-color-tertiary);}
+.top-bar--success{background:#1B7A43;}
+/* variants row */
+.top-bar-variants{display:flex;flex-direction:column;gap:var(--space-3);}
+
+/* ── B: COOKIE BOTTOM NOTICE ── */
+.cookie-notice{background:var(--md-sys-color-inverse-surface);color:var(--md-sys-color-inverse-on-surface);border-radius:var(--md-sys-shape-corner-large) var(--md-sys-shape-corner-large) 0 0;padding:var(--space-4) var(--space-6);display:flex;align-items:center;justify-content:space-between;gap:var(--space-4);flex-wrap:wrap;box-shadow:var(--md-sys-elevation-3);}
+.cookie-notice__text{font-size:14px;flex:1;}
+.cookie-notice__text a{color:var(--md-sys-color-inverse-primary);}
+.cookie-notice__actions{display:flex;gap:var(--space-3);flex-wrap:wrap;}
+.btn--inv-outlined{background:transparent;color:var(--md-sys-color-inverse-on-surface);border:1px solid rgba(255,255,255,.4);padding:8px 20px;border-radius:var(--md-sys-shape-corner-full);font-size:13px;font-weight:500;cursor:pointer;transition:background .2s;}
+.btn--inv-outlined:hover{background:rgba(255,255,255,.1);}
+.btn--inv-tonal{background:rgba(255,255,255,.15);color:var(--md-sys-color-inverse-on-surface);border:none;padding:8px 20px;border-radius:var(--md-sys-shape-corner-full);font-size:13px;font-weight:500;cursor:pointer;transition:background .2s;}
+.btn--inv-tonal:hover{background:rgba(255,255,255,.25);}
+.btn--inv-filled{background:var(--md-sys-color-inverse-primary);color:var(--md-sys-color-primary);border:none;padding:8px 20px;border-radius:var(--md-sys-shape-corner-full);font-size:13px;font-weight:500;cursor:pointer;transition:opacity .2s;}
+.btn--inv-filled:hover{opacity:.88;}
+
+/* ── C: SIDE-STICKY CTA ── */
+.side-sticky-wrap{position:relative;height:220px;background:var(--md-sys-color-surface-container-low);border-radius:var(--md-sys-shape-corner-large);overflow:hidden;}
+.side-sticky{position:absolute;right:0;top:50%;transform:translateY(-50%);background:var(--md-sys-color-primary);border-radius:var(--md-sys-shape-corner-large) 0 0 var(--md-sys-shape-corner-large);box-shadow:var(--md-sys-elevation-3);overflow:hidden;transition:width .35s cubic-bezier(.4,0,.2,1);}
+.side-sticky--expanded{width:220px;}
+.side-sticky--collapsed{width:48px;}
+.side-sticky__toggle{position:absolute;top:50%;transform:translateY(-50%);right:0;width:48px;height:48px;background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;z-index:2;}
+.side-sticky__content{padding:var(--space-6) var(--space-4) var(--space-6) var(--space-6);white-space:nowrap;opacity:1;transition:opacity .2s;}
+.side-sticky--collapsed .side-sticky__content{opacity:0;pointer-events:none;}
+.side-sticky__eyebrow{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.7);margin:0 0 var(--space-2);}
+.side-sticky__title{font-size:16px;font-weight:500;color:#fff;margin:0 0 var(--space-3);line-height:1.3;}
+.side-sticky__btn{display:inline-block;padding:8px 20px;background:#fff;color:var(--md-sys-color-primary);border-radius:var(--md-sys-shape-corner-full);font-size:13px;font-weight:500;text-decoration:none;cursor:pointer;border:none;}
+.side-sticky__note{font-size:11px;color:rgba(255,255,255,.6);margin-top:var(--space-2);}
+
+/* ── D: INLINE PROMO BANNER ── */
+.inline-banner{display:flex;align-items:flex-start;gap:var(--space-4);padding:var(--space-5) var(--space-6);border-radius:var(--md-sys-shape-corner-large);border-left:4px solid;}
+.inline-banner--primary{background:var(--md-sys-color-primary-container);border-color:var(--md-sys-color-primary);}
+.inline-banner--tertiary{background:var(--md-sys-color-tertiary-container);border-color:var(--md-sys-color-tertiary);}
+.inline-banner--success{background:#B7F0CC;border-color:#1B7A43;}
+.inline-banner--warning{background:#FFDBCA;border-color:#C44D00;}
+.inline-banner__icon{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.inline-banner--primary .inline-banner__icon{background:var(--md-sys-color-primary);color:#fff;}
+.inline-banner--tertiary .inline-banner__icon{background:var(--md-sys-color-tertiary);color:#fff;}
+.inline-banner--success .inline-banner__icon{background:#1B7A43;color:#fff;}
+.inline-banner--warning .inline-banner__icon{background:#C44D00;color:#fff;}
+.inline-banner__body{flex:1;}
+.inline-banner__title{font-size:16px;font-weight:500;margin:0 0 var(--space-1);color:var(--md-sys-color-on-surface);}
+.inline-banner__text{font-size:14px;color:var(--md-sys-color-on-surface-variant);margin:0 0 var(--space-3);}
+.inline-banner__cta{display:inline-flex;align-items:center;gap:4px;font-size:14px;font-weight:500;color:var(--md-sys-color-primary);text-decoration:none;border:none;background:none;cursor:pointer;padding:0;}
+.inline-banner__cta:hover{text-decoration:underline;}
+.inline-banner__dismiss{background:none;border:none;cursor:pointer;color:var(--md-sys-color-on-surface-variant);padding:4px;border-radius:50%;display:flex;align-items:center;transition:background .2s;}
+.inline-banner__dismiss:hover{background:rgba(0,0,0,.06);}
+.inline-banners{display:flex;flex-direction:column;gap:var(--space-4);}
+</style>
+</head>
+<body>
+<div class="ds-page">
+
+  <!-- A: Top Bar -->
+  <div class="ds-section">
+    <div class="ds-label">Banner A</div>
+    <h2 class="ds-section__title">Top Bar Announcement</h2>
+    <p class="ds-section__desc">Полная ширина, отклонение, акцентный цвет — 3 варианта</p>
+    <div class="top-bar-variants">
+      <div class="top-bar" id="topbarA">
+        <div class="top-bar__text">
+          🎯 Скидка 20% на SEO-аудит до конца месяца. <a class="top-bar__link" href="#">Заказать сейчас →</a>
+        </div>
+        <button class="top-bar__close" onclick="dismiss('topbarA')" aria-label="Закрыть">
+          <span class="material-symbols-outlined icon-sm">close</span>
+        </button>
+      </div>
+      <div class="top-bar top-bar--tertiary" id="topbarB">
+        <div class="top-bar__text">
+          Вебинар «SEO в 2025: что изменилось» — <strong>27 апреля, 18:00</strong>. <a class="top-bar__link" href="#">Зарегистрироваться →</a>
+        </div>
+        <button class="top-bar__close" onclick="dismiss('topbarB')" aria-label="Закрыть">
+          <span class="material-symbols-outlined icon-sm">close</span>
+        </button>
+      </div>
+      <div class="top-bar top-bar--success" id="topbarC">
+        <div class="top-bar__text">
+          ✓ Бесплатная проверка сайта — анализ 50+ параметров за 60 секунд. <a class="top-bar__link" href="#">Проверить →</a>
+        </div>
+        <button class="top-bar__close" onclick="dismiss('topbarC')" aria-label="Закрыть">
+          <span class="material-symbols-outlined icon-sm">close</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <hr class="ds-divider">
+
+  <!-- B: Cookie Bottom Notice -->
+  <div class="ds-section">
+    <div class="ds-label">Banner B</div>
+    <h2 class="ds-section__title">Floating Cookie Notice</h2>
+    <p class="ds-section__desc">Плавающая нижняя панель: принять / отклонить / настройки</p>
+    <div class="cookie-notice" id="cookieNotice">
+      <div class="cookie-notice__text">
+        Мы используем cookie для улучшения работы сайта и анализа трафика.
+        Подробнее в <a href="#">политике конфиденциальности</a>.
+      </div>
+      <div class="cookie-notice__actions">
+        <button class="btn--inv-outlined" onclick="dismiss('cookieNotice')">Отклонить</button>
+        <button class="btn--inv-tonal" onclick="dismiss('cookieNotice')">Настройки</button>
+        <button class="btn--inv-filled" onclick="dismiss('cookieNotice')">Принять все</button>
+      </div>
+    </div>
+  </div>
+
+  <hr class="ds-divider">
+
+  <!-- C: Side Sticky CTA -->
+  <div class="ds-section">
+    <div class="ds-label">Banner C</div>
+    <h2 class="ds-section__title">Side-Sticky CTA</h2>
+    <p class="ds-section__desc">Правый край, сворачивается до иконки по клику</p>
+    <div class="preview-note">В реальном использовании позиционируется fixed справа на странице. Здесь показан внутри контейнера.</div>
+    <div class="side-sticky-wrap">
+      <div class="side-sticky side-sticky--expanded" id="sideSticky">
+        <div class="side-sticky__content">
+          <p class="side-sticky__eyebrow">Бесплатно</p>
+          <p class="side-sticky__title">SEO-аудит вашего сайта</p>
+          <button class="side-sticky__btn">Получить →</button>
+          <p class="side-sticky__note">Без регистрации</p>
+        </div>
+        <button class="side-sticky__toggle" onclick="toggleSide()" aria-label="Свернуть/развернуть">
+          <span class="material-symbols-outlined icon-sm" id="sideIcon">chevron_right</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <hr class="ds-divider">
+
+  <!-- D: Inline Promo Banners -->
+  <div class="ds-section">
+    <div class="ds-label">Banner D</div>
+    <h2 class="ds-section__title">Inline Promo Banner</h2>
+    <p class="ds-section__desc">Встроенный в контент: иконка + текст + CTA — 4 цветовых варианта</p>
+    <div class="inline-banners">
+      <div class="inline-banner inline-banner--primary" id="ib1">
+        <div class="inline-banner__icon"><span class="material-symbols-outlined">rocket_launch</span></div>
+        <div class="inline-banner__body">
+          <p class="inline-banner__title">Ускорьте рост органического трафика</p>
+          <p class="inline-banner__text">Наши специалисты разработают стратегию продвижения с учётом специфики вашей ниши и конкурентов.</p>
+          <button class="inline-banner__cta">Узнать подробнее <span class="material-symbols-outlined icon-sm">arrow_forward</span></button>
+        </div>
+        <button class="inline-banner__dismiss" onclick="dismiss('ib1')" aria-label="Скрыть"><span class="material-symbols-outlined icon-sm">close</span></button>
+      </div>
+      <div class="inline-banner inline-banner--tertiary" id="ib2">
+        <div class="inline-banner__icon"><span class="material-symbols-outlined">auto_stories</span></div>
+        <div class="inline-banner__body">
+          <p class="inline-banner__title">Бесплатный SEO-словарь — 200+ терминов</p>
+          <p class="inline-banner__text">Объясняем сложные понятия простым языком. Идеально для тех, кто начинает разбираться в SEO.</p>
+          <button class="inline-banner__cta">Открыть словарь <span class="material-symbols-outlined icon-sm">arrow_forward</span></button>
+        </div>
+        <button class="inline-banner__dismiss" onclick="dismiss('ib2')" aria-label="Скрыть"><span class="material-symbols-outlined icon-sm">close</span></button>
+      </div>
+      <div class="inline-banner inline-banner--success" id="ib3">
+        <div class="inline-banner__icon"><span class="material-symbols-outlined">verified</span></div>
+        <div class="inline-banner__body">
+          <p class="inline-banner__title">Более 200 успешных проектов</p>
+          <p class="inline-banner__text">Работаем с e-commerce, B2B и локальным бизнесом. Результаты подтверждены данными Google Search Console.</p>
+          <button class="inline-banner__cta">Смотреть кейсы <span class="material-symbols-outlined icon-sm">arrow_forward</span></button>
+        </div>
+        <button class="inline-banner__dismiss" onclick="dismiss('ib3')" aria-label="Скрыть"><span class="material-symbols-outlined icon-sm">close</span></button>
+      </div>
+      <div class="inline-banner inline-banner--warning" id="ib4">
+        <div class="inline-banner__icon"><span class="material-symbols-outlined">schedule</span></div>
+        <div class="inline-banner__body">
+          <p class="inline-banner__title">Акция завершается через 3 дня</p>
+          <p class="inline-banner__text">Успейте заказать комплексный аудит со скидкой 25%. Предложение действует до 30 апреля 2025 года.</p>
+          <button class="inline-banner__cta">Воспользоваться скидкой <span class="material-symbols-outlined icon-sm">arrow_forward</span></button>
+        </div>
+        <button class="inline-banner__dismiss" onclick="dismiss('ib4')" aria-label="Скрыть"><span class="material-symbols-outlined icon-sm">close</span></button>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script>
+function dismiss(id){ const el=document.getElementById(id); if(el){ el.style.transition='opacity .3s'; el.style.opacity='0'; setTimeout(()=>el.style.display='none',300); } }
+let sideExpanded=true;
+function toggleSide(){
+  sideExpanded=!sideExpanded;
+  const el=document.getElementById('sideSticky');
+  el.classList.toggle('side-sticky--expanded',sideExpanded);
+  el.classList.toggle('side-sticky--collapsed',!sideExpanded);
+  document.getElementById('sideIcon').textContent=sideExpanded?'chevron_right':'chevron_left';
+}
+</script>
+</body>
+</html>

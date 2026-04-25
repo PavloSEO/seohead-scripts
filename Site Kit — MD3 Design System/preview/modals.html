@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Modals — MD3 Site Kit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+.ds-page{max-width:1200px;margin:0 auto;padding:var(--space-8);}
+.ds-label{font-size:11px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--md-sys-color-primary);margin-bottom:var(--space-2);}
+.ds-section{margin-bottom:var(--space-12);}
+.ds-section__title{font-size:22px;font-weight:400;color:var(--md-sys-color-on-surface);margin:0 0 var(--space-2);}
+.ds-section__desc{font-size:14px;color:var(--md-sys-color-on-surface-variant);margin:0 0 var(--space-4);}
+.ds-divider{border:none;border-top:1px solid var(--md-sys-color-outline-variant);margin:var(--space-12) 0;}
+.trigger-row{display:flex;flex-wrap:wrap;gap:var(--space-3);}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:var(--space-2);padding:10px 24px;border-radius:var(--md-sys-shape-corner-full);font-size:14px;font-weight:500;letter-spacing:.1px;border:none;cursor:pointer;transition:opacity .2s,box-shadow .2s;}
+.btn--filled{background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary);}
+.btn--filled:hover{opacity:.88;}
+.btn--tonal{background:var(--md-sys-color-secondary-container);color:var(--md-sys-color-on-secondary-container);}
+.btn--tonal:hover{opacity:.88;}
+.btn--outlined{background:transparent;color:var(--md-sys-color-primary);border:1px solid var(--md-sys-color-outline);}
+.btn--outlined:hover{background:var(--md-sys-color-primary-container);}
+.btn--error{background:var(--md-sys-color-error);color:var(--md-sys-color-on-error);}
+.btn--error:hover{opacity:.88;}
+
+/* ── BACKDROP ── */
+.backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:900;align-items:center;justify-content:center;}
+.backdrop--open{display:flex;}
+
+/* ── DIALOG BASE ── */
+.dialog{background:var(--md-sys-color-surface);border-radius:var(--md-sys-shape-corner-extra-large);padding:var(--space-6);max-width:480px;width:90%;box-shadow:var(--md-sys-elevation-3);position:relative;animation:dialogIn .2s ease;}
+@keyframes dialogIn{from{opacity:0;transform:scale(.92) translateY(12px);}to{opacity:1;transform:none;}}
+.dialog__icon{width:48px;height:48px;border-radius:50%;background:var(--md-sys-color-error-container);display:flex;align-items:center;justify-content:center;margin:0 auto var(--space-4);color:var(--md-sys-color-error);}
+.dialog__icon--info{background:var(--md-sys-color-primary-container);color:var(--md-sys-color-primary);}
+.dialog__title{font-size:24px;font-weight:400;color:var(--md-sys-color-on-surface);margin:0 0 var(--space-3);text-align:center;}
+.dialog__body{font-size:14px;color:var(--md-sys-color-on-surface-variant);line-height:1.6;margin:0 0 var(--space-6);text-align:center;}
+.dialog__actions{display:flex;justify-content:flex-end;gap:var(--space-3);}
+.dialog__close{position:absolute;top:var(--space-4);right:var(--space-4);width:40px;height:40px;border-radius:50%;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--md-sys-color-on-surface-variant);transition:background .2s;}
+.dialog__close:hover{background:var(--md-sys-color-surface-container);}
+
+/* ── FORM MODAL ── */
+.form-modal{max-width:560px;}
+.form-modal__title{font-size:24px;font-weight:400;margin:0 0 var(--space-2);}
+.form-modal__subtitle{font-size:14px;color:var(--md-sys-color-on-surface-variant);margin:0 0 var(--space-6);}
+.field{margin-bottom:var(--space-4);}
+.field__label{display:block;font-size:12px;font-weight:500;color:var(--md-sys-color-on-surface-variant);margin-bottom:var(--space-1);letter-spacing:.4px;}
+.field__input,.field__textarea{width:100%;padding:12px var(--space-4);border:1px solid var(--md-sys-color-outline);border-radius:var(--md-sys-shape-corner-small);font-size:16px;font-family:'Roboto',sans-serif;background:var(--md-sys-color-surface);color:var(--md-sys-color-on-surface);transition:border-color .2s;box-sizing:border-box;}
+.field__input:focus,.field__textarea:focus{outline:none;border-color:var(--md-sys-color-primary);border-width:2px;}
+.field__textarea{resize:vertical;min-height:100px;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);}
+.consent{display:flex;align-items:flex-start;gap:var(--space-3);font-size:13px;color:var(--md-sys-color-on-surface-variant);}
+.consent input{margin-top:2px;accent-color:var(--md-sys-color-primary);}
+
+/* ── LIGHTBOX ── */
+.lightbox-modal{max-width:860px;width:95%;padding:0;overflow:hidden;}
+.lb-img-area{width:100%;height:480px;background:var(--md-sys-color-surface-container-high);background-image:repeating-linear-gradient(45deg,transparent,transparent 12px,var(--md-sys-color-surface-container-highest) 12px,var(--md-sys-color-surface-container-highest) 13px);display:flex;align-items:center;justify-content:center;font-size:13px;font-family:monospace;color:var(--md-sys-color-on-surface-variant);position:relative;}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.15);backdrop-filter:blur(4px);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;transition:background .2s;}
+.lb-nav:hover{background:rgba(255,255,255,.3);}
+.lb-nav--prev{left:var(--space-4);}
+.lb-nav--next{right:var(--space-4);}
+.lb-counter{position:absolute;bottom:var(--space-3);right:var(--space-4);color:rgba(255,255,255,.8);font-size:12px;background:rgba(0,0,0,.4);padding:2px 8px;border-radius:var(--md-sys-shape-corner-full);}
+.lb-footer{padding:var(--space-4) var(--space-6);display:flex;align-items:center;justify-content:space-between;}
+.lb-caption{font-size:14px;color:var(--md-sys-color-on-surface-variant);}
+
+/* ── COOKIE MODAL ── */
+.cookie-modal{max-width:520px;}
+.cookie-modal__head{display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-4);}
+.cookie-modal__icon{width:44px;height:44px;border-radius:50%;background:var(--md-sys-color-primary-container);display:flex;align-items:center;justify-content:center;color:var(--md-sys-color-primary);flex-shrink:0;}
+.cookie-modal__title{font-size:20px;font-weight:500;}
+.cookie-item{display:flex;align-items:flex-start;justify-content:space-between;padding:var(--space-4) 0;border-bottom:1px solid var(--md-sys-color-outline-variant);gap:var(--space-4);}
+.cookie-item:last-of-type{border-bottom:none;}
+.cookie-item__text{}
+.cookie-item__name{font-size:14px;font-weight:500;color:var(--md-sys-color-on-surface);margin:0 0 4px;}
+.cookie-item__desc{font-size:12px;color:var(--md-sys-color-on-surface-variant);margin:0;}
+/* toggle switch */
+.toggle{position:relative;width:52px;height:32px;flex-shrink:0;}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle__track{position:absolute;cursor:pointer;inset:0;background:var(--md-sys-color-outline);border-radius:var(--md-sys-shape-corner-full);transition:background .2s;}
+.toggle input:checked+.toggle__track{background:var(--md-sys-color-primary);}
+.toggle__thumb{position:absolute;content:'';height:24px;width:24px;left:4px;bottom:4px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.3);}
+.toggle input:checked~.toggle__thumb{transform:translateX(20px);}
+.toggle--disabled .toggle__track{cursor:default;opacity:.5;}
+
+/* ── VIDEO MODAL ── */
+.video-modal{max-width:760px;width:95%;padding:0;overflow:hidden;}
+.video-wrap{position:relative;padding-bottom:56.25%;background:#000;}
+.video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:none;}
+.video-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--space-3);background:var(--md-sys-color-surface-container-high);background-image:repeating-linear-gradient(45deg,transparent,transparent 15px,var(--md-sys-color-surface-container-highest) 15px,var(--md-sys-color-surface-container-highest) 16px);}
+.video-placeholder__play{width:72px;height:72px;border-radius:50%;background:var(--md-sys-color-primary);display:flex;align-items:center;justify-content:center;color:#fff;cursor:pointer;box-shadow:var(--md-sys-elevation-3);transition:transform .2s,opacity .2s;}
+.video-placeholder__play:hover{transform:scale(1.05);opacity:.9;}
+.video-placeholder__label{font-size:14px;color:var(--md-sys-color-on-surface-variant);font-family:monospace;}
+.video-footer{padding:var(--space-4) var(--space-6);display:flex;justify-content:space-between;align-items:center;}
+.video-footer__title{font-size:16px;font-weight:500;}
+</style>
+</head>
+<body>
+<div class="ds-page">
+
+  <!-- A: Confirm Dialog -->
+  <div class="ds-section">
+    <div class="ds-label">Modal A</div>
+    <h2 class="ds-section__title">Confirm Dialog</h2>
+    <p class="ds-section__desc">Заголовок + тело + кнопки Отмена / Подтвердить</p>
+    <div class="trigger-row">
+      <button class="btn btn--error" onclick="open('confirmModal')">Удалить запись</button>
+      <button class="btn btn--tonal" onclick="open('confirmModal2')">Отправить форму</button>
+    </div>
+  </div>
+
+  <hr class="ds-divider">
+
+  <!-- B: Form Modal -->
+  <div class="ds-section">
+    <div class="ds-label">Modal B</div>
+    <h2 class="ds-section__title">Form Modal</h2>
+    <p class="ds-section__desc">Контактная форма внутри диалога</p>
+    <div class="trigger-row">
+      <button class="btn btn--filled" onclick="open('formModal')">Связаться с нами</button>
+    </div>
+  </div>
+
+  <hr class="ds-divider">
+
+  <!-- C: Image Lightbox -->
+  <div class="ds-section">
+    <div class="ds-label">Modal C</div>
+    <h2 class="ds-section__title">Image Lightbox</h2>
+    <p class="ds-section__desc">Стрелки пред/след, счётчик, закрытие по фону</p>
+    <div class="trigger-row">
+      <button class="btn btn--tonal" onclick="open('lbModal')">Открыть галерею</button>
+    </div>
+  </div>
+
+  <hr class="ds-divider">
+
+  <!-- D: Cookie Settings -->
+  <div class="ds-section">
+    <div class="ds-label">Modal D</div>
+    <h2 class="ds-section__title">Cookie Settings</h2>
+    <p class="ds-section__desc">Категории: Необходимые / Аналитика / Маркетинг, тогглы, сохранение</p>
+    <div class="trigger-row">
+      <button class="btn btn--outlined" onclick="open('cookieModal')">Настройки cookie</button>
+    </div>
+  </div>
+
+  <hr class="ds-divider">
+
+  <!-- E: Video Embed Modal -->
+  <div class="ds-section">
+    <div class="ds-label">Modal E</div>
+    <h2 class="ds-section__title">Video Embed Modal</h2>
+    <p class="ds-section__desc">Lazy iframe, кнопка-плей поверх постера, загрузка только при открытии</p>
+    <div class="trigger-row">
+      <button class="btn btn--filled" onclick="open('videoModal')">
+        <span class="material-symbols-outlined icon-sm">play_circle</span>
+        Смотреть видео
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── A: CONFIRM (destructive) ── -->
+<div class="backdrop" id="confirmModal" onclick="closeOnBackdrop(event,'confirmModal')">
+  <div class="dialog" role="dialog" aria-modal="true">
+    <div class="dialog__icon"><span class="material-symbols-outlined">delete</span></div>
+    <h2 class="dialog__title">Удалить запись?</h2>
+    <p class="dialog__body">Запись будет удалена безвозвратно. Это действие нельзя отменить. Все связанные данные также будут удалены.</p>
+    <div class="dialog__actions">
+      <button class="btn btn--outlined" onclick="close('confirmModal')">Отмена</button>
+      <button class="btn btn--error" onclick="close('confirmModal')">Удалить</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── A2: CONFIRM (neutral) ── -->
+<div class="backdrop" id="confirmModal2" onclick="closeOnBackdrop(event,'confirmModal2')">
+  <div class="dialog" role="dialog" aria-modal="true">
+    <div class="dialog__icon dialog__icon--info"><span class="material-symbols-outlined">send</span></div>
+    <h2 class="dialog__title">Отправить заявку?</h2>
+    <p class="dialog__body">Ваша заявка будет отправлена менеджеру. Мы свяжемся с вами в течение 1 рабочего дня.</p>
+    <div class="dialog__actions">
+      <button class="btn btn--outlined" onclick="close('confirmModal2')">Назад</button>
+      <button class="btn btn--filled" onclick="close('confirmModal2')">Отправить</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── B: FORM MODAL ── -->
+<div class="backdrop" id="formModal" onclick="closeOnBackdrop(event,'formModal')">
+  <div class="dialog form-modal" role="dialog" aria-modal="true">
+    <button class="dialog__close" onclick="close('formModal')"><span class="material-symbols-outlined">close</span></button>
+    <h2 class="form-modal__title">Напишите нам</h2>
+    <p class="form-modal__subtitle">Отвечаем в течение 1 рабочего дня. Без спама и навязчивых звонков.</p>
+    <form onsubmit="return false;">
+      <div class="field-row">
+        <div class="field">
+          <label class="field__label">Имя</label>
+          <input class="field__input" type="text" placeholder="Иван Иванов">
+        </div>
+        <div class="field">
+          <label class="field__label">Телефон</label>
+          <input class="field__input" type="tel" placeholder="+7 (___) ___-__-__">
+        </div>
+      </div>
+      <div class="field">
+        <label class="field__label">Email</label>
+        <input class="field__input" type="email" placeholder="ivan@company.ru">
+      </div>
+      <div class="field">
+        <label class="field__label">Сообщение</label>
+        <textarea class="field__textarea" placeholder="Расскажите о вашем проекте..."></textarea>
+      </div>
+      <div class="consent" style="margin-bottom:var(--space-6);">
+        <input type="checkbox" id="consent1">
+        <label for="consent1">Согласен с обработкой персональных данных согласно <a href="#" style="color:var(--md-sys-color-primary)">политике конфиденциальности</a></label>
+      </div>
+      <div class="dialog__actions">
+        <button class="btn btn--outlined" onclick="close('formModal')">Отмена</button>
+        <button class="btn btn--filled" type="submit" onclick="close('formModal')">Отправить</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ── C: LIGHTBOX ── -->
+<div class="backdrop" id="lbModal" onclick="closeOnBackdrop(event,'lbModal')">
+  <div class="dialog lightbox-modal" role="dialog" aria-modal="true">
+    <div class="lb-img-area">
+      [ фотография — 1200×800 ]
+      <button class="lb-nav lb-nav--prev" onclick="lbNav(-1)"><span class="material-symbols-outlined">chevron_left</span></button>
+      <button class="lb-nav lb-nav--next" onclick="lbNav(1)"><span class="material-symbols-outlined">chevron_right</span></button>
+      <div class="lb-counter" id="lbCount">1 / 6</div>
+    </div>
+    <div class="lb-footer">
+      <span class="lb-caption" id="lbCap">Рабочее пространство — панорама</span>
+      <button class="btn btn--tonal" onclick="close('lbModal')">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── D: COOKIE ── -->
+<div class="backdrop" id="cookieModal" onclick="closeOnBackdrop(event,'cookieModal')">
+  <div class="dialog cookie-modal" role="dialog" aria-modal="true">
+    <button class="dialog__close" onclick="close('cookieModal')"><span class="material-symbols-outlined">close</span></button>
+    <div class="cookie-modal__head">
+      <div class="cookie-modal__icon"><span class="material-symbols-outlined">cookie</span></div>
+      <h2 class="cookie-modal__title">Настройки файлов cookie</h2>
+    </div>
+    <p style="font-size:14px;color:var(--md-sys-color-on-surface-variant);margin:0 0 var(--space-4);">Мы используем файлы cookie для улучшения работы сайта. Вы можете управлять настройками ниже.</p>
+    <div class="cookie-item">
+      <div class="cookie-item__text">
+        <p class="cookie-item__name">Необходимые</p>
+        <p class="cookie-item__desc">Обязательны для работы сайта. Нельзя отключить.</p>
+      </div>
+      <label class="toggle toggle--disabled"><input type="checkbox" checked disabled><div class="toggle__track"></div><div class="toggle__thumb"></div></label>
+    </div>
+    <div class="cookie-item">
+      <div class="cookie-item__text">
+        <p class="cookie-item__name">Аналитика</p>
+        <p class="cookie-item__desc">Помогают понять, как посетители используют сайт (Яндекс.Метрика, GA4).</p>
+      </div>
+      <label class="toggle"><input type="checkbox" id="ckAnalytics" checked><div class="toggle__track"></div><div class="toggle__thumb"></div></label>
+    </div>
+    <div class="cookie-item">
+      <div class="cookie-item__text">
+        <p class="cookie-item__name">Маркетинг</p>
+        <p class="cookie-item__desc">Используются для показа релевантной рекламы (ВКонтакте, Яндекс).</p>
+      </div>
+      <label class="toggle"><input type="checkbox" id="ckMarketing"><div class="toggle__track"></div><div class="toggle__thumb"></div></label>
+    </div>
+    <div class="dialog__actions" style="margin-top:var(--space-6);">
+      <button class="btn btn--outlined" onclick="close('cookieModal')">Отклонить всё</button>
+      <button class="btn btn--tonal" onclick="close('cookieModal')">Сохранить настройки</button>
+      <button class="btn btn--filled" onclick="close('cookieModal')">Принять всё</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── E: VIDEO ── -->
+<div class="backdrop" id="videoModal" onclick="closeOnBackdrop(event,'videoModal')">
+  <div class="dialog video-modal" role="dialog" aria-modal="true">
+    <div class="video-wrap">
+      <div class="video-placeholder" id="videoPlaceholder">
+        <div class="video-placeholder__play" onclick="loadVideo()">
+          <span class="material-symbols-outlined" style="font-size:40px;">play_arrow</span>
+        </div>
+        <span class="video-placeholder__label">[ постер видео 1280×720 — кликните для загрузки ]</span>
+      </div>
+    </div>
+    <div class="video-footer">
+      <span class="video-footer__title">Как работает наш процесс SEO-продвижения</span>
+      <button class="btn btn--tonal" onclick="close('videoModal');stopVideo()">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function open(id){ document.getElementById(id).classList.add('backdrop--open'); }
+function close(id){ document.getElementById(id).classList.remove('backdrop--open'); }
+function closeOnBackdrop(e,id){ if(e.target===document.getElementById(id)) close(id); }
+
+// Lightbox nav
+let lbI=0;
+const lbCaps=['Рабочее пространство — панорама','Команда на стратегической сессии','Финальная презентация проекта','Open-space зона с акустическими панелями','Переговорный зал','Зона отдыха и кофе-поинт'];
+function lbNav(d){ lbI=(lbI+d+6)%6; document.getElementById('lbCount').textContent=`${lbI+1} / 6`; document.getElementById('lbCap').textContent=lbCaps[lbI]; }
+
+// Video
+function loadVideo(){
+  document.getElementById('videoPlaceholder').style.display='none';
+  const wrap=document.querySelector('.video-wrap');
+  const iframe=document.createElement('iframe');
+  iframe.src='about:blank'; // в реальном использовании: YouTube embed URL
+  iframe.style.cssText='position:absolute;inset:0;width:100%;height:100%;border:none;';
+  wrap.appendChild(iframe);
+}
+function stopVideo(){ document.getElementById('videoPlaceholder').style.display='flex'; const f=document.querySelector('.video-wrap iframe'); if(f)f.remove(); }
+
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') document.querySelectorAll('.backdrop--open').forEach(el=>el.classList.remove('backdrop--open')); });
+</script>
+</body>
+</html>

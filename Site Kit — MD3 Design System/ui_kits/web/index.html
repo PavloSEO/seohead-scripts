@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEO Site Kit — UI Kit Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../colors_and_type.css">
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Roboto', sans-serif; background: #FDFCFF; color: #1C1B1F; }
+
+/* Layout */
+.site-container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+
+/* Sticky header */
+.site-header {
+  position: sticky; top: 0; z-index: 100;
+  background: #FDFCFF; transition: box-shadow 250ms, height 250ms;
+  height: 80px; display: flex; align-items: center;
+}
+.site-header.scrolled {
+  height: 64px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 2px 6px 2px rgba(0,0,0,0.15);
+}
+.header-inner {
+  display: flex; align-items: center; gap: 0; width: 100%;
+}
+.header-logo {
+  font-size: 20px; font-weight: 500; color: #1C1B1F;
+  text-decoration: none; white-space: nowrap; margin-right: 32px;
+}
+.header-logo span { color: #1565C0; }
+.header-nav { display: flex; gap: 2px; flex: 1; }
+.nav-link {
+  padding: 8px 14px; border-radius: 9999px; font-size: 14px; font-weight: 500;
+  color: #49454F; cursor: pointer; text-decoration: none;
+  transition: background 150ms, color 150ms; white-space: nowrap;
+}
+.nav-link:hover { background: rgba(21,101,192,0.08); color: #1565C0; }
+.nav-link.active { color: #1565C0; background: #D3E4FF; }
+
+.header-actions { display: flex; gap: 6px; align-items: center; }
+.icon-btn {
+  width: 40px; height: 40px; border-radius: 50%; border: none;
+  background: transparent; cursor: pointer; display: flex;
+  align-items: center; justify-content: center; color: #49454F;
+  transition: background 150ms;
+}
+.icon-btn:hover { background: rgba(0,0,0,0.08); }
+.header-cta {
+  background: #1565C0; color: #fff; border: none;
+  padding: 10px 20px; border-radius: 9999px;
+  font-family: 'Roboto', sans-serif; font-size: 14px; font-weight: 500;
+  cursor: pointer; white-space: nowrap; transition: box-shadow 150ms;
+}
+.header-cta:hover {
+  box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 2px 6px 2px rgba(0,0,0,0.15);
+}
+
+/* Breadcrumbs */
+.breadcrumbs {
+  display: flex; align-items: center; gap: 2px;
+  padding: 12px 0; font-size: 12px; color: #79747E; flex-wrap: wrap;
+}
+.bc-link { color: #1565C0; text-decoration: none; }
+.bc-link:hover { text-decoration: underline; }
+
+/* Article layout */
+.article-layout {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 48px; align-items: flex-start;
+  padding: 24px 0 64px;
+}
+@media (max-width: 1024px) {
+  .article-layout { grid-template-columns: 1fr; }
+  .article-sidebar { display: none; }
+}
+
+/* Article */
+.article-meta {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.meta-tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: #D3E4FF; color: #001D36;
+  border-radius: 8px; padding: 4px 10px;
+  font-size: 12px; font-weight: 500; letter-spacing: 0.5px;
+}
+.meta-date { font-size: 12px; color: #79747E; }
+.meta-read { font-size: 12px; color: #79747E; }
+.meta-sep { color: #CAC4D0; }
+
+.article-h1 {
+  font-size: 32px; font-weight: 400; line-height: 40px;
+  color: #1C1B1F; margin-bottom: 16px;
+}
+.article-lead {
+  font-size: 18px; line-height: 28px; color: #49454F;
+  margin-bottom: 32px; font-weight: 300;
+}
+.article-img {
+  width: 100%; border-radius: 12px;
+  background: linear-gradient(135deg, #D3E4FF 0%, #E8DFFF 100%);
+  height: 360px; display: flex; align-items: center; justify-content: center;
+  margin-bottom: 32px; color: #49454F; font-size: 14px;
+  flex-direction: column; gap: 8px;
+}
+.article-img-label { font-size: 12px; color: #79747E; text-align: center; margin-top: 8px; }
+
+/* Prose */
+.prose h2 {
+  font-size: 24px; font-weight: 400; line-height: 32px;
+  color: #1C1B1F; margin: 40px 0 16px; scroll-margin-top: 90px;
+}
+.prose h3 {
+  font-size: 20px; font-weight: 500; line-height: 28px;
+  color: #1C1B1F; margin: 28px 0 12px;
+}
+.prose p {
+  font-size: 16px; line-height: 26px; color: #49454F;
+  margin-bottom: 16px; letter-spacing: 0.3px;
+}
+.prose ul {
+  padding-left: 24px; margin-bottom: 16px;
+}
+.prose ul li {
+  font-size: 16px; line-height: 26px; color: #49454F; margin-bottom: 8px;
+}
+.prose blockquote {
+  margin: 24px 0; padding: 16px 20px;
+  border-left: 4px solid #1565C0;
+  background: #F2EFF6;
+  border-radius: 0 8px 8px 0;
+  font-size: 16px; font-style: italic;
+  line-height: 26px; color: #49454F;
+}
+.prose blockquote cite {
+  display: block; margin-top: 8px; font-size: 13px;
+  font-style: normal; font-weight: 500; color: #79747E;
+}
+
+/* Callout */
+.callout {
+  border-radius: 8px; padding: 16px 20px; margin: 24px 0;
+  display: flex; gap: 12px; align-items: flex-start;
+  font-size: 14px; line-height: 22px;
+}
+.callout-info    { background: #D3E4FF; color: #001D36; }
+.callout-warning { background: #FFF0C2; color: #201A00; }
+.callout-success { background: #C8F0D8; color: #002114; }
+
+/* Share */
+.share-block {
+  border-top: 1px solid #CAC4D0; padding-top: 24px; margin-top: 40px;
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+}
+.share-label { font-size: 14px; font-weight: 500; color: #49454F; }
+.share-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 16px; border-radius: 9999px; border: 1px solid #CAC4D0;
+  background: transparent; font-size: 13px; font-weight: 500; color: #49454F;
+  cursor: pointer; transition: background 150ms;
+}
+.share-btn:hover { background: #F2EFF6; }
+
+/* Author block */
+.author-block {
+  border-radius: 12px; border: 1px solid #CAC4D0;
+  padding: 20px 24px; margin: 32px 0;
+  display: flex; gap: 16px; align-items: flex-start;
+}
+.author-avatar {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: #D3E4FF; display: flex; align-items: center; justify-content: center;
+  color: #1565C0; font-size: 20px; font-weight: 500; flex-shrink: 0;
+}
+.author-name { font-size: 14px; font-weight: 500; color: #1C1B1F; }
+.author-role { font-size: 12px; color: #79747E; margin-bottom: 6px; }
+.author-bio  { font-size: 13px; line-height: 20px; color: #49454F; }
+
+/* Related articles */
+.related-title {
+  font-size: 22px; font-weight: 400; color: #1C1B1F; margin-bottom: 20px;
+}
+.related-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+@media (max-width: 900px) { .related-grid { grid-template-columns: 1fr; } }
+.article-card {
+  border-radius: 12px; border: 1px solid #CAC4D0; overflow: hidden;
+  cursor: pointer; transition: box-shadow 200ms;
+  background: #FDFCFF;
+}
+.article-card:hover {
+  box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 2px 6px 2px rgba(0,0,0,0.15);
+}
+.article-card-img {
+  height: 140px; background: linear-gradient(135deg, #D3E4FF, #E8DFFF);
+  display: flex; align-items: center; justify-content: center;
+  color: #49454F; font-size: 12px;
+}
+.article-card-body { padding: 16px; }
+.article-card-tag {
+  display: inline-block; font-size: 11px; font-weight: 500; letter-spacing: 0.5px;
+  color: #1565C0; margin-bottom: 6px;
+}
+.article-card-title {
+  font-size: 15px; font-weight: 500; line-height: 22px; color: #1C1B1F;
+  margin-bottom: 6px;
+}
+.article-card-date { font-size: 11px; color: #79747E; }
+
+/* Sidebar */
+.article-sidebar { position: sticky; top: 88px; }
+.toc-card {
+  background: #F2EFF6; border-radius: 12px; padding: 20px; margin-bottom: 16px;
+}
+.toc-title {
+  font-size: 12px; font-weight: 500; letter-spacing: 0.5px; color: #79747E;
+  text-transform: uppercase; margin-bottom: 12px;
+}
+.toc-link {
+  display: block; font-size: 13px; line-height: 20px; color: #49454F;
+  text-decoration: none; padding: 4px 0; border-left: 2px solid transparent;
+  padding-left: 10px; margin-left: -12px; transition: color 150ms, border-color 150ms;
+}
+.toc-link:hover { color: #1565C0; border-left-color: #1565C0; }
+.toc-link.active { color: #1565C0; border-left-color: #1565C0; font-weight: 500; }
+.toc-link.toc-h3 { margin-left: 4px; font-size: 12px; }
+
+/* FAQ Accordion */
+.faq-title { font-size: 22px; font-weight: 400; color: #1C1B1F; margin-bottom: 16px; }
+.accordion-item { border-bottom: 1px solid #CAC4D0; }
+.accordion-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 0; cursor: pointer; font-size: 15px; font-weight: 500;
+  color: #1C1B1F; gap: 12px; user-select: none;
+}
+.accordion-head:hover { color: #1565C0; }
+.accordion-body { font-size: 14px; line-height: 22px; color: #49454F; padding-bottom: 16px; }
+
+/* Footer */
+.site-footer {
+  background: #1C1B1F; color: #E6E1E5;
+  padding: 48px 0 24px;
+}
+.footer-grid {
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px; margin-bottom: 40px;
+}
+@media (max-width: 768px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+.footer-logo { font-size: 20px; font-weight: 500; color: #fff; margin-bottom: 12px; }
+.footer-logo span { color: #9EC4F8; }
+.footer-tagline { font-size: 13px; line-height: 20px; color: #938F94; margin-bottom: 20px; }
+.footer-col-title { font-size: 12px; font-weight: 500; letter-spacing: 0.5px; color: #938F94; text-transform: uppercase; margin-bottom: 12px; }
+.footer-link { display: block; font-size: 13px; color: #AEAAAF; text-decoration: none; margin-bottom: 8px; transition: color 150ms; }
+.footer-link:hover { color: #fff; }
+.footer-bottom {
+  border-top: 1px solid #48464C; padding-top: 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 12px; color: #605D64; flex-wrap: wrap; gap: 8px;
+}
+
+/* Cookie banner */
+.cookie-banner {
+  position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+  background: #313033; color: #F5EFF7; border-radius: 12px;
+  padding: 16px 20px; max-width: 560px; width: calc(100% - 32px);
+  box-shadow: 0 8px 12px 6px rgba(0,0,0,0.15), 0 4px 4px rgba(0,0,0,0.3);
+  display: flex; align-items: flex-start; gap: 16px;
+  z-index: 200; transition: opacity 300ms, transform 300ms;
+}
+.cookie-text { font-size: 13px; line-height: 20px; flex: 1; }
+.cookie-text a { color: #9EC4F8; }
+.cookie-actions { display: flex; gap: 8px; flex-shrink: 0; }
+.cookie-btn {
+  padding: 8px 16px; border-radius: 9999px; font-family: 'Roboto', sans-serif;
+  font-size: 13px; font-weight: 500; cursor: pointer; border: none; white-space: nowrap;
+}
+.cookie-btn-accept { background: #9EC4F8; color: #001D36; }
+.cookie-btn-reject { background: transparent; color: #CAC4D0; border: 1px solid #605D64; }
+.cookie-hidden { opacity: 0; pointer-events: none; transform: translateX(-50%) translateY(16px); }
+
+/* Snackbar */
+.snackbar-container {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  z-index: 300; pointer-events: none;
+}
+.snackbar {
+  background: #313033; color: #F5EFF7; border-radius: 4px;
+  padding: 14px 16px; display: flex; align-items: center; gap: 16px;
+  box-shadow: 0 4px 8px 3px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.3);
+  font-size: 14px; white-space: nowrap; pointer-events: all;
+  animation: snackSlide 300ms ease;
+}
+@keyframes snackSlide { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: none; } }
+.snackbar-action { color: #9EC4F8; font-weight: 500; cursor: pointer; background: none; border: none; font-family: 'Roboto', sans-serif; font-size: 14px; }
+
+/* Rating */
+.rating { display: flex; gap: 2px; }
+.star { font-size: 18px; color: #F59E0B; }
+
+/* Screen selector tabs at top */
+.screen-selector {
+  background: #E1DEE9; padding: 8px 24px;
+  display: flex; gap: 4px; overflow-x: auto;
+}
+.screen-tab {
+  padding: 6px 16px; border-radius: 9999px; font-size: 13px; font-weight: 500;
+  color: #49454F; cursor: pointer; white-space: nowrap; border: none;
+  background: transparent; font-family: 'Roboto', sans-serif; transition: background 150ms;
+}
+.screen-tab.active { background: #1565C0; color: #fff; }
+.screen-tab:hover:not(.active) { background: rgba(0,0,0,0.08); }
+
+/* Hero */
+.hero { padding: 80px 0; }
+.hero-centered { text-align: center; max-width: 720px; margin: 0 auto; }
+.hero-eyebrow { font-size: 12px; font-weight: 500; letter-spacing: 1px; color: #1565C0; text-transform: uppercase; margin-bottom: 16px; }
+.hero-h1 { font-size: 48px; font-weight: 400; line-height: 56px; color: #1C1B1F; margin-bottom: 20px; }
+.hero-lead { font-size: 18px; line-height: 28px; color: #49454F; margin-bottom: 32px; }
+.hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.btn-filled { background: #1565C0; color: #fff; border: none; padding: 14px 28px; border-radius: 9999px; font-family: 'Roboto', sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; transition: box-shadow 150ms; }
+.btn-filled:hover { box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 2px 6px 2px rgba(0,0,0,0.15); }
+.btn-outlined { background: transparent; color: #1565C0; border: 1px solid #79747E; padding: 14px 28px; border-radius: 9999px; font-family: 'Roboto', sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; }
+.btn-outlined:hover { background: rgba(21,101,192,0.05); }
+
+/* Features */
+.features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; padding: 64px 0; }
+@media (max-width: 768px) { .features-grid { grid-template-columns: 1fr; } }
+.feature-card { background: #F2EFF6; border-radius: 12px; padding: 28px 24px; }
+.feature-icon { width: 48px; height: 48px; background: #D3E4FF; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #1565C0; margin-bottom: 16px; }
+.feature-title { font-size: 18px; font-weight: 500; color: #1C1B1F; margin-bottom: 8px; }
+.feature-body { font-size: 14px; line-height: 22px; color: #49454F; }
+
+/* Section header */
+.section-label { font-size: 12px; font-weight: 500; letter-spacing: 1px; color: #1565C0; text-transform: uppercase; margin-bottom: 8px; }
+.section-title { font-size: 32px; font-weight: 400; line-height: 40px; color: #1C1B1F; margin-bottom: 12px; }
+.section-subtitle { font-size: 16px; line-height: 26px; color: #49454F; max-width: 560px; margin-bottom: 40px; }
+
+/* Stats */
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; padding: 48px 0; }
+@media (max-width: 768px) { .stats-row { grid-template-columns: repeat(2, 1fr); } }
+.stat-item { text-align: center; }
+.stat-number { font-size: 40px; font-weight: 400; color: #1565C0; line-height: 1; margin-bottom: 8px; }
+.stat-label { font-size: 14px; color: #49454F; }
+
+/* Testimonials */
+.testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+@media (max-width: 900px) { .testi-grid { grid-template-columns: 1fr; } }
+.testi-card { background: #FDFCFF; border: 1px solid #CAC4D0; border-radius: 12px; padding: 24px; }
+.testi-quote { font-size: 15px; line-height: 24px; color: #49454F; margin-bottom: 16px; font-style: italic; }
+.testi-author { display: flex; align-items: center; gap: 12px; }
+.testi-avatar { width: 40px; height: 40px; border-radius: 50%; background: #D3E4FF; display: flex; align-items: center; justify-content: center; font-weight: 500; color: #1565C0; flex-shrink: 0; }
+.testi-name { font-size: 14px; font-weight: 500; color: #1C1B1F; }
+.testi-role { font-size: 12px; color: #79747E; }
+
+/* Contact form */
+.contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+@media (max-width: 768px) { .contact-grid { grid-template-columns: 1fr; } }
+.form-group { margin-bottom: 16px; }
+.form-label { font-size: 12px; font-weight: 500; letter-spacing: 0.5px; color: #49454F; display: block; margin-bottom: 6px; }
+.form-input {
+  width: 100%; padding: 14px 16px; border: 1px solid #79747E; border-radius: 4px;
+  font-family: 'Roboto', sans-serif; font-size: 15px; color: #1C1B1F;
+  background: transparent; outline: none; transition: border-color 150ms;
+}
+.form-input:focus { border: 2px solid #1565C0; }
+.form-textarea { resize: vertical; min-height: 120px; }
+.contact-info-item { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 20px; color: #49454F; font-size: 14px; line-height: 22px; }
+
+/* Blog listing */
+.blog-filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; }
+.filter-chip {
+  padding: 6px 16px; border-radius: 8px; font-size: 13px; font-weight: 500;
+  cursor: pointer; border: 1px solid #CAC4D0; background: #FDFCFF; color: #49454F;
+  transition: background 150ms;
+}
+.filter-chip.active { background: #D3E4FF; border-color: transparent; color: #001D36; }
+.filter-chip:hover:not(.active) { background: #F2EFF6; }
+.blog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+@media (max-width: 900px) { .blog-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+// ─── Icon ───────────────────────────────
+function Icon({ name, size = 24, style = {} }) {
+  return <span className="material-symbols-outlined" style={{ fontSize: size, ...style }}>{name}</span>;
+}
+
+// ─── Header ─────────────────────────────
+function Header({ activePage, onNav }) {
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+  const pages = [
+    { id: 'article', label: 'Статьи' },
+    { id: 'home', label: 'Главная' },
+    { id: 'blog', label: 'Блог' },
+    { id: 'contact', label: 'Контакты' },
+  ];
+  return (
+    <header className={`site-header ${scrolled ? 'scrolled' : ''}`}>
+      <div className="site-container">
+        <div className="header-inner">
+          <a className="header-logo" href="#" onClick={e => { e.preventDefault(); onNav('home'); }}>SEO<span>Kit</span></a>
+          <nav className="header-nav">
+            {pages.map(p => (
+              <a key={p.id} className={`nav-link ${activePage === p.id ? 'active' : ''}`}
+                href="#" onClick={e => { e.preventDefault(); onNav(p.id); }}>
+                {p.label}
+              </a>
+            ))}
+          </nav>
+          <div className="header-actions">
+            <button className="icon-btn"><Icon name="search" /></button>
+            <button className="icon-btn"><Icon name="translate" /></button>
+            <button className="header-cta" onClick={() => onNav('contact')}>Связаться</button>
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+// ─── Footer ─────────────────────────────
+function Footer() {
+  return (
+    <footer className="site-footer">
+      <div className="site-container">
+        <div className="footer-grid">
+          <div>
+            <div className="footer-logo">SEO<span>Kit</span></div>
+            <div className="footer-tagline">MD3 компоненты для контентных сайтов. Next.js 15, Vite + React, WordPress.</div>
+          </div>
+          <div>
+            <div className="footer-col-title">Продукт</div>
+            <a className="footer-link" href="#">Компоненты</a>
+            <a className="footer-link" href="#">Шаблоны страниц</a>
+            <a className="footer-link" href="#">Блоки</a>
+            <a className="footer-link" href="#">Цены</a>
+          </div>
+          <div>
+            <div className="footer-col-title">Документация</div>
+            <a className="footer-link" href="#">Начало работы</a>
+            <a className="footer-link" href="#">Токены дизайна</a>
+            <a className="footer-link" href="#">API компонентов</a>
+            <a className="footer-link" href="#">Changelog</a>
+          </div>
+          <div>
+            <div className="footer-col-title">Компания</div>
+            <a className="footer-link" href="#">О нас</a>
+            <a className="footer-link" href="#">Кейсы</a>
+            <a className="footer-link" href="#">Контакты</a>
+          </div>
+        </div>
+        <div className="footer-bottom">
+          <span>© 2026 SEO Site Kit. Все права защищены.</span>
+          <div style={{ display: 'flex', gap: 16 }}>
+            <a className="footer-link" href="#" style={{ marginBottom: 0 }}>Политика конфиденциальности</a>
+            <a className="footer-link" href="#" style={{ marginBottom: 0 }}>Условия использования</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+// ─── Cookie Banner ───────────────────────
+function CookieBanner() {
+  const [hidden, setHidden] = useState(false);
+  useEffect(() => {
+    if (localStorage.getItem('cookie_consent')) setHidden(true);
+  }, []);
+  function accept() {
+    localStorage.setItem('cookie_consent', '1');
+    setHidden(true);
+  }
+  return (
+    <div className={`cookie-banner ${hidden ? 'cookie-hidden' : ''}`}>
+      <div className="cookie-text">
+        Мы используем файлы cookie для улучшения работы сайта.{' '}
+        <a href="#">Подробнее</a>
+      </div>
+      <div className="cookie-actions">
+        <button className="cookie-btn cookie-btn-reject" onClick={() => setHidden(true)}>Отклонить</button>
+        <button className="cookie-btn cookie-btn-accept" onClick={accept}>Принять</button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Snackbar ────────────────────────────
+function Snackbar({ msg, onDismiss }) {
+  useEffect(() => {
+    if (!msg) return;
+    const t = setTimeout(onDismiss, 3500);
+    return () => clearTimeout(t);
+  }, [msg]);
+  if (!msg) return null;
+  return (
+    <div className="snackbar-container">
+      <div className="snackbar">
+        {msg}
+        <button className="snackbar-action" onClick={onDismiss}>Скрыть</button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Article Page ────────────────────────
+function ArticlePage({ onSnack }) {
+  const [openFaq, setOpenFaq] = useState(null);
+  const [activeToc, setActiveToc] = useState('intro');
+  const faqItems = [
+    { q: 'Что такое технический SEO-аудит?', a: 'Технический аудит — это анализ инфраструктуры сайта: скорости загрузки, корректности robots.txt, структуры URL, разметки Schema.org и других технических факторов ранжирования.' },
+    { q: 'Как долго занимает аудит?', a: 'Стандартный аудит сайта до 500 страниц занимает 3–5 рабочих дней. Результаты предоставляются в виде отчёта с приоритизированным списком рекомендаций.' },
+    { q: 'Какие инструменты используются?', a: 'Мы используем Screaming Frog, Google Search Console, PageSpeed Insights, Ahrefs и собственные скрипты для анализа структуры данных.' },
+  ];
+  return (
+    <div>
+      <div className="site-container">
+        <nav className="breadcrumbs">
+          <a className="bc-link" href="#">Главная</a>
+          <Icon name="chevron_right" size={16} style={{ color: '#CAC4D0', verticalAlign: 'middle' }} />
+          <a className="bc-link" href="#">Статьи</a>
+          <Icon name="chevron_right" size={16} style={{ color: '#CAC4D0', verticalAlign: 'middle' }} />
+          <span style={{ color: '#1C1B1F' }}>Технический SEO-аудит: полное руководство</span>
+        </nav>
+        <div className="article-layout">
+          <main>
+            <div className="article-meta">
+              <span className="meta-tag">SEO</span>
+              <span className="meta-tag" style={{ background: '#E8DFFF', color: '#1F1048' }}>Аудит</span>
+              <span className="meta-sep">·</span>
+              <span className="meta-date">23.04.2026</span>
+              <span className="meta-sep">·</span>
+              <span className="meta-read">12 минут чтения</span>
+            </div>
+            <h1 className="article-h1" id="intro">Технический SEO-аудит: полное руководство для специалиста</h1>
+            <p className="article-lead">Разбираем, что входит в технический аудит сайта, как его провести самостоятельно и на что обращать внимание в первую очередь.</p>
+            <div className="article-img">
+              <Icon name="analytics" size={48} style={{ color: '#9EC4F8' }} />
+              <div style={{ fontSize: 14, color: '#79747E' }}>Иллюстрация: техническая структура сайта</div>
+              <figcaption className="article-img-label">Рис. 1 — Схема технического аудита сайта</figcaption>
+            </div>
+
+            <div className="prose">
+              <h2 id="what-is">Что такое технический SEO-аудит</h2>
+              <p>Технический аудит — это систематическая проверка технической инфраструктуры сайта с целью выявления факторов, которые мешают поисковым системам корректно индексировать и ранжировать страницы.</p>
+              <p>В отличие от контентного анализа, технический аудит фокусируется на структуре данных, скорости загрузки, корректности HTTP-заголовков и внутренней перелинковке.</p>
+              <div className="callout callout-info">
+                <Icon name="info" size={20} style={{ flexShrink: 0, marginTop: 1 }} />
+                <div>Технический аудит рекомендуется проводить не реже одного раза в квартал или после крупных изменений на сайте.</div>
+              </div>
+
+              <h2 id="checklist">Ключевые пункты чеклиста</h2>
+              <h3>Индексация и сканирование</h3>
+              <ul>
+                <li>Проверка файла robots.txt на корректность директив Disallow</li>
+                <li>Анализ XML-sitemap: актуальность, доступность, формат</li>
+                <li>Мониторинг ошибок сканирования в Google Search Console</li>
+                <li>Проверка тегов canonical на всех важных страницах</li>
+              </ul>
+              <h3>Скорость и Core Web Vitals</h3>
+              <p>Показатели Core Web Vitals — LCP, INP и CLS — являются прямыми факторами ранжирования с 2021 года. Целевые значения: LCP &lt; 2.5с, INP &lt; 200мс, CLS &lt; 0.1.</p>
+              <blockquote>
+                «Сайты с хорошими показателями Core Web Vitals получают преимущество в выдаче при прочих равных условиях.»
+                <cite>— Google Search Central, документация по Page Experience</cite>
+              </blockquote>
+
+              <h2 id="tools">Инструменты аудита</h2>
+              <p>Для проведения технического аудита используется набор специализированных инструментов, каждый из которых закрывает свою область проверок.</p>
+              <div className="callout callout-warning">
+                <Icon name="warning" size={20} style={{ flexShrink: 0, marginTop: 1 }} />
+                <div>Бесплатные инструменты ограничены по числу страниц. Для сайтов с &gt; 1000 страниц рекомендуется использовать платные решения.</div>
+              </div>
+
+              <h2 id="results">Оформление результатов</h2>
+              <p>Результаты аудита оформляются в виде приоритизированного отчёта. Рекомендации разбиваются на три группы по критичности: блокирующие, важные, улучшения.</p>
+            </div>
+
+            <div className="author-block">
+              <div className="author-avatar">АП</div>
+              <div>
+                <div className="author-name">Алексей Петров</div>
+                <div className="author-role">SEO-специалист · 8 лет опыта</div>
+                <div className="author-bio">Специализируется на технической оптимизации крупных контентных проектов. Автор курса по техническому SEO.</div>
+              </div>
+            </div>
+
+            <div className="share-block">
+              <span className="share-label">Поделиться:</span>
+              <button className="share-btn" onClick={() => onSnack('Ссылка скопирована')}>
+                <Icon name="link" size={18} />Скопировать ссылку
+              </button>
+              <button className="share-btn"><Icon name="share" size={18} />Telegram</button>
+              <button className="share-btn"><Icon name="share" size={18} />VK</button>
+            </div>
+
+            <div style={{ marginTop: 48 }}>
+              <div className="faq-title">Часто задаваемые вопросы</div>
+              {faqItems.map((item, i) => (
+                <div key={i} className="accordion-item">
+                  <div className="accordion-head" onClick={() => setOpenFaq(openFaq === i ? null : i)}>
+                    {item.q}
+                    <Icon name={openFaq === i ? 'expand_less' : 'expand_more'} size={20} />
+                  </div>
+                  {openFaq === i && <div className="accordion-body">{item.a}</div>}
+                </div>
+              ))}
+            </div>
+
+            <div style={{ marginTop: 56 }}>
+              <div className="related-title">Читайте также</div>
+              <div className="related-grid">
+                {[
+                  { tag: 'Контент', title: 'Как написать SEO-текст, который ранжируется', date: '18.04.2026' },
+                  { tag: 'Аналитика', title: 'Google Search Console: полное руководство 2026', date: '12.04.2026' },
+                  { tag: 'Ссылки', title: 'Внутренняя перелинковка: стратегии и ошибки', date: '05.04.2026' },
+                ].map((a, i) => (
+                  <div key={i} className="article-card" onClick={() => onSnack('Статья откроется здесь')}>
+                    <div className="article-card-img">
+                      <Icon name="article" size={32} style={{ color: '#9EC4F8' }} />
+                    </div>
+                    <div className="article-card-body">
+                      <div className="article-card-tag">{a.tag}</div>
+                      <div className="article-card-title">{a.title}</div>
+                      <div className="article-card-date">{a.date}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </main>
+
+          <aside className="article-sidebar">
+            <div className="toc-card">
+              <div className="toc-title">Содержание</div>
+              {[
+                { id: 'intro', label: 'Введение', level: 'h2' },
+                { id: 'what-is', label: 'Что такое техаудит', level: 'h2' },
+                { id: 'checklist', label: 'Чеклист', level: 'h2' },
+                { id: 'tools', label: 'Инструменты', level: 'h2' },
+                { id: 'results', label: 'Оформление результатов', level: 'h2' },
+              ].map(t => (
+                <a key={t.id} href={`#${t.id}`}
+                  className={`toc-link ${t.level === 'h3' ? 'toc-h3' : ''} ${activeToc === t.id ? 'active' : ''}`}
+                  onClick={() => setActiveToc(t.id)}>
+                  {t.label}
+                </a>
+              ))}
+            </div>
+            <div className="toc-card" style={{ background: '#D3E4FF' }}>
+              <div className="toc-title" style={{ color: '#004880' }}>Нужен аудит сайта?</div>
+              <p style={{ fontSize: 13, lineHeight: '20px', color: '#001D36', marginBottom: 12 }}>Проводим технический аудит за 3 дня с детальным отчётом.</p>
+              <button className="btn-filled" style={{ width: '100%', fontSize: 13, padding: '10px 16px' }}
+                onClick={() => onSnack('Заявка принята — свяжемся в течение часа')}>
+                Заказать аудит
+              </button>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Home Page ───────────────────────────
+function HomePage({ onNav, onSnack }) {
+  return (
+    <div>
+      <div className="site-container">
+        {/* Hero */}
+        <div className="hero">
+          <div className="hero-centered">
+            <div className="hero-eyebrow">Material Design 3 · SEO-first</div>
+            <h1 className="hero-h1">Готовые MD3-компоненты для контентных сайтов</h1>
+            <p className="hero-lead">Next.js 15, Vite + React, WordPress. Статьи, каталоги, словари, лендинги — всё из одного набора токенов и блоков.</p>
+            <div className="hero-actions">
+              <button className="btn-filled" onClick={() => onNav('article')}>Смотреть демо</button>
+              <button className="btn-outlined" onClick={() => onSnack('Документация откроется здесь')}>Документация</button>
+            </div>
+          </div>
+        </div>
+
+        {/* Stats */}
+        <div className="stats-row">
+          {[
+            { n: '22', l: 'шаблона страниц' },
+            { n: '40+', l: 'готовых блоков' },
+            { n: '3', l: 'стека (Next / Vite / WP)' },
+            { n: '100%', l: 'SEO-совместимость' },
+          ].map((s, i) => (
+            <div key={i} className="stat-item">
+              <div className="stat-number">{s.n}</div>
+              <div className="stat-label">{s.l}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Features */}
+        <div>
+          <div className="section-label">Возможности</div>
+          <div className="section-title">Всё для контентного сайта</div>
+          <div className="features-grid">
+            {[
+              { icon: 'palette', title: 'MD3 токены', body: 'Полная система цветов, типографики и отступов Material Design 3. Светлая тема, Roboto, адаптивные брейкпоинты.' },
+              { icon: 'widgets', title: 'Блоки и шаблоны', body: '22 шаблона страниц и 40+ блоков с 2–3 вариантами каждого. Hero, CTA, FAQ, Testimonials, Pricing и другие.' },
+              { icon: 'search', title: 'SEO из коробки', body: 'Schema.org JSON-LD, canonical, Open Graph, breadcrumbs, один h1 — всё сразу в каждом шаблоне.' },
+            ].map((f, i) => (
+              <div key={i} className="feature-card">
+                <div className="feature-icon"><Icon name={f.icon} size={24} /></div>
+                <div className="feature-title">{f.title}</div>
+                <div className="feature-body">{f.body}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Testimonials */}
+        <div style={{ padding: '48px 0 64px' }}>
+          <div className="section-label">Отзывы</div>
+          <div className="section-title">Что говорят команды</div>
+          <div className="testi-grid">
+            {[
+              { q: 'SEO Site Kit сократил время запуска нового проекта с 3 недель до 4 дней. Блоки действительно plug-and-play.', name: 'Мария Соколова', role: 'Tech Lead, Fintech', init: 'МС' },
+              { q: 'Первый раз видим дизайн-систему для WordPress, которая не конфликтует с ACF и не тащит jQuery.', name: 'Дмитрий Козлов', role: 'Fullstack, Agency', init: 'ДК' },
+              { q: 'Токены сделаны правильно — меняю primary на корпоративный цвет клиента за 30 секунд.', name: 'Анна Ли', role: 'Designer, Studio', init: 'АЛ' },
+            ].map((t, i) => (
+              <div key={i} className="testi-card">
+                <div className="rating">{[...Array(5)].map((_, j) => <span key={j} className="star">★</span>)}</div>
+                <p className="testi-quote" style={{ marginTop: 12 }}>«{t.q}»</p>
+                <div className="testi-author">
+                  <div className="testi-avatar">{t.init}</div>
+                  <div><div className="testi-name">{t.name}</div><div className="testi-role">{t.role}</div></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Blog Page ───────────────────────────
+function BlogPage({ onSnack }) {
+  const [activeFilter, setActiveFilter] = useState('Все');
+  const filters = ['Все', 'SEO', 'Контент', 'Аналитика', 'Разработка', 'Кейсы'];
+  const posts = [
+    { tag: 'SEO', title: 'Технический SEO-аудит: полное руководство', date: '23.04.2026', read: '12 мин' },
+    { tag: 'Контент', title: 'Как написать SEO-текст, который ранжируется', date: '18.04.2026', read: '8 мин' },
+    { tag: 'Аналитика', title: 'Google Search Console: полное руководство 2026', date: '12.04.2026', read: '15 мин' },
+    { tag: 'Разработка', title: 'Next.js 15 App Router: миграция с Pages Router', date: '05.04.2026', read: '10 мин' },
+    { tag: 'Кейсы', title: 'Как мы подняли трафик сайта клиника на 340%', date: '01.04.2026', read: '6 мин' },
+    { tag: 'SEO', title: 'Core Web Vitals 2026: что изменилось и как проверить', date: '28.03.2026', read: '9 мин' },
+  ];
+  const filtered = activeFilter === 'Все' ? posts : posts.filter(p => p.tag === activeFilter);
+  return (
+    <div className="site-container" style={{ padding: '32px 24px 64px' }}>
+      <h1 style={{ fontSize: 32, fontWeight: 400, marginBottom: 8 }}>Блог</h1>
+      <p style={{ fontSize: 16, color: '#49454F', marginBottom: 28 }}>Статьи о SEO, разработке и контент-маркетинге</p>
+      <div className="blog-filters">
+        {filters.map(f => (
+          <button key={f} className={`filter-chip ${activeFilter === f ? 'active' : ''}`}
+            onClick={() => setActiveFilter(f)}>{f}</button>
+        ))}
+      </div>
+      <div className="blog-grid">
+        {filtered.map((p, i) => (
+          <div key={i} className="article-card" onClick={() => onSnack('Статья откроется здесь')}>
+            <div className="article-card-img"><Icon name="article" size={32} style={{ color: '#9EC4F8' }} /></div>
+            <div className="article-card-body">
+              <div className="article-card-tag">{p.tag}</div>
+              <div className="article-card-title">{p.title}</div>
+              <div style={{ display: 'flex', gap: 8, marginTop: 6 }}>
+                <span className="article-card-date">{p.date}</span>
+                <span style={{ color: '#CAC4D0' }}>·</span>
+                <span className="article-card-date">{p.read}</span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── Contact Page ────────────────────────
+function ContactPage({ onSnack }) {
+  function handleSubmit(e) {
+    e.preventDefault();
+    onSnack('Заявка отправлена — свяжемся в течение часа');
+  }
+  return (
+    <div className="site-container" style={{ padding: '32px 24px 64px' }}>
+      <h1 style={{ fontSize: 32, fontWeight: 400, marginBottom: 8 }}>Связаться с нами</h1>
+      <p style={{ fontSize: 16, color: '#49454F', marginBottom: 40 }}>Ответим в течение одного рабочего дня</p>
+      <div className="contact-grid">
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label className="form-label">Имя</label>
+            <input className="form-input" type="text" placeholder="Иван Иванов" required />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Email</label>
+            <input className="form-input" type="email" placeholder="ivan@company.ru" required />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Телефон (необязательно)</label>
+            <input className="form-input" type="tel" placeholder="+7 (999) 000-00-00" />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Сообщение</label>
+            <textarea className="form-input form-textarea" placeholder="Опишите задачу или вопрос..." required />
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
+            <div style={{ width: 18, height: 18, borderRadius: 2, border: '2px solid #1565C0', background: '#1565C0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Icon name="check" size={14} style={{ color: '#fff' }} />
+            </div>
+            <span style={{ fontSize: 13, color: '#49454F' }}>Согласен с политикой конфиденциальности</span>
+          </div>
+          <button type="submit" className="btn-filled" style={{ width: '100%', padding: '14px', fontSize: 15 }}>
+            Отправить заявку
+          </button>
+        </form>
+        <div>
+          {[
+            { icon: 'location_on', label: 'Адрес', text: 'Москва, ул. Садовая, 10, офис 301' },
+            { icon: 'phone', label: 'Телефон', text: '+7 (495) 000-00-00' },
+            { icon: 'email', label: 'Email', text: 'hello@seositekit.ru' },
+            { icon: 'schedule', label: 'Режим работы', text: 'Пн–Пт, 9:00–18:00 МСК' },
+          ].map((item, i) => (
+            <div key={i} className="contact-info-item">
+              <Icon name={item.icon} size={20} style={{ color: '#1565C0', flexShrink: 0, marginTop: 1 }} />
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 500, letterSpacing: '0.5px', color: '#79747E', textTransform: 'uppercase', marginBottom: 2 }}>{item.label}</div>
+                <div>{item.text}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── App ─────────────────────────────────
+function App() {
+  const [page, setPage] = useState(() => localStorage.getItem('demo_page') || 'article');
+  const [snack, setSnack] = useState('');
+
+  function navigate(p) {
+    setPage(p);
+    localStorage.setItem('demo_page', p);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function onSnack(msg) { setSnack(msg); }
+
+  const screens = { article: ArticlePage, home: HomePage, blog: BlogPage, contact: ContactPage };
+  const Screen = screens[page] || ArticlePage;
+
+  return (
+    <>
+      <div className="screen-selector">
+        {[
+          { id: 'article', label: 'Статья' },
+          { id: 'home', label: 'Главная' },
+          { id: 'blog', label: 'Блог' },
+          { id: 'contact', label: 'Контакты' },
+        ].map(s => (
+          <button key={s.id} className={`screen-tab ${page === s.id ? 'active' : ''}`}
+            onClick={() => navigate(s.id)}>{s.label}</button>
+        ))}
+      </div>
+      <Header activePage={page} onNav={navigate} />
+      <Screen onNav={navigate} onSnack={onSnack} />
+      <Footer />
+      <CookieBanner />
+      <Snackbar msg={snack} onDismiss={() => setSnack('')} />
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

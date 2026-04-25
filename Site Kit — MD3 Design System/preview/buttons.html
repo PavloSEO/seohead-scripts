@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin: 0; background: #FDFCFF; padding: 20px 24px; font-family: 'Roboto', sans-serif; }
+  .group { margin-bottom: 20px; }
+  .group-title { font-size: 10px; font-weight: 500; letter-spacing: 0.5px; color: #79747E; text-transform: uppercase; margin-bottom: 10px; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+
+  /* MD3 Button base */
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 24px; border-radius: 9999px; font-family: 'Roboto', sans-serif; font-size: 14px; font-weight: 500; letter-spacing: 0.1px; line-height: 20px; border: none; cursor: pointer; text-decoration: none; transition: box-shadow 150ms, background 150ms; position: relative; overflow: hidden; }
+  .btn::after { content: ''; position: absolute; inset: 0; border-radius: inherit; background: transparent; transition: background 150ms; }
+  .btn:hover::after { background: rgba(0,0,0,0.08); }
+  .btn:active::after { background: rgba(0,0,0,0.12); }
+
+  /* Filled */
+  .btn-filled { background: #1565C0; color: #fff; }
+  .btn-filled:hover { box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 2px 6px 2px rgba(0,0,0,0.15); }
+
+  /* Tonal */
+  .btn-tonal { background: #D3E4FF; color: #001D36; }
+  .btn-tonal:hover { box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 2px 6px 2px rgba(0,0,0,0.15); }
+
+  /* Outlined */
+  .btn-outlined { background: transparent; color: #1565C0; border: 1px solid #79747E; }
+  .btn-outlined::after { border-radius: inherit; }
+
+  /* Text */
+  .btn-text { background: transparent; color: #1565C0; padding: 10px 12px; }
+
+  /* Elevated */
+  .btn-elevated { background: #F2EFF6; color: #1565C0; box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15); }
+  .btn-elevated:hover { box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 2px 6px 2px rgba(0,0,0,0.15); }
+
+  /* Disabled */
+  .btn-disabled { background: rgba(28,27,31,0.12); color: rgba(28,27,31,0.38); box-shadow: none; cursor: not-allowed; }
+  .btn-disabled::after { display: none; }
+
+  /* Icon button */
+  .icon-btn { width: 40px; height: 40px; border-radius: 9999px; border: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: background 150ms; font-size: 24px; }
+  .icon-btn-filled { background: #1565C0; color: #fff; }
+  .icon-btn-tonal { background: #D3E4FF; color: #001D36; }
+  .icon-btn-outlined { background: transparent; border: 1px solid #79747E; color: #1565C0; }
+  .icon-btn-standard { background: transparent; color: #49454F; }
+  .icon-btn:hover { filter: brightness(0.92); }
+
+  /* FAB */
+  .fab { display: inline-flex; align-items: center; gap: 12px; padding: 16px; border-radius: 16px; border: none; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 2px 6px 2px rgba(0,0,0,0.15); font-family: 'Roboto', sans-serif; font-size: 14px; font-weight: 500; transition: box-shadow 150ms; }
+  .fab-primary { background: #D3E4FF; color: #001D36; }
+  .fab-surface { background: #F2EFF6; color: #1565C0; }
+  .fab-large { border-radius: 28px; padding: 30px; }
+  .fab:hover { box-shadow: 0 4px 8px 3px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.3); }
+</style>
+</head>
+<body>
+
+<div class="group">
+  <div class="group-title">Filled button</div>
+  <div class="row">
+    <button class="btn btn-filled">Отправить заявку</button>
+    <button class="btn btn-filled"><span class="material-symbols-outlined icon-sm">add</span>Создать</button>
+    <button class="btn btn-disabled">Отправить заявку</button>
+  </div>
+</div>
+
+<div class="group">
+  <div class="group-title">Tonal button</div>
+  <div class="row">
+    <button class="btn btn-tonal">Подробнее</button>
+    <button class="btn btn-tonal"><span class="material-symbols-outlined icon-sm">download</span>Скачать</button>
+  </div>
+</div>
+
+<div class="group">
+  <div class="group-title">Outlined button</div>
+  <div class="row">
+    <button class="btn btn-outlined">Отмена</button>
+    <button class="btn btn-outlined"><span class="material-symbols-outlined icon-sm">share</span>Поделиться</button>
+  </div>
+</div>
+
+<div class="group">
+  <div class="group-title">Text button · Elevated button</div>
+  <div class="row">
+    <button class="btn btn-text">Подробнее</button>
+    <button class="btn btn-elevated">Начать бесплатно</button>
+  </div>
+</div>
+
+<div class="group">
+  <div class="group-title">Icon buttons</div>
+  <div class="row">
+    <button class="icon-btn icon-btn-filled"><span class="material-symbols-outlined">add</span></button>
+    <button class="icon-btn icon-btn-tonal"><span class="material-symbols-outlined">bookmark</span></button>
+    <button class="icon-btn icon-btn-outlined"><span class="material-symbols-outlined">share</span></button>
+    <button class="icon-btn icon-btn-standard"><span class="material-symbols-outlined">settings</span></button>
+  </div>
+</div>
+
+<div class="group">
+  <div class="group-title">FAB (Floating Action Button)</div>
+  <div class="row">
+    <button class="fab fab-primary"><span class="material-symbols-outlined">add</span></button>
+    <button class="fab fab-surface"><span class="material-symbols-outlined">edit</span> Редактировать</button>
+  </div>
+</div>
+
+</body>
+</html>

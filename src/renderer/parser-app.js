@@ -15,6 +15,49 @@
 
     let allResults = [];
 
+    // ── Карта извлечения (правая панель) ↔ чекбоксы «Что извлекать» ─────
+    const extractMap = document.getElementById('parser-extract-map');
+    const PEX_IDS = ['pex-meta', 'pex-og', 'pex-headings', 'pex-canonical', 'pex-jsonld', 'pex-links', 'pex-text', 'pex-images'];
+
+    function syncExtractMap() {
+        if (!extractMap) return;
+        extractMap.querySelectorAll('[data-pex]').forEach((row) => {
+            const id = row.getAttribute('data-pex');
+            const cb = id ? document.getElementById(id) : null;
+            row.classList.toggle('extract-map__row--off', !!(cb && !cb.checked));
+        });
+    }
+
+    PEX_IDS.forEach((id) => {
+        document.getElementById(id)?.addEventListener('change', syncExtractMap);
+    });
+
+    extractMap?.addEventListener('click', (e) => {
+        const row = e.target.closest('[data-pex]');
+        if (!row) return;
+        const id = row.getAttribute('data-pex');
+        const cb = id && document.getElementById(id);
+        if (cb && cb.type === 'checkbox') {
+            cb.checked = !cb.checked;
+            cb.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+    });
+
+    extractMap?.addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        const row = e.target.closest('[data-pex]');
+        if (!row) return;
+        e.preventDefault();
+        const id = row.getAttribute('data-pex');
+        const cb = id && document.getElementById(id);
+        if (cb && cb.type === 'checkbox') {
+            cb.checked = !cb.checked;
+            cb.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+    });
+
+    syncExtractMap();
+
     // ── UA кастомный ──────────────────────────────────────────────────
     document.getElementById('parser-ua')?.addEventListener('change', function () {
         const custom = document.getElementById('parser-ua-custom');

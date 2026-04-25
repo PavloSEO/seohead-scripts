@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin: 0; background: #FDFCFF; padding: 20px 24px; font-family: 'Roboto', sans-serif; }
+  .group { margin-bottom: 20px; }
+  .group-title { font-size: 10px; font-weight: 500; letter-spacing: 0.5px; color: #79747E; text-transform: uppercase; margin-bottom: 10px; }
+  .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-start; }
+
+  /* Cards */
+  .card { border-radius: 12px; overflow: hidden; width: 200px; transition: box-shadow 200ms; cursor: pointer; }
+  .card:hover { box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 2px 6px 2px rgba(0,0,0,0.15); }
+
+  .card-elevated { background: #F2EFF6; box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15); }
+  .card-outlined  { background: #FDFCFF; border: 1px solid #CAC4D0; box-shadow: none; }
+  .card-filled    { background: #E1DEE9; box-shadow: none; }
+
+  .card-img { width: 100%; height: 96px; object-fit: cover; background: #D3E4FF; display: flex; align-items: center; justify-content: center; color: #49454F; font-size: 12px; }
+  .card-body { padding: 12px 16px 16px; }
+  .card-overline { font-size: 11px; font-weight: 500; letter-spacing: 0.5px; color: #49454F; margin-bottom: 4px; }
+  .card-title { font-size: 16px; font-weight: 500; line-height: 22px; color: #1C1B1F; margin-bottom: 4px; }
+  .card-subtitle { font-size: 12px; line-height: 18px; color: #49454F; }
+  .card-actions { display: flex; gap: 8px; padding: 8px 12px 12px; }
+  .card-btn { background: transparent; border: none; color: #1565C0; font-family: 'Roboto', sans-serif; font-size: 13px; font-weight: 500; padding: 6px 12px; border-radius: 9999px; cursor: pointer; }
+  .card-btn:hover { background: rgba(21,101,192,0.08); }
+
+  /* Horizontal card */
+  .card-h { width: 300px; display: flex; flex-direction: row; }
+  .card-h .card-img { width: 96px; height: auto; flex-shrink: 0; }
+
+  /* Chips */
+  .chip { display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; border-radius: 8px; font-family: 'Roboto', sans-serif; font-size: 14px; font-weight: 500; letter-spacing: 0.1px; cursor: pointer; transition: background 150ms; }
+  .chip-assist   { background: #FDFCFF; border: 1px solid #CAC4D0; color: #1C1B1F; }
+  .chip-filter   { background: #D3E4FF; border: 1px solid transparent; color: #001D36; }
+  .chip-input    { background: #FDFCFF; border: 1px solid #CAC4D0; color: #1C1B1F; }
+  .chip-suggest  { background: #FDFCFF; border: 1px solid #CAC4D0; color: #1C1B1F; }
+  .chip:hover    { background: #F2EFF6; }
+  .chip-filter:hover { background: #BCC8E6; }
+
+  /* Badge */
+  .badge { display: inline-flex; align-items: center; justify-content: center; border-radius: 9999px; font-family: 'Roboto', sans-serif; font-size: 11px; font-weight: 500; }
+  .badge-sm { width: 6px; height: 6px; background: #B3261E; }
+  .badge-lg { min-width: 16px; height: 16px; padding: 0 4px; background: #B3261E; color: #fff; }
+</style>
+</head>
+<body>
+
+<div class="group">
+  <div class="group-title">Cards — Elevated · Outlined · Filled</div>
+  <div class="row">
+    <div class="card card-elevated">
+      <div class="card-img"><span style="font-size:32px; color:#9EC4F8">&#127760;</span></div>
+      <div class="card-body">
+        <div class="card-overline">SEO</div>
+        <div class="card-title">Технический аудит</div>
+        <div class="card-subtitle">Анализ скорости, ошибок и структуры сайта</div>
+      </div>
+      <div class="card-actions">
+        <button class="card-btn">Подробнее</button>
+        <button class="card-btn">Заказать</button>
+      </div>
+    </div>
+    <div class="card card-outlined">
+      <div class="card-img"><span style="font-size:32px; color:#9EC4F8">&#128202;</span></div>
+      <div class="card-body">
+        <div class="card-overline">Аналитика</div>
+        <div class="card-title">Отчёт по позициям</div>
+        <div class="card-subtitle">Динамика ключевых слов за 30 дней</div>
+      </div>
+      <div class="card-actions">
+        <button class="card-btn">Открыть</button>
+      </div>
+    </div>
+    <div class="card card-filled">
+      <div class="card-body" style="padding-top:16px">
+        <div class="card-overline">Статья</div>
+        <div class="card-title">Как написать SEO-текст</div>
+        <div class="card-subtitle">Руководство для авторов и редакторов</div>
+      </div>
+      <div class="card-actions">
+        <button class="card-btn">Читать</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="group">
+  <div class="group-title">Chips — Assist · Filter (selected) · Input · Suggestion</div>
+  <div class="row">
+    <div class="chip chip-assist"><span class="material-symbols-outlined icon-sm">tune</span>Фильтр</div>
+    <div class="chip chip-filter"><span class="material-symbols-outlined icon-sm">check</span>Выбрано</div>
+    <div class="chip chip-input">Технический SEO <span class="material-symbols-outlined icon-sm">close</span></div>
+    <div class="chip chip-suggest">Мета-теги</div>
+    <div class="chip chip-suggest">Скорость загрузки</div>
+    <div class="chip chip-suggest">Семантика</div>
+  </div>
+</div>
+
+<div class="group">
+  <div class="group-title">Badges</div>
+  <div class="row" style="align-items:center;gap:20px">
+    <div style="position:relative;display:inline-flex">
+      <span class="material-symbols-outlined" style="font-size:24px;color:#49454F">notifications</span>
+      <span class="badge badge-sm" style="position:absolute;top:0;right:0"></span>
+    </div>
+    <div style="position:relative;display:inline-flex">
+      <span class="material-symbols-outlined" style="font-size:24px;color:#49454F">mail</span>
+      <span class="badge badge-lg" style="position:absolute;top:-4px;right:-8px">3</span>
+    </div>
+    <div style="position:relative;display:inline-flex">
+      <span class="material-symbols-outlined" style="font-size:24px;color:#49454F">shopping_cart</span>
+      <span class="badge badge-lg" style="position:absolute;top:-4px;right:-8px">99+</span>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

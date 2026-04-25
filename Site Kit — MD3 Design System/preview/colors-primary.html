@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; background: #fff; font-family: 'Roboto', sans-serif; }
+  .grid { display: flex; flex-direction: column; gap: 0; }
+  .row { display: flex; }
+  .swatch { flex: 1; padding: 10px 12px; min-height: 52px; display: flex; flex-direction: column; justify-content: space-between; }
+  .swatch-label { font-size: 11px; font-weight: 500; letter-spacing: 0.3px; line-height: 1.3; }
+  .swatch-token { font-size: 10px; opacity: 0.75; margin-top: 4px; font-family: monospace; }
+  .section-title { font-size: 11px; font-weight: 500; letter-spacing: 0.5px; color: #49454F; padding: 8px 12px 4px; text-transform: uppercase; border-top: 1px solid #eee; }
+  .section-title:first-child { border-top: none; }
+</style>
+</head>
+<body>
+<div class="grid">
+
+  <!-- PRIMARY BLUE -->
+  <div class="section-title">Primary — Blue</div>
+  <div class="row">
+    <div class="swatch" style="background:#001D36;color:#D3E4FF"><div class="swatch-label">P-10</div><div class="swatch-token">#001D36</div></div>
+    <div class="swatch" style="background:#003258;color:#9EC4F8"><div class="swatch-label">P-20</div><div class="swatch-token">#003258</div></div>
+    <div class="swatch" style="background:#004880;color:#fff"><div class="swatch-label">P-30</div><div class="swatch-token">#004880</div></div>
+    <div class="swatch" style="background:#1565C0;color:#fff"><div class="swatch-label">Primary</div><div class="swatch-token">#1565C0</div></div>
+    <div class="swatch" style="background:#2979D0;color:#fff"><div class="swatch-label">P-50</div><div class="swatch-token">#2979D0</div></div>
+    <div class="swatch" style="background:#4A90E2;color:#fff"><div class="swatch-label">P-60</div><div class="swatch-token">#4A90E2</div></div>
+    <div class="swatch" style="background:#74AAED;color:#001D36"><div class="swatch-label">P-70</div><div class="swatch-token">#74AAED</div></div>
+    <div class="swatch" style="background:#9EC4F8;color:#001D36"><div class="swatch-label">P-80</div><div class="swatch-token">#9EC4F8</div></div>
+    <div class="swatch" style="background:#D3E4FF;color:#001D36"><div class="swatch-label">Container</div><div class="swatch-token">#D3E4FF</div></div>
+    <div class="swatch" style="background:#EAF1FF;color:#001D36"><div class="swatch-label">P-95</div><div class="swatch-token">#EAF1FF</div></div>
+    <div class="swatch" style="background:#F4F8FF;color:#001D36;border:1px solid #e0e0e0"><div class="swatch-label">P-99</div><div class="swatch-token">#F4F8FF</div></div>
+  </div>
+
+  <!-- SECONDARY BLUE-GREY -->
+  <div class="section-title">Secondary — Blue-Grey</div>
+  <div class="row">
+    <div class="swatch" style="background:#0E1B2C;color:#D9E3F9"><div class="swatch-label">S-10</div><div class="swatch-token">#0E1B2C</div></div>
+    <div class="swatch" style="background:#233044;color:#BCC8E6"><div class="swatch-label">S-20</div><div class="swatch-token">#233044</div></div>
+    <div class="swatch" style="background:#3A475C;color:#fff"><div class="swatch-label">S-30</div><div class="swatch-token">#3A475C</div></div>
+    <div class="swatch" style="background:#525F7A;color:#fff"><div class="swatch-label">Secondary</div><div class="swatch-token">#525F7A</div></div>
+    <div class="swatch" style="background:#6B7899;color:#fff"><div class="swatch-label">S-50</div><div class="swatch-token">#6B7899</div></div>
+    <div class="swatch" style="background:#8592AE;color:#fff"><div class="swatch-label">S-60</div><div class="swatch-token">#8592AE</div></div>
+    <div class="swatch" style="background:#A0ADC9;color:#0E1B2C"><div class="swatch-label">S-70</div><div class="swatch-token">#A0ADC9</div></div>
+    <div class="swatch" style="background:#BCC8E6;color:#0E1B2C"><div class="swatch-label">S-80</div><div class="swatch-token">#BCC8E6</div></div>
+    <div class="swatch" style="background:#D9E3F9;color:#0E1B2C"><div class="swatch-label">Container</div><div class="swatch-token">#D9E3F9</div></div>
+    <div class="swatch" style="background:#EBF0FF;color:#0E1B2C"><div class="swatch-label">S-95</div><div class="swatch-token">#EBF0FF</div></div>
+    <div class="swatch" style="background:#F5F7FF;color:#0E1B2C;border:1px solid #e0e0e0"><div class="swatch-label">S-99</div><div class="swatch-token">#F5F7FF</div></div>
+  </div>
+
+  <!-- GREEN -->
+  <div class="section-title">Green — Success</div>
+  <div class="row">
+    <div class="swatch" style="background:#002112;color:#B7F0CC"><div class="swatch-label">G-10</div><div class="swatch-token">#002112</div></div>
+    <div class="swatch" style="background:#003820;color:#8DE6B0"><div class="swatch-label">G-20</div><div class="swatch-token">#003820</div></div>
+    <div class="swatch" style="background:#005230;color:#fff"><div class="swatch-label">G-30</div><div class="swatch-token">#005230</div></div>
+    <div class="swatch" style="background:#1B7A43;color:#fff"><div class="swatch-label">Green</div><div class="swatch-token">#1B7A43</div></div>
+    <div class="swatch" style="background:#2E9557;color:#fff"><div class="swatch-label">G-50</div><div class="swatch-token">#2E9557</div></div>
+    <div class="swatch" style="background:#4BAF6E;color:#fff"><div class="swatch-label">G-60</div><div class="swatch-token">#4BAF6E</div></div>
+    <div class="swatch" style="background:#72CA8C;color:#002112"><div class="swatch-label">G-70</div><div class="swatch-token">#72CA8C</div></div>
+    <div class="swatch" style="background:#8DE6B0;color:#002112"><div class="swatch-label">G-80</div><div class="swatch-token">#8DE6B0</div></div>
+    <div class="swatch" style="background:#B7F0CC;color:#002112"><div class="swatch-label">Container</div><div class="swatch-token">#B7F0CC</div></div>
+    <div class="swatch" style="background:#D8F8E4;color:#002112"><div class="swatch-label">G-95</div><div class="swatch-token">#D8F8E4</div></div>
+    <div class="swatch" style="background:#F0FDF4;color:#002112;border:1px solid #e0e0e0"><div class="swatch-label">G-99</div><div class="swatch-token">#F0FDF4</div></div>
+  </div>
+
+  <!-- TEAL / CYAN -->
+  <div class="section-title">Teal — Cyan</div>
+  <div class="row">
+    <div class="swatch" style="background:#001F24;color:#97F0FF"><div class="swatch-label">T-10</div><div class="swatch-token">#001F24</div></div>
+    <div class="swatch" style="background:#003640;color:#4DD9EC"><div class="swatch-label">T-20</div><div class="swatch-token">#003640</div></div>
+    <div class="swatch" style="background:#004F5A;color:#fff"><div class="swatch-label">T-30</div><div class="swatch-token">#004F5A</div></div>
+    <div class="swatch" style="background:#006874;color:#fff"><div class="swatch-label">Teal</div><div class="swatch-token">#006874</div></div>
+    <div class="swatch" style="background:#008390;color:#fff"><div class="swatch-label">T-50</div><div class="swatch-token">#008390</div></div>
+    <div class="swatch" style="background:#00A0AE;color:#fff"><div class="swatch-label">T-60</div><div class="swatch-token">#00A0AE</div></div>
+    <div class="swatch" style="background:#28C3D4;color:#001F24"><div class="swatch-label">T-70</div><div class="swatch-token">#28C3D4</div></div>
+    <div class="swatch" style="background:#4DD9EC;color:#001F24"><div class="swatch-label">T-80</div><div class="swatch-token">#4DD9EC</div></div>
+    <div class="swatch" style="background:#97F0FF;color:#001F24"><div class="swatch-label">Container</div><div class="swatch-token">#97F0FF</div></div>
+    <div class="swatch" style="background:#CBF8FF;color:#001F24"><div class="swatch-label">T-95</div><div class="swatch-token">#CBF8FF</div></div>
+    <div class="swatch" style="background:#EDFCFF;color:#001F24;border:1px solid #e0e0e0"><div class="swatch-label">T-99</div><div class="swatch-token">#EDFCFF</div></div>
+  </div>
+
+  <!-- VIOLET / PURPLE -->
+  <div class="section-title">Violet — Purple</div>
+  <div class="row">
+    <div class="swatch" style="background:#1A0038;color:#E8DAFF"><div class="swatch-label">V-10</div><div class="swatch-token">#1A0038</div></div>
+    <div class="swatch" style="background:#2E0059;color:#CFB4FF"><div class="swatch-label">V-20</div><div class="swatch-token">#2E0059</div></div>
+    <div class="swatch" style="background:#490080;color:#fff"><div class="swatch-label">V-30</div><div class="swatch-token">#490080</div></div>
+    <div class="swatch" style="background:#6D1FBF;color:#fff"><div class="swatch-label">Violet</div><div class="swatch-token">#6D1FBF</div></div>
+    <div class="swatch" style="background:#8537D8;color:#fff"><div class="swatch-label">V-50</div><div class="swatch-token">#8537D8</div></div>
+    <div class="swatch" style="background:#9E57EF;color:#fff"><div class="swatch-label">V-60</div><div class="swatch-token">#9E57EF</div></div>
+    <div class="swatch" style="background:#B87FF8;color:#1A0038"><div class="swatch-label">V-70</div><div class="swatch-token">#B87FF8</div></div>
+    <div class="swatch" style="background:#CFB4FF;color:#1A0038"><div class="swatch-label">V-80</div><div class="swatch-token">#CFB4FF</div></div>
+    <div class="swatch" style="background:#E8DAFF;color:#1A0038"><div class="swatch-label">Container</div><div class="swatch-token">#E8DAFF</div></div>
+    <div class="swatch" style="background:#F3ECFF;color:#1A0038"><div class="swatch-label">V-95</div><div class="swatch-token">#F3ECFF</div></div>
+    <div class="swatch" style="background:#FAF6FF;color:#1A0038;border:1px solid #e0e0e0"><div class="swatch-label">V-99</div><div class="swatch-token">#FAF6FF</div></div>
+  </div>
+
+  <!-- ORANGE / AMBER -->
+  <div class="section-title">Orange — Amber</div>
+  <div class="row">
+    <div class="swatch" style="background:#2C1200;color:#FFDBCA"><div class="swatch-label">O-10</div><div class="swatch-token">#2C1200</div></div>
+    <div class="swatch" style="background:#4D2000;color:#FFBB96"><div class="swatch-label">O-20</div><div class="swatch-token">#4D2000</div></div>
+    <div class="swatch" style="background:#7A3500;color:#fff"><div class="swatch-label">O-30</div><div class="swatch-token">#7A3500</div></div>
+    <div class="swatch" style="background:#C44D00;color:#fff"><div class="swatch-label">Orange</div><div class="swatch-token">#C44D00</div></div>
+    <div class="swatch" style="background:#E46220;color:#fff"><div class="swatch-label">O-50</div><div class="swatch-token">#E46220</div></div>
+    <div class="swatch" style="background:#F27E3E;color:#fff"><div class="swatch-label">O-60</div><div class="swatch-token">#F27E3E</div></div>
+    <div class="swatch" style="background:#F79C65;color:#2C1200"><div class="swatch-label">O-70</div><div class="swatch-token">#F79C65</div></div>
+    <div class="swatch" style="background:#FFBB96;color:#2C1200"><div class="swatch-label">O-80</div><div class="swatch-token">#FFBB96</div></div>
+    <div class="swatch" style="background:#FFDBCA;color:#2C1200"><div class="swatch-label">Container</div><div class="swatch-token">#FFDBCA</div></div>
+    <div class="swatch" style="background:#FFEDE2;color:#2C1200"><div class="swatch-label">O-95</div><div class="swatch-token">#FFEDE2</div></div>
+    <div class="swatch" style="background:#FFF8F5;color:#2C1200;border:1px solid #e0e0e0"><div class="swatch-label">O-99</div><div class="swatch-token">#FFF8F5</div></div>
+  </div>
+
+  <!-- YELLOW -->
+  <div class="section-title">Yellow — Gold</div>
+  <div class="row">
+    <div class="swatch" style="background:#1F1A00;color:#FFE57D"><div class="swatch-label">Y-10</div><div class="swatch-token">#1F1A00</div></div>
+    <div class="swatch" style="background:#382D00;color:#F5D000"><div class="swatch-label">Y-20</div><div class="swatch-token">#382D00</div></div>
+    <div class="swatch" style="background:#574500;color:#fff"><div class="swatch-label">Y-30</div><div class="swatch-token">#574500</div></div>
+    <div class="swatch" style="background:#7A6200;color:#fff"><div class="swatch-label">Yellow</div><div class="swatch-token">#7A6200</div></div>
+    <div class="swatch" style="background:#A08000;color:#fff"><div class="swatch-label">Y-50</div><div class="swatch-token">#A08000</div></div>
+    <div class="swatch" style="background:#C8A200;color:#1F1A00"><div class="swatch-label">Y-60</div><div class="swatch-token">#C8A200</div></div>
+    <div class="swatch" style="background:#E8C200;color:#1F1A00"><div class="swatch-label">Y-70</div><div class="swatch-token">#E8C200</div></div>
+    <div class="swatch" style="background:#F5D000;color:#1F1A00"><div class="swatch-label">Y-80</div><div class="swatch-token">#F5D000</div></div>
+    <div class="swatch" style="background:#FFE57D;color:#1F1A00"><div class="swatch-label">Container</div><div class="swatch-token">#FFE57D</div></div>
+    <div class="swatch" style="background:#FFF2B0;color:#1F1A00"><div class="swatch-label">Y-95</div><div class="swatch-token">#FFF2B0</div></div>
+    <div class="swatch" style="background:#FFFBE6;color:#1F1A00;border:1px solid #e0e0e0"><div class="swatch-label">Y-99</div><div class="swatch-token">#FFFBE6</div></div>
+  </div>
+
+  <!-- PINK / ROSE -->
+  <div class="section-title">Pink — Rose</div>
+  <div class="row">
+    <div class="swatch" style="background:#3A001C;color:#FFD8E7"><div class="swatch-label">Pk-10</div><div class="swatch-token">#3A001C</div></div>
+    <div class="swatch" style="background:#600030;color:#FFB0CB"><div class="swatch-label">Pk-20</div><div class="swatch-token">#600030</div></div>
+    <div class="swatch" style="background:#8E0045;color:#fff"><div class="swatch-label">Pk-30</div><div class="swatch-token">#8E0045</div></div>
+    <div class="swatch" style="background:#C2185B;color:#fff"><div class="swatch-label">Pink</div><div class="swatch-token">#C2185B</div></div>
+    <div class="swatch" style="background:#D63771;color:#fff"><div class="swatch-label">Pk-50</div><div class="swatch-token">#D63771</div></div>
+    <div class="swatch" style="background:#E8608C;color:#fff"><div class="swatch-label">Pk-60</div><div class="swatch-token">#E8608C</div></div>
+    <div class="swatch" style="background:#F48DAB;color:#3A001C"><div class="swatch-label">Pk-70</div><div class="swatch-token">#F48DAB</div></div>
+    <div class="swatch" style="background:#FFB0CB;color:#3A001C"><div class="swatch-label">Pk-80</div><div class="swatch-token">#FFB0CB</div></div>
+    <div class="swatch" style="background:#FFD8E7;color:#3A001C"><div class="swatch-label">Container</div><div class="swatch-token">#FFD8E7</div></div>
+    <div class="swatch" style="background:#FFEDF3;color:#3A001C"><div class="swatch-label">Pk-95</div><div class="swatch-token">#FFEDF3</div></div>
+    <div class="swatch" style="background:#FFF6F9;color:#3A001C;border:1px solid #e0e0e0"><div class="swatch-label">Pk-99</div><div class="swatch-token">#FFF6F9</div></div>
+  </div>
+
+  <!-- ERROR RED -->
+  <div class="section-title">Error — Red</div>
+  <div class="row">
+    <div class="swatch" style="background:#410002;color:#FFDAD6"><div class="swatch-label">E-10</div><div class="swatch-token">#410002</div></div>
+    <div class="swatch" style="background:#680003;color:#FFBAB5"><div class="swatch-label">E-20</div><div class="swatch-token">#680003</div></div>
+    <div class="swatch" style="background:#930006;color:#fff"><div class="swatch-label">E-30</div><div class="swatch-token">#930006</div></div>
+    <div class="swatch" style="background:#B3261E;color:#fff"><div class="swatch-label">Error</div><div class="swatch-token">#B3261E</div></div>
+    <div class="swatch" style="background:#CC4540;color:#fff"><div class="swatch-label">E-50</div><div class="swatch-token">#CC4540</div></div>
+    <div class="swatch" style="background:#E0665F;color:#fff"><div class="swatch-label">E-60</div><div class="swatch-token">#E0665F</div></div>
+    <div class="swatch" style="background:#EC8C86;color:#410002"><div class="swatch-label">E-70</div><div class="swatch-token">#EC8C86</div></div>
+    <div class="swatch" style="background:#FFB4AB;color:#410002"><div class="swatch-label">E-80</div><div class="swatch-token">#FFB4AB</div></div>
+    <div class="swatch" style="background:#FFDAD6;color:#410002"><div class="swatch-label">Container</div><div class="swatch-token">#FFDAD6</div></div>
+    <div class="swatch" style="background:#FFEDEA;color:#410002"><div class="swatch-label">E-95</div><div class="swatch-token">#FFEDEA</div></div>
+    <div class="swatch" style="background:#FFF8F7;color:#410002;border:1px solid #e0e0e0"><div class="swatch-label">E-99</div><div class="swatch-token">#FFF8F7</div></div>
+  </div>
+
+  <!-- NEUTRAL -->
+  <div class="section-title">Neutral — Surface</div>
+  <div class="row">
+    <div class="swatch" style="background:#1A1C1E;color:#E2E2E5"><div class="swatch-label">N-10</div><div class="swatch-token">#1A1C1E</div></div>
+    <div class="swatch" style="background:#2F3033;color:#C6C6CA"><div class="swatch-label">N-20</div><div class="swatch-token">#2F3033</div></div>
+    <div class="swatch" style="background:#47484C;color:#fff"><div class="swatch-label">N-30</div><div class="swatch-token">#47484C</div></div>
+    <div class="swatch" style="background:#606163;color:#fff"><div class="swatch-label">On Surface</div><div class="swatch-token">#606163</div></div>
+    <div class="swatch" style="background:#79797C;color:#fff"><div class="swatch-label">N-50</div><div class="swatch-token">#79797C</div></div>
+    <div class="swatch" style="background:#939394;color:#fff"><div class="swatch-label">N-60</div><div class="swatch-token">#939394</div></div>
+    <div class="swatch" style="background:#AEAEAF;color:#1A1C1E"><div class="swatch-label">N-70</div><div class="swatch-token">#AEAEAF</div></div>
+    <div class="swatch" style="background:#C9C9CB;color:#1A1C1E"><div class="swatch-label">N-80</div><div class="swatch-token">#C9C9CB</div></div>
+    <div class="swatch" style="background:#E2E2E5;color:#1A1C1E"><div class="swatch-label">Surface Var.</div><div class="swatch-token">#E2E2E5</div></div>
+    <div class="swatch" style="background:#F0F0F2;color:#1A1C1E"><div class="swatch-label">N-95</div><div class="swatch-token">#F0F0F2</div></div>
+    <div class="swatch" style="background:#FAFAFA;color:#1A1C1E;border:1px solid #e0e0e0"><div class="swatch-label">Surface</div><div class="swatch-token">#FAFAFA</div></div>
+  </div>
+
+</div>
+</body>
+</html>

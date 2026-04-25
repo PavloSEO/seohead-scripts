@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; background: #fff; font-family: 'Roboto', sans-serif; }
+  .grid { display: flex; flex-direction: column; }
+
+  /* Section label */
+  .section-title {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.5px; color: #49454F;
+    padding: 10px 12px 4px; text-transform: uppercase;
+    border-top: 1px solid #eee;
+  }
+  .section-title:first-child { border-top: none; }
+
+  /* Full-width tonal strip (like Primary palette) */
+  .row { display: flex; }
+  .swatch {
+    flex: 1; padding: 10px 12px; min-height: 52px;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .swatch-label { font-size: 11px; font-weight: 500; letter-spacing: 0.3px; line-height: 1.3; }
+  .swatch-token { font-size: 10px; opacity: 0.75; margin-top: 4px; font-family: monospace; }
+
+  /* Role pair grid */
+  .pairs {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0;
+    border-top: 1px solid #eee;
+  }
+  .pair { display: flex; flex-direction: column; border-right: 1px solid #eee; }
+  .pair:last-child { border-right: none; }
+  .pair-top { padding: 12px; min-height: 56px; display: flex; flex-direction: column; justify-content: space-between; }
+  .pair-bot { padding: 8px 12px; min-height: 32px; display: flex; flex-direction: column; justify-content: center; border-top: 1px solid rgba(0,0,0,0.08); }
+  .role { font-size: 11px; font-weight: 500; line-height: 1.3; }
+  .token { font-size: 9px; opacity: 0.7; margin-top: 3px; font-family: monospace; }
+</style>
+</head>
+<body>
+<div class="grid">
+
+  <!-- ─── KEY ROLES ─── -->
+  <div class="section-title">Key Roles — Light Theme</div>
+  <div class="pairs">
+    <div class="pair">
+      <div class="pair-top" style="background:#1565C0;color:#fff">
+        <div class="role">Primary</div>
+        <div class="token">--md-sys-color-primary</div>
+      </div>
+      <div class="pair-bot" style="background:#D3E4FF;color:#001D36">
+        <div class="role">Primary Container</div>
+        <div class="token">--md-sys-color-primary-container</div>
+      </div>
+    </div>
+    <div class="pair">
+      <div class="pair-top" style="background:#525F7A;color:#fff">
+        <div class="role">Secondary</div>
+        <div class="token">--md-sys-color-secondary</div>
+      </div>
+      <div class="pair-bot" style="background:#D9E3F9;color:#0E1B2C">
+        <div class="role">Secondary Container</div>
+        <div class="token">--md-sys-color-secondary-container</div>
+      </div>
+    </div>
+    <div class="pair">
+      <div class="pair-top" style="background:#6D1FBF;color:#fff">
+        <div class="role">Tertiary (Violet)</div>
+        <div class="token">--md-sys-color-tertiary</div>
+      </div>
+      <div class="pair-bot" style="background:#E8DAFF;color:#1A0038">
+        <div class="role">Tertiary Container</div>
+        <div class="token">--md-sys-color-tertiary-container</div>
+      </div>
+    </div>
+    <div class="pair">
+      <div class="pair-top" style="background:#B3261E;color:#fff">
+        <div class="role">Error</div>
+        <div class="token">--md-sys-color-error</div>
+      </div>
+      <div class="pair-bot" style="background:#FFDAD6;color:#410002">
+        <div class="role">Error Container</div>
+        <div class="token">--md-sys-color-error-container</div>
+      </div>
+    </div>
+    <div class="pair">
+      <div class="pair-top" style="background:#1B7A43;color:#fff">
+        <div class="role">Success (Green)</div>
+        <div class="token">--md-sys-color-success</div>
+      </div>
+      <div class="pair-bot" style="background:#B7F0CC;color:#002112">
+        <div class="role">Success Container</div>
+        <div class="token">--md-sys-color-success-container</div>
+      </div>
+    </div>
+    <div class="pair">
+      <div class="pair-top" style="background:#C44D00;color:#fff">
+        <div class="role">Warning (Orange)</div>
+        <div class="token">--md-sys-color-warning</div>
+      </div>
+      <div class="pair-bot" style="background:#FFDBCA;color:#2C1200">
+        <div class="role">Warning Container</div>
+        <div class="token">--md-sys-color-warning-container</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── SURFACE & TEXT ─── -->
+  <div class="section-title">Surface &amp; Text Roles</div>
+  <div class="pairs">
+    <div class="pair">
+      <div class="pair-top" style="background:#FAFAFA;color:#1A1C1E;border:1px solid #e0e0e0">
+        <div class="role">Surface</div>
+        <div class="token">--md-sys-color-surface</div>
+      </div>
+      <div class="pair-bot" style="background:#F0F0F2;color:#1A1C1E">
+        <div class="role">Surface Container Low</div>
+        <div class="token">--md-sys-color-surface-container-low</div>
+      </div>
+    </div>
+    <div class="pair">
+      <div class="pair-top" style="background:#E2E2E5;color:#1A1C1E">
+        <div class="role">Surface Container</div>
+        <div class="token">--md-sys-color-surface-container</div>
+      </div>
+      <div class="pair-bot" style="background:#C9C9CB;color:#1A1C1E">
+        <div class="role">Surface Container High</div>
+        <div class="token">--md-sys-color-surface-container-high</div>
+      </div>
+    </div>
+    <div class="pair">
+      <div class="pair-top" style="background:#1A1C1E;color:#FAFAFA">
+        <div class="role">On Surface</div>
+        <div class="token">--md-sys-color-on-surface</div>
+      </div>
+      <div class="pair-bot" style="background:#47484C;color:#fff">
+        <div class="role">On Surface Variant</div>
+        <div class="token">--md-sys-color-on-surface-variant</div>
+      </div>
+    </div>
+    <div class="pair">
+      <div class="pair-top" style="background:#606163;color:#fff">
+        <div class="role">Outline</div>
+        <div class="token">--md-sys-color-outline</div>
+      </div>
+      <div class="pair-bot" style="background:#AEAEAF;color:#1A1C1E">
+        <div class="role">Outline Variant</div>
+        <div class="token">--md-sys-color-outline-variant</div>
+      </div>
+    </div>
+    <div class="pair">
+      <div class="pair-top" style="background:#fff;color:#1A1C1E;border:1px solid #e0e0e0">
+        <div class="role">On Primary</div>
+        <div class="token">--md-sys-color-on-primary</div>
+      </div>
+      <div class="pair-bot" style="background:#001D36;color:#D3E4FF">
+        <div class="role">On Primary Container</div>
+        <div class="token">--md-sys-color-on-primary-container</div>
+      </div>
+    </div>
+    <div class="pair">
+      <div class="pair-top" style="background:#1A1C1E;color:#FAFAFA">
+        <div class="role">Inverse Surface</div>
+        <div class="token">--md-sys-color-inverse-surface</div>
+      </div>
+      <div class="pair-bot" style="background:#4A90E2;color:#fff">
+        <div class="role">Inverse Primary</div>
+        <div class="token">--md-sys-color-inverse-primary</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── DARK THEME KEY ROLES ─── -->
+  <div class="section-title">Key Roles — Dark Theme</div>
+  <div class="pairs">
+    <div class="pair">
+      <div class="pair-top" style="background:#9EC4F8;color:#001D36">
+        <div class="role">Primary (dark)</div>
+        <div class="token">--md-sys-color-primary</div>
+      </div>
+      <div class="pair-bot" style="background:#003258;color:#9EC4F8">
+        <div class="role">Primary Container (dark)</div>
+        <div class="token">--md-sys-color-primary-container</div>
+      </div>
+    </div>
+    <div class="pair">
+      <div class="pair-top" style="background:#BCC8E6;color:#0E1B2C">
+        <div class="role">Secondary (dark)</div>
+        <div class="token">--md-sys-color-secondary</div>
+      </div>
+      <div class="pair-bot" style="background:#233044;color:#BCC8E6">
+        <div class="role">Secondary Container (dark)</div>
+        <div class="token">--md-sys-color-secondary-container</div>
+      </div>
+    </div>
+    <div class="pair">
+      <div class="pair-top" style="background:#CFB4FF;color:#1A0038">
+        <div class="role">Tertiary (dark)</div>
+        <div class="token">--md-sys-color-tertiary</div>
+      </div>
+      <div class="pair-bot" style="background:#2E0059;color:#CFB4FF">
+        <div class="role">Tertiary Container (dark)</div>
+        <div class="token">--md-sys-color-tertiary-container</div>
+      </div>
+    </div>
+    <div class="pair">
+      <div class="pair-top" style="background:#FFB4AB;color:#410002">
+        <div class="role">Error (dark)</div>
+        <div class="token">--md-sys-color-error</div>
+      </div>
+      <div class="pair-bot" style="background:#680003;color:#FFB4AB">
+        <div class="role">Error Container (dark)</div>
+        <div class="token">--md-sys-color-error-container</div>
+      </div>
+    </div>
+    <div class="pair">
+      <div class="pair-top" style="background:#8DE6B0;color:#002112">
+        <div class="role">Success (dark)</div>
+        <div class="token">--md-sys-color-success</div>
+      </div>
+      <div class="pair-bot" style="background:#003820;color:#8DE6B0">
+        <div class="role">Success Container (dark)</div>
+        <div class="token">--md-sys-color-success-container</div>
+      </div>
+    </div>
+    <div class="pair">
+      <div class="pair-top" style="background:#FFBB96;color:#2C1200">
+        <div class="role">Warning (dark)</div>
+        <div class="token">--md-sys-color-warning</div>
+      </div>
+      <div class="pair-bot" style="background:#4D2000;color:#FFBB96">
+        <div class="role">Warning Container (dark)</div>
+        <div class="token">--md-sys-color-warning-container</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── EXTENDED SEMANTIC: TEAL, YELLOW, PINK ─── -->
+  <div class="section-title">Extended Semantic — Teal · Yellow · Pink</div>
+  <div class="pairs">
+    <div class="pair">
+      <div class="pair-top" style="background:#006874;color:#fff">
+        <div class="role">Info (Teal)</div>
+        <div class="token">--md-sys-color-info</div>
+      </div>
+      <div class="pair-bot" style="background:#97F0FF;color:#001F24">
+        <div class="role">Info Container</div>
+        <div class="token">--md-sys-color-info-container</div>
+      </div>
+    </div>
+    <div class="pair">
+      <div class="pair-top" style="background:#4DD9EC;color:#001F24">
+        <div class="role">Info (dark)</div>
+        <div class="token">--md-sys-color-info · dark</div>
+      </div>
+      <div class="pair-bot" style="background:#003640;color:#4DD9EC">
+        <div class="role">Info Container (dark)</div>
+        <div class="token">--md-sys-color-info-container · dark</div>
+      </div>
+    </div>
+    <div class="pair">
+      <div class="pair-top" style="background:#7A6200;color:#fff">
+        <div class="role">Caution (Yellow)</div>
+        <div class="token">--md-sys-color-caution</div>
+      </div>
+      <div class="pair-bot" style="background:#FFE57D;color:#1F1A00">
+        <div class="role">Caution Container</div>
+        <div class="token">--md-sys-color-caution-container</div>
+      </div>
+    </div>
+    <div class="pair">
+      <div class="pair-top" style="background:#F5D000;color:#1F1A00">
+        <div class="role">Caution (dark)</div>
+        <div class="token">--md-sys-color-caution · dark</div>
+      </div>
+      <div class="pair-bot" style="background:#382D00;color:#F5D000">
+        <div class="role">Caution Container (dark)</div>
+        <div class="token">--md-sys-color-caution-container · dark</div>
+      </div>
+    </div>
+    <div class="pair">
+      <div class="pair-top" style="background:#C2185B;color:#fff">
+        <div class="role">Accent (Pink)</div>
+        <div class="token">--md-sys-color-accent</div>
+      </div>
+      <div class="pair-bot" style="background:#FFD8E7;color:#3A001C">
+        <div class="role">Accent Container</div>
+        <div class="token">--md-sys-color-accent-container</div>
+      </div>
+    </div>
+    <div class="pair">
+      <div class="pair-top" style="background:#FFB0CB;color:#3A001C">
+        <div class="role">Accent (dark)</div>
+        <div class="token">--md-sys-color-accent · dark</div>
+      </div>
+      <div class="pair-bot" style="background:#600030;color:#FFB0CB">
+        <div class="role">Accent Container (dark)</div>
+        <div class="token">--md-sys-color-accent-container · dark</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── TOKEN REFERENCE STRIP ─── -->
+  <div class="section-title">Token Reference — All Semantic Roles at a Glance</div>
+  <div class="row">
+    <div class="swatch" style="background:#1565C0;color:#fff"><div class="swatch-label">Primary</div><div class="swatch-token">--primary</div></div>
+    <div class="swatch" style="background:#525F7A;color:#fff"><div class="swatch-label">Secondary</div><div class="swatch-token">--secondary</div></div>
+    <div class="swatch" style="background:#6D1FBF;color:#fff"><div class="swatch-label">Tertiary</div><div class="swatch-token">--tertiary</div></div>
+    <div class="swatch" style="background:#1B7A43;color:#fff"><div class="swatch-label">Success</div><div class="swatch-token">--success</div></div>
+    <div class="swatch" style="background:#006874;color:#fff"><div class="swatch-label">Info</div><div class="swatch-token">--info</div></div>
+    <div class="swatch" style="background:#7A6200;color:#fff"><div class="swatch-label">Caution</div><div class="swatch-token">--caution</div></div>
+    <div class="swatch" style="background:#C44D00;color:#fff"><div class="swatch-label">Warning</div><div class="swatch-token">--warning</div></div>
+    <div class="swatch" style="background:#B3261E;color:#fff"><div class="swatch-label">Error</div><div class="swatch-token">--error</div></div>
+    <div class="swatch" style="background:#C2185B;color:#fff"><div class="swatch-label">Accent</div><div class="swatch-token">--accent</div></div>
+    <div class="swatch" style="background:#606163;color:#fff"><div class="swatch-label">Outline</div><div class="swatch-token">--outline</div></div>
+    <div class="swatch" style="background:#1A1C1E;color:#fff"><div class="swatch-label">On Surface</div><div class="swatch-token">--on-surface</div></div>
+    <div class="swatch" style="background:#FAFAFA;color:#1A1C1E;border:1px solid #e0e0e0"><div class="swatch-label">Surface</div><div class="swatch-token">--surface</div></div>
+  </div>
+
+</div>
+</body>
+</html>

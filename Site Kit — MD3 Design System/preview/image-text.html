@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Image + Text — MD3 Site Kit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+body{background:var(--md-sys-color-background);}
+.ds-label{font-size:11px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--md-sys-color-primary);margin-bottom:var(--space-2);}
+.ds-title{font-size:22px;font-weight:400;color:var(--md-sys-color-on-surface);margin:0 0 var(--space-2);}
+.ds-desc{font-size:14px;color:var(--md-sys-color-on-surface-variant);margin:0 0 var(--space-8);}
+.section-header{max-width:1200px;margin:0 auto;padding:var(--space-12) var(--space-8) 0;}
+.ds-divider{border:none;border-top:1px solid var(--md-sys-color-outline-variant);}
+
+.btn{display:inline-flex;align-items:center;gap:6px;padding:12px 28px;border-radius:var(--md-sys-shape-corner-full);font-size:14px;font-weight:500;border:none;cursor:pointer;text-decoration:none;transition:opacity .2s;}
+.btn--filled{background:var(--md-sys-color-primary);color:#fff;}
+.btn--filled:hover{opacity:.88;}
+.btn--tonal{background:var(--md-sys-color-secondary-container);color:var(--md-sys-color-on-secondary-container);}
+.btn--tonal:hover{opacity:.88;}
+.btn--text{background:none;color:var(--md-sys-color-primary);padding:12px 8px;}
+.btn--text:hover{background:var(--md-sys-color-primary-container);}
+
+/* ── PLACEHOLDER ── */
+.ph{background:var(--md-sys-color-surface-container-high);background-image:repeating-linear-gradient(45deg,transparent,transparent 12px,var(--md-sys-color-surface-container-highest) 12px,var(--md-sys-color-surface-container-highest) 13px);display:flex;align-items:center;justify-content:center;font-size:12px;font-family:monospace;color:var(--md-sys-color-on-surface-variant);text-align:center;padding:16px;}
+
+/* ── A: IMAGE LEFT / TEXT RIGHT ── */
+.imgtext{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-12);align-items:center;max-width:1200px;margin:0 auto;padding:var(--space-12) var(--space-8);}
+.imgtext--reverse{direction:rtl;}
+.imgtext--reverse > *{direction:ltr;}
+.imgtext__img{border-radius:var(--md-sys-shape-corner-extra-large);overflow:hidden;}
+.imgtext__img .ph{height:420px;}
+.imgtext__eyebrow{font-size:12px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--md-sys-color-primary);margin:0 0 var(--space-3);}
+.imgtext__title{font-size:36px;font-weight:400;line-height:1.2;color:var(--md-sys-color-on-surface);margin:0 0 var(--space-4);}
+.imgtext__body{font-size:16px;color:var(--md-sys-color-on-surface-variant);line-height:1.7;margin:0 0 var(--space-6);}
+.imgtext__actions{display:flex;gap:var(--space-3);flex-wrap:wrap;}
+.imgtext__list{list-style:none;padding:0;margin:0 0 var(--space-6);}
+.imgtext__list li{display:flex;align-items:flex-start;gap:var(--space-3);font-size:15px;color:var(--md-sys-color-on-surface-variant);margin-bottom:var(--space-3);}
+.imgtext__list .material-symbols-outlined{color:var(--md-sys-color-primary);font-size:20px;flex-shrink:0;margin-top:2px;}
+@media(max-width:768px){.imgtext{grid-template-columns:1fr;}.imgtext--reverse{direction:ltr;}}
+
+/* ── C: FULL-WIDTH IMAGE WITH TEXT OVERLAY ── */
+.overlay-block{position:relative;overflow:hidden;min-height:520px;display:flex;align-items:flex-end;}
+.overlay-block__bg{position:absolute;inset:0;}
+.overlay-block__bg .ph{height:100%;border-radius:0;font-size:14px;}
+.overlay-block__gradient{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.8) 0%,rgba(0,0,0,.4) 50%,transparent 100%);}
+.overlay-block__content{position:relative;z-index:1;max-width:720px;padding:var(--space-16) var(--space-8);}
+.overlay-block__eyebrow{font-size:12px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.7);margin:0 0 var(--space-3);}
+.overlay-block__title{font-size:44px;font-weight:300;line-height:1.15;color:#fff;margin:0 0 var(--space-4);}
+.overlay-block__body{font-size:17px;color:rgba(255,255,255,.8);line-height:1.7;margin:0 0 var(--space-6);}
+.overlay-block__actions{display:flex;gap:var(--space-3);}
+.btn--white{background:#fff;color:var(--md-sys-color-primary);padding:12px 28px;border-radius:var(--md-sys-shape-corner-full);font-size:14px;font-weight:500;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:opacity .2s;}
+.btn--white:hover{opacity:.88;}
+.btn--ghost{background:rgba(255,255,255,.15);backdrop-filter:blur(8px);color:#fff;border:1.5px solid rgba(255,255,255,.5);padding:12px 28px;border-radius:var(--md-sys-shape-corner-full);font-size:14px;font-weight:500;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:background .2s;}
+.btn--ghost:hover{background:rgba(255,255,255,.25);}
+
+/* ── D: ICON LEFT / TEXT RIGHT (feature list) ── */
+.feature-list-section{max-width:1200px;margin:0 auto;padding:var(--space-12) var(--space-8);}
+.feature-list{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--space-6);}
+.feature-item{display:flex;gap:var(--space-4);align-items:flex-start;}
+.feature-item__icon-wrap{width:52px;height:52px;border-radius:var(--md-sys-shape-corner-large);background:var(--md-sys-color-primary-container);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--md-sys-color-primary);}
+.feature-item__title{font-size:16px;font-weight:500;color:var(--md-sys-color-on-surface);margin:0 0 var(--space-1);}
+.feature-item__body{font-size:14px;color:var(--md-sys-color-on-surface-variant);margin:0;line-height:1.6;}
+@media(max-width:768px){.feature-list{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<!-- A: Image Left / Text Right -->
+<div class="section-header">
+  <div class="ds-label">Image+Text A</div>
+  <h2 class="ds-title">Image Left / Text Right</h2>
+  <p class="ds-desc">50/50 split, изображение слева</p>
+</div>
+<div class="imgtext">
+  <div class="imgtext__img"><div class="ph" style="height:420px">[ фото — 720×560 ]</div></div>
+  <div class="imgtext__text">
+    <p class="imgtext__eyebrow">Наш подход</p>
+    <h2 class="imgtext__title">SEO, которое работает на рост бизнеса</h2>
+    <p class="imgtext__body">Рыба-текст используется в печатной и вёрстке с XVI века, когда неизвестный типограф взял гранку набора и перемешал её, чтобы создать книгу образцов шрифтов. Он не только успешно выжил пять веков, но и перейдя в электронный набор, остался essentially неизменным.</p>
+    <ul class="imgtext__list">
+      <li><span class="material-symbols-outlined">check_circle</span>Аудит, стратегия и исполнение под ключ</li>
+      <li><span class="material-symbols-outlined">check_circle</span>Прозрачная отчётность в реальном времени</li>
+      <li><span class="material-symbols-outlined">check_circle</span>Фокус на коммерческий трафик, не просто позиции</li>
+    </ul>
+    <div class="imgtext__actions">
+      <a href="#" class="btn btn--filled">Начать сотрудничество <span class="material-symbols-outlined icon-sm">arrow_forward</span></a>
+      <a href="#" class="btn btn--text">Смотреть кейсы</a>
+    </div>
+  </div>
+</div>
+
+<hr class="ds-divider">
+
+<!-- B: Image Right / Text Left -->
+<div class="section-header">
+  <div class="ds-label">Image+Text B</div>
+  <h2 class="ds-title">Image Right / Text Left</h2>
+  <p class="ds-desc">50/50 split, изображение справа</p>
+</div>
+<div class="imgtext imgtext--reverse">
+  <div class="imgtext__img"><div class="ph" style="height:420px">[ фото — 720×560 ]</div></div>
+  <div class="imgtext__text">
+    <p class="imgtext__eyebrow">Результаты</p>
+    <h2 class="imgtext__title">Данные, которые говорят сами за себя</h2>
+    <p class="imgtext__body">Стандартный фрагмент Lorem Ipsum, используемый с 1500-х годов: «Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.» Lorem Ipsum имеет более-менее стандартное распределение букв.</p>
+    <ul class="imgtext__list">
+      <li><span class="material-symbols-outlined">trending_up</span>Средний рост трафика +280% за 12 месяцев</li>
+      <li><span class="material-symbols-outlined">trending_up</span>ТОП-3 по коммерческим запросам — 73% проектов</li>
+      <li><span class="material-symbols-outlined">trending_up</span>ROI от SEO: от 380% в первый год</li>
+    </ul>
+    <div class="imgtext__actions">
+      <a href="#" class="btn btn--tonal">Смотреть результаты</a>
+    </div>
+  </div>
+</div>
+
+<hr class="ds-divider">
+
+<!-- C: Full-width Overlay -->
+<div class="section-header">
+  <div class="ds-label">Image+Text C</div>
+  <h2 class="ds-title">Full-width Image with Text Overlay</h2>
+  <p class="ds-desc">Тёмный градиент снизу, текст поверх изображения</p>
+</div>
+<div class="overlay-block">
+  <div class="overlay-block__bg"><div class="ph" style="height:100%;min-height:520px">[ фоновое фото — 1920×600 ]</div></div>
+  <div class="overlay-block__gradient"></div>
+  <div class="overlay-block__content">
+    <p class="overlay-block__eyebrow">10+ лет опыта</p>
+    <h2 class="overlay-block__title">Строим видимость бизнеса в поиске</h2>
+    <p class="overlay-block__body">Работаем с крупными e-commerce проектами, B2B-сервисами и локальным бизнесом по всей России. Средний срок работы с клиентом — 3 года.</p>
+    <div class="overlay-block__actions">
+      <a href="#" class="btn--white">Обсудить проект <span class="material-symbols-outlined icon-sm">arrow_forward</span></a>
+      <a href="#" class="btn--ghost">Смотреть кейсы</a>
+    </div>
+  </div>
+</div>
+
+<hr class="ds-divider">
+
+<!-- D: Icon + Text Feature List -->
+<div class="section-header">
+  <div class="ds-label">Image+Text D</div>
+  <h2 class="ds-title">Icon Left / Text Right — Feature List</h2>
+  <p class="ds-desc">Малая иконка слева, заголовок + текст справа — для блоков преимуществ</p>
+</div>
+<div class="feature-list-section">
+  <div class="feature-list">
+    <div class="feature-item">
+      <div class="feature-item__icon-wrap"><span class="material-symbols-outlined">manage_search</span></div>
+      <div><h3 class="feature-item__title">Глубокий анализ семантики</h3><p class="feature-item__body">Собираем кластеры из тысяч запросов, отсекаем нерелевантные, строим структуру.</p></div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-item__icon-wrap"><span class="material-symbols-outlined">speed</span></div>
+      <div><h3 class="feature-item__title">Технический аудит сайта</h3><p class="feature-item__body">Core Web Vitals, индексация, canonical, дубли, ошибки 4xx/5xx — всё в отчёте.</p></div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-item__icon-wrap"><span class="material-symbols-outlined">article</span></div>
+      <div><h3 class="feature-item__title">Контент-маркетинг</h3><p class="feature-item__body">Пишем экспертные тексты, оптимизируем существующие страницы, ведём блог.</p></div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-item__icon-wrap"><span class="material-symbols-outlined">link</span></div>
+      <div><h3 class="feature-item__title">Белый линкбилдинг</h3><p class="feature-item__body">Тематические площадки, гостевые статьи, крауд. Без спама и PBN.</p></div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-item__icon-wrap"><span class="material-symbols-outlined">bar_chart</span></div>
+      <div><h3 class="feature-item__title">Прозрачная аналитика</h3><p class="feature-item__body">Еженедельные отчёты, дашборд позиций, сквозная аналитика до лидов.</p></div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-item__icon-wrap"><span class="material-symbols-outlined">support_agent</span></div>
+      <div><h3 class="feature-item__title">Выделенный менеджер</h3><p class="feature-item__body">Один контакт, всегда в курсе проекта. Ответ за 4 часа в рабочее время.</p></div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

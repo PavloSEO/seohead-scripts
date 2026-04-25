@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pricing — MD3 Site Kit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+.ds-page{max-width:1200px;margin:0 auto;padding:var(--space-8);}
+.ds-label{font-size:11px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--md-sys-color-primary);margin-bottom:var(--space-2);}
+.ds-section{margin-bottom:var(--space-16);}
+.ds-section__title{font-size:22px;font-weight:400;color:var(--md-sys-color-on-surface);margin:0 0 var(--space-2);}
+.ds-section__desc{font-size:14px;color:var(--md-sys-color-on-surface-variant);margin:0 0 var(--space-8);}
+.ds-divider{border:none;border-top:1px solid var(--md-sys-color-outline-variant);margin:var(--space-12) 0;}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 24px;border-radius:var(--md-sys-shape-corner-full);font-size:14px;font-weight:500;border:none;cursor:pointer;transition:opacity .2s;text-decoration:none;}
+.btn--filled{background:var(--md-sys-color-primary);color:#fff;width:100%;justify-content:center;}
+.btn--filled:hover{opacity:.88;}
+.btn--outlined{background:transparent;color:var(--md-sys-color-primary);border:1px solid var(--md-sys-color-outline);width:100%;justify-content:center;}
+.btn--outlined:hover{background:var(--md-sys-color-primary-container);}
+
+/* ── A: 3-TIER CARDS ── */
+.pricing-toggle{display:flex;align-items:center;justify-content:center;gap:var(--space-3);margin-bottom:var(--space-8);}
+.pricing-toggle__label{font-size:14px;font-weight:500;color:var(--md-sys-color-on-surface-variant);}
+.pricing-toggle__label--active{color:var(--md-sys-color-on-surface);}
+.toggle-switch{position:relative;width:52px;height:32px;cursor:pointer;}
+.toggle-switch input{opacity:0;width:0;height:0;}
+.toggle-switch__track{position:absolute;inset:0;background:var(--md-sys-color-outline);border-radius:var(--md-sys-shape-corner-full);transition:background .2s;}
+.toggle-switch input:checked+.toggle-switch__track{background:var(--md-sys-color-primary);}
+.toggle-switch__thumb{position:absolute;height:24px;width:24px;left:4px;bottom:4px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.3);}
+.toggle-switch input:checked~.toggle-switch__thumb{transform:translateX(20px);}
+.save-badge{padding:2px 10px;background:var(--md-sys-color-tertiary-container);color:var(--md-sys-color-on-tertiary-container);border-radius:var(--md-sys-shape-corner-full);font-size:11px;font-weight:500;}
+
+.pricing-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-6);}
+.pricing-card{background:var(--md-sys-color-surface);border-radius:var(--md-sys-shape-corner-extra-large);padding:var(--space-8) var(--space-6);border:1px solid var(--md-sys-color-outline-variant);position:relative;transition:box-shadow .25s;}
+.pricing-card:hover{box-shadow:var(--md-sys-elevation-2);}
+.pricing-card--popular{background:var(--md-sys-color-primary);border-color:var(--md-sys-color-primary);transform:translateY(-8px);box-shadow:var(--md-sys-elevation-3);}
+.pricing-card--popular .pricing-card__name{color:rgba(255,255,255,.8);}
+.pricing-card--popular .pricing-card__price{color:#fff;}
+.pricing-card--popular .pricing-card__period{color:rgba(255,255,255,.7);}
+.pricing-card--popular .pricing-card__desc{color:rgba(255,255,255,.8);}
+.pricing-card--popular .pricing-card__feature{color:rgba(255,255,255,.9);}
+.pricing-card--popular .pricing-card__divider{border-color:rgba(255,255,255,.2);}
+.pricing-card--popular .btn--filled{background:#fff;color:var(--md-sys-color-primary);}
+.popular-badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--md-sys-color-tertiary);color:#fff;padding:4px 16px;border-radius:var(--md-sys-shape-corner-full);font-size:12px;font-weight:500;white-space:nowrap;}
+.pricing-card__name{font-size:14px;font-weight:500;color:var(--md-sys-color-on-surface-variant);letter-spacing:.5px;margin:0 0 var(--space-4);}
+.pricing-card__price{font-size:48px;font-weight:300;color:var(--md-sys-color-on-surface);line-height:1;display:flex;align-items:flex-start;gap:4px;}
+.pricing-card__currency{font-size:20px;font-weight:400;margin-top:8px;}
+.pricing-card__period{font-size:14px;color:var(--md-sys-color-on-surface-variant);margin:var(--space-1) 0 var(--space-4);}
+.pricing-card__desc{font-size:14px;color:var(--md-sys-color-on-surface-variant);margin:0 0 var(--space-6);line-height:1.5;}
+.pricing-card__divider{border:none;border-top:1px solid var(--md-sys-color-outline-variant);margin:0 0 var(--space-6);}
+.pricing-card__features{list-style:none;padding:0;margin:0 0 var(--space-8);}
+.pricing-card__feature{display:flex;align-items:flex-start;gap:var(--space-3);font-size:14px;color:var(--md-sys-color-on-surface);margin-bottom:var(--space-3);}
+.pricing-card__feature .material-symbols-outlined{font-size:18px;color:var(--md-sys-color-primary);flex-shrink:0;margin-top:2px;}
+.pricing-card--popular .pricing-card__feature .material-symbols-outlined{color:rgba(255,255,255,.9);}
+.price-val{transition:opacity .3s;}
+@media(max-width:900px){.pricing-cards{grid-template-columns:1fr;}.pricing-card--popular{transform:none;}}
+
+/* ── B: COMPARISON TABLE ── */
+.comp-table-wrap{overflow-x:auto;border-radius:var(--md-sys-shape-corner-large);border:1px solid var(--md-sys-color-outline-variant);}
+.comp-table{width:100%;border-collapse:collapse;font-size:14px;}
+.comp-table th,.comp-table td{padding:var(--space-4) var(--space-6);text-align:left;border-bottom:1px solid var(--md-sys-color-outline-variant);}
+.comp-table thead tr{background:var(--md-sys-color-surface-container-low);}
+.comp-table thead th{font-weight:500;color:var(--md-sys-color-on-surface);font-size:13px;position:sticky;top:0;background:var(--md-sys-color-surface-container-low);z-index:1;}
+.comp-table thead th:first-child{color:var(--md-sys-color-on-surface-variant);}
+.comp-table thead th.popular-col{background:var(--md-sys-color-primary-container);color:var(--md-sys-color-on-primary-container);}
+.comp-table tbody tr:last-child td{border-bottom:none;}
+.comp-table tbody tr:hover{background:var(--md-sys-color-surface-container-low);}
+.comp-table td:first-child{color:var(--md-sys-color-on-surface-variant);font-weight:400;}
+.comp-table td.popular-col{background:color-mix(in srgb,var(--md-sys-color-primary-container) 30%,transparent);}
+.check{color:var(--md-sys-color-primary);font-size:18px;}
+.cross{color:var(--md-sys-color-on-surface-variant);opacity:.4;font-size:18px;}
+.cat-row td{background:var(--md-sys-color-surface-container);font-weight:500;font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:var(--md-sys-color-on-surface-variant);}
+
+/* ── C: AGENCY PRICE LIST (ACCORDION) ── */
+.price-list{}
+.price-category{border:1px solid var(--md-sys-color-outline-variant);border-radius:var(--md-sys-shape-corner-large);margin-bottom:var(--space-4);overflow:hidden;}
+.price-category__header{display:flex;align-items:center;justify-content:space-between;padding:var(--space-4) var(--space-6);cursor:pointer;background:var(--md-sys-color-surface);transition:background .2s;user-select:none;}
+.price-category__header:hover{background:var(--md-sys-color-surface-container-low);}
+.price-category__title{font-size:16px;font-weight:500;color:var(--md-sys-color-on-surface);}
+.price-category__meta{font-size:13px;color:var(--md-sys-color-on-surface-variant);}
+.price-category__icon{transition:transform .3s;color:var(--md-sys-color-on-surface-variant);}
+.price-category--open .price-category__icon{transform:rotate(180deg);}
+.price-category__body{max-height:0;overflow:hidden;transition:max-height .4s ease;}
+.price-category--open .price-category__body{max-height:600px;}
+.price-item{display:grid;grid-template-columns:1fr auto;align-items:start;gap:var(--space-4);padding:var(--space-4) var(--space-6);border-top:1px solid var(--md-sys-color-outline-variant);}
+.price-item__name{font-size:14px;font-weight:500;color:var(--md-sys-color-on-surface);}
+.price-item__desc{font-size:12px;color:var(--md-sys-color-on-surface-variant);margin-top:2px;}
+.price-item__price{text-align:right;white-space:nowrap;}
+.price-item__amount{font-size:16px;font-weight:500;color:var(--md-sys-color-primary);}
+.price-item__unit{font-size:11px;color:var(--md-sys-color-on-surface-variant);display:block;}
+
+/* ── D: PRICE BADGE VARIANTS ── */
+.badge-demo{display:flex;flex-wrap:wrap;gap:var(--space-3);align-items:center;}
+.price-badge{display:inline-flex;align-items:center;gap:var(--space-2);padding:6px 14px;border-radius:var(--md-sys-shape-corner-full);font-size:13px;font-weight:500;border:none;}
+.price-badge--from{background:var(--md-sys-color-surface-container);color:var(--md-sys-color-on-surface);}
+.price-badge--from .price-badge__from{font-size:11px;opacity:.7;}
+.price-badge--exact{background:var(--md-sys-color-primary-container);color:var(--md-sys-color-on-primary-container);}
+.price-badge--request{background:var(--md-sys-color-secondary-container);color:var(--md-sys-color-on-secondary-container);}
+.price-badge--free{background:#B7F0CC;color:#002112;}
+.price-badge--sale{background:var(--md-sys-color-error-container);color:var(--md-sys-color-on-error-container);position:relative;}
+.price-badge--sale .price-badge__old{font-size:11px;opacity:.7;text-decoration:line-through;}
+</style>
+</head>
+<body>
+<div class="ds-page">
+
+  <!-- A: 3-Tier Cards -->
+  <div class="ds-section">
+    <div class="ds-label">Pricing A</div>
+    <h2 class="ds-section__title">3-Tier Pricing Cards</h2>
+    <p class="ds-section__desc">Базовый / Про / Энтерпрайз, популярный тариф поднят, переключатель месяц/год с анимацией</p>
+
+    <div class="pricing-toggle">
+      <span class="pricing-toggle__label pricing-toggle__label--active" id="lblMonth">Ежемесячно</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="billingToggle" onchange="switchBilling()">
+        <div class="toggle-switch__track"></div>
+        <div class="toggle-switch__thumb"></div>
+      </label>
+      <span class="pricing-toggle__label" id="lblYear">Ежегодно</span>
+      <span class="save-badge">−20%</span>
+    </div>
+
+    <div class="pricing-cards">
+      <!-- Basic -->
+      <div class="pricing-card">
+        <p class="pricing-card__name">БАЗОВЫЙ</p>
+        <div class="pricing-card__price"><span class="pricing-card__currency">₽</span><span class="price-val" id="p1">19 900</span></div>
+        <p class="pricing-card__period" id="per1">/ месяц</p>
+        <p class="pricing-card__desc">Для малого бизнеса и сайтов с небольшой семантикой. Стабильный рост позиций.</p>
+        <hr class="pricing-card__divider">
+        <ul class="pricing-card__features">
+          <li class="pricing-card__feature"><span class="material-symbols-outlined">check_circle</span>До 200 ключевых слов</li>
+          <li class="pricing-card__feature"><span class="material-symbols-outlined">check_circle</span>Технический аудит</li>
+          <li class="pricing-card__feature"><span class="material-symbols-outlined">check_circle</span>4 оптимизированных страницы/мес</li>
+          <li class="pricing-card__feature"><span class="material-symbols-outlined">check_circle</span>Ежемесячный отчёт</li>
+          <li class="pricing-card__feature"><span class="material-symbols-outlined">check_circle</span>Поддержка по email</li>
+        </ul>
+        <a href="#" class="btn btn--outlined">Выбрать план</a>
+      </div>
+      <!-- Pro (popular) -->
+      <div class="pricing-card pricing-card--popular">
+        <div class="popular-badge">Популярный</div>
+        <p class="pricing-card__name">ПРО</p>
+        <div class="pricing-card__price"><span class="pricing-card__currency">₽</span><span class="price-val" id="p2">39 900</span></div>
+        <p class="pricing-card__period" id="per2">/ месяц</p>
+        <p class="pricing-card__desc">Для среднего бизнеса. Полный цикл SEO с контентным маркетингом.</p>
+        <hr class="pricing-card__divider">
+        <ul class="pricing-card__features">
+          <li class="pricing-card__feature"><span class="material-symbols-outlined">check_circle</span>До 1 000 ключевых слов</li>
+          <li class="pricing-card__feature"><span class="material-symbols-outlined">check_circle</span>Полный технический аудит</li>
+          <li class="pricing-card__feature"><span class="material-symbols-outlined">check_circle</span>12 страниц + 4 статьи/мес</li>
+          <li class="pricing-card__feature"><span class="material-symbols-outlined">check_circle</span>Линкбилдинг — 10 ссылок/мес</li>
+          <li class="pricing-card__feature"><span class="material-symbols-outlined">check_circle</span>Еженедельный отчёт</li>
+          <li class="pricing-card__feature"><span class="material-symbols-outlined">check_circle</span>Выделенный менеджер</li>
+        </ul>
+        <a href="#" class="btn btn--filled">Выбрать план</a>
+      </div>
+      <!-- Enterprise -->
+      <div class="pricing-card">
+        <p class="pricing-card__name">ЭНТЕРПРАЙЗ</p>
+        <div class="pricing-card__price"><span class="pricing-card__currency">₽</span><span class="price-val" id="p3">89 900</span></div>
+        <p class="pricing-card__period" id="per3">/ месяц</p>
+        <p class="pricing-card__desc">Для крупных проектов и маркетплейсов. Индивидуальная стратегия.</p>
+        <hr class="pricing-card__divider">
+        <ul class="pricing-card__features">
+          <li class="pricing-card__feature"><span class="material-symbols-outlined">check_circle</span>Неограниченная семантика</li>
+          <li class="pricing-card__feature"><span class="material-symbols-outlined">check_circle</span>Приоритетный аудит + CRO</li>
+          <li class="pricing-card__feature"><span class="material-symbols-outlined">check_circle</span>30+ страниц + контент/мес</li>
+          <li class="pricing-card__feature"><span class="material-symbols-outlined">check_circle</span>Агрессивный линкбилдинг</li>
+          <li class="pricing-card__feature"><span class="material-symbols-outlined">check_circle</span>Дашборд в реальном времени</li>
+          <li class="pricing-card__feature"><span class="material-symbols-outlined">check_circle</span>Команда: SEO + копирайтер + аналитик</li>
+        </ul>
+        <a href="#" class="btn btn--outlined">Связаться с нами</a>
+      </div>
+    </div>
+  </div>
+
+  <hr class="ds-divider">
+
+  <!-- B: Comparison Table -->
+  <div class="ds-section">
+    <div class="ds-label">Pricing B</div>
+    <h2 class="ds-section__title">Feature Comparison Table</h2>
+    <p class="ds-section__desc">Функции × тарифы, ✓ / ✗ / текстовые значения, шапка липкая</p>
+    <div class="comp-table-wrap">
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th style="width:35%">Функция</th>
+            <th>Базовый</th>
+            <th class="popular-col">Про ★</th>
+            <th>Энтерпрайз</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="cat-row"><td colspan="4">Аналитика и аудит</td></tr>
+          <tr><td>Технический SEO-аудит</td><td>Базовый</td><td class="popular-col">Полный</td><td>Полный + CRO</td></tr>
+          <tr><td>Анализ конкурентов</td><td><span class="cross material-symbols-outlined">close</span></td><td class="popular-col"><span class="check material-symbols-outlined">check</span></td><td><span class="check material-symbols-outlined">check</span></td></tr>
+          <tr><td>Дашборд позиций</td><td>Еженедельно</td><td class="popular-col">Ежедневно</td><td>Реальное время</td></tr>
+
+          <tr class="cat-row"><td colspan="4">Оптимизация контента</td></tr>
+          <tr><td>Страниц в месяц</td><td>4</td><td class="popular-col">12</td><td>Без лимита</td></tr>
+          <tr><td>Статьи / блог</td><td><span class="cross material-symbols-outlined">close</span></td><td class="popular-col">4 / мес</td><td>8+ / мес</td></tr>
+          <tr><td>Оптимизация meta/заголовков</td><td><span class="check material-symbols-outlined">check</span></td><td class="popular-col"><span class="check material-symbols-outlined">check</span></td><td><span class="check material-symbols-outlined">check</span></td></tr>
+
+          <tr class="cat-row"><td colspan="4">Линкбилдинг</td></tr>
+          <tr><td>Крауд-маркетинг</td><td><span class="cross material-symbols-outlined">close</span></td><td class="popular-col">5 / мес</td><td>20 / мес</td></tr>
+          <tr><td>Гостевые публикации</td><td><span class="cross material-symbols-outlined">close</span></td><td class="popular-col">2 / мес</td><td>6 / мес</td></tr>
+
+          <tr class="cat-row"><td colspan="4">Поддержка</td></tr>
+          <tr><td>Выделенный менеджер</td><td><span class="cross material-symbols-outlined">close</span></td><td class="popular-col"><span class="check material-symbols-outlined">check</span></td><td><span class="check material-symbols-outlined">check</span></td></tr>
+          <tr><td>SLA ответа</td><td>48 ч</td><td class="popular-col">24 ч</td><td>4 ч</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <hr class="ds-divider">
+
+  <!-- C: Agency Price List -->
+  <div class="ds-section">
+    <div class="ds-label">Pricing C</div>
+    <h2 class="ds-section__title">Agency Price List</h2>
+    <p class="ds-section__desc">Услуга + описание + цена, аккордеон по категории</p>
+    <div class="price-list">
+      <div class="price-category price-category--open" id="cat1">
+        <div class="price-category__header" onclick="toggleCat('cat1')">
+          <div><p class="price-category__title">SEO-аудит</p><p class="price-category__meta">Анализ и рекомендации</p></div>
+          <span class="material-symbols-outlined price-category__icon">expand_more</span>
+        </div>
+        <div class="price-category__body">
+          <div class="price-item"><div><p class="price-item__name">Экспресс-аудит</p><p class="price-item__desc">До 50 страниц, основные ошибки, приоритеты</p></div><div class="price-item__price"><span class="price-item__amount">от 9 900 ₽</span><span class="price-item__unit">разово</span></div></div>
+          <div class="price-item"><div><p class="price-item__name">Полный технический аудит</p><p class="price-item__desc">Без ограничения страниц, конкурентный анализ, ТЗ разработчику</p></div><div class="price-item__price"><span class="price-item__amount">от 29 900 ₽</span><span class="price-item__unit">разово</span></div></div>
+          <div class="price-item"><div><p class="price-item__name">Аудит контентной стратегии</p><p class="price-item__desc">Анализ семантики, кластеризация, план развития</p></div><div class="price-item__price"><span class="price-item__amount">от 14 900 ₽</span><span class="price-item__unit">разово</span></div></div>
+        </div>
+      </div>
+      <div class="price-category" id="cat2">
+        <div class="price-category__header" onclick="toggleCat('cat2')">
+          <div><p class="price-category__title">Контент-маркетинг</p><p class="price-category__meta">Тексты, статьи, оптимизация</p></div>
+          <span class="material-symbols-outlined price-category__icon">expand_more</span>
+        </div>
+        <div class="price-category__body">
+          <div class="price-item"><div><p class="price-item__name">SEO-текст для страницы</p><p class="price-item__desc">2 000–4 000 знаков, ключи в ТЗ</p></div><div class="price-item__price"><span class="price-item__amount">от 3 500 ₽</span><span class="price-item__unit">за текст</span></div></div>
+          <div class="price-item"><div><p class="price-item__name">Экспертная статья в блог</p><p class="price-item__desc">4 000–8 000 знаков, медиа, перелинковка</p></div><div class="price-item__price"><span class="price-item__amount">от 6 500 ₽</span><span class="price-item__unit">за статью</span></div></div>
+          <div class="price-item"><div><p class="price-item__name">Контент-план на месяц</p><p class="price-item__desc">20 тем с кластерами и ТЗ</p></div><div class="price-item__price"><span class="price-item__amount">от 12 000 ₽</span><span class="price-item__unit">в месяц</span></div></div>
+        </div>
+      </div>
+      <div class="price-category" id="cat3">
+        <div class="price-category__header" onclick="toggleCat('cat3')">
+          <div><p class="price-category__title">Линкбилдинг</p><p class="price-category__meta">Внешние ссылки и упоминания</p></div>
+          <span class="material-symbols-outlined price-category__icon">expand_more</span>
+        </div>
+        <div class="price-category__body">
+          <div class="price-item"><div><p class="price-item__name">Крауд-маркетинг</p><p class="price-item__desc">Тематические форумы, Q&A, отзывики</p></div><div class="price-item__price"><span class="price-item__amount">от 1 200 ₽</span><span class="price-item__unit">за ссылку</span></div></div>
+          <div class="price-item"><div><p class="price-item__name">Гостевая публикация</p><p class="price-item__desc">Тематический сайт DR 40+</p></div><div class="price-item__price"><span class="price-item__amount">от 8 900 ₽</span><span class="price-item__unit">за размещение</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="ds-divider">
+
+  <!-- D: Price Badges -->
+  <div class="ds-section">
+    <div class="ds-label">Pricing D</div>
+    <h2 class="ds-section__title">Inline Price Badge Variants</h2>
+    <p class="ds-section__desc">От / точная / по запросу / бесплатно / акция</p>
+    <div class="badge-demo">
+      <span class="price-badge price-badge--from"><span class="price-badge__from">от</span> 9 900 ₽</span>
+      <span class="price-badge price-badge--exact">39 900 ₽ / мес</span>
+      <span class="price-badge price-badge--request"><span class="material-symbols-outlined icon-sm">mail</span> По запросу</span>
+      <span class="price-badge price-badge--free"><span class="material-symbols-outlined icon-sm">card_giftcard</span> Бесплатно</span>
+      <span class="price-badge price-badge--sale"><span class="price-badge__old">49 900 ₽</span> 39 900 ₽</span>
+    </div>
+  </div>
+
+</div>
+<script>
+// Billing toggle
+const monthly = [19900, 39900, 89900];
+const yearly  = [15900, 31900, 71900];
+const perMonth = '/ месяц';
+const perYear  = '/ год (×12)';
+function fmt(n){ return n.toLocaleString('ru-RU'); }
+function switchBilling(){
+  const yearly_on = document.getElementById('billingToggle').checked;
+  const prices = yearly_on ? yearly : monthly;
+  const period = yearly_on ? perYear : perMonth;
+  [1,2,3].forEach((i,idx)=>{
+    document.getElementById('p'+i).textContent = fmt(prices[idx]);
+    document.getElementById('per'+i).textContent = period;
+  });
+  document.getElementById('lblMonth').classList.toggle('pricing-toggle__label--active',!yearly_on);
+  document.getElementById('lblYear').classList.toggle('pricing-toggle__label--active',yearly_on);
+}
+// Accordion
+function toggleCat(id){
+  const el=document.getElementById(id);
+  el.classList.toggle('price-category--open');
+}
+</script>
+</body>
+</html>
