@@ -155,9 +155,9 @@ body[data-tab="clusterer"] {
     --tab-accent-text: #431407;
 }
 body[data-tab="prompts"] {
-    --tab-accent:      #f472b6;   /* pink-400 */
-    --tab-accent-dim:  rgba(244,114,182,.12);
-    --tab-accent-text: #4c0519;
+    --tab-accent:      #2dd4bf;   /* teal-400 */
+    --tab-accent-dim:  rgba(45,212,191,.14);
+    --tab-accent-text: #042f2e;
 }
 body[data-tab="sitemap"] {
     --tab-accent:      #34d399;   /* emerald-400 */
