@@ -57,6 +57,10 @@
                 <span class="material-symbols-outlined tab-icon">auto_stories</span>
                 <span class="tab-label">Prompt Library</span>
             </button>
+            <button class="tab-item" data-tab="sitemap">
+                <span class="material-symbols-outlined tab-icon">account_tree</span>
+                <span class="tab-label">Sitemap Analyser</span>
+            </button>
         </nav>
 
         <div class="titlebar-controls">
@@ -1060,6 +1064,174 @@
             </div>
         </div><!-- /#panel-prompts -->
 
+        <!-- ─────────────── SITEMAP ANALYSER ─────────────── -->
+        <div class="tab-panel" id="panel-sitemap">
+            <div class="tool-layout">
+
+                <!-- LEFT: settings -->
+                <aside class="tool-sidebar tool-sidebar--left">
+                    <div class="sidebar-header">
+                        <span class="material-symbols-outlined sidebar-header__icon">account_tree</span>
+                        <span class="sidebar-header__title">Настройки</span>
+                    </div>
+                    <div class="sidebar-body">
+
+                        <div class="form-group">
+                            <label class="form-label">URL сайтмапа</label>
+                            <textarea class="md-field" id="sm-url-input" rows="4"
+                                placeholder="https://example.com/sitemap.xml&#10;https://example.com/sitemap_index.xml"></textarea>
+                            <small class="text-muted" style="font-size:11px;margin-top:4px;">Один URL. Index-сайтмапы раскрываются автоматически.</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Параллельных запросов</label>
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <input type="range" class="md-range" id="sm-concurrency" min="1" max="20" value="3" style="flex:1;">
+                                <strong id="sm-concurrency-val" style="min-width:22px;text-align:right;">3</strong>
+                            </div>
+                            <div class="range-hints"><span>1 (аккуратно)</span><span>20 (быстро)</span></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Порог счётчика листьев</label>
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <input type="range" class="md-range" id="sm-leaf-threshold" min="5" max="100" value="20" step="5" style="flex:1;">
+                                <strong id="sm-leaf-threshold-val" style="min-width:28px;text-align:right;">20</strong>
+                            </div>
+                            <small class="text-muted" style="font-size:11px;">Группы ≥ N конечных URL показываются счётчиком</small>
+                        </div>
+
+                        <button class="md-btn md-btn--filled md-btn--block md-btn--lg" id="sm-run-btn">
+                            <span class="material-symbols-outlined">play_arrow</span>
+                            Запустить анализ
+                        </button>
+                        <button class="md-btn md-btn--outlined md-btn--block" id="sm-stop-btn" disabled>
+                            <span class="material-symbols-outlined">stop</span>
+                            Остановить
+                        </button>
+
+                        <div class="divider"></div>
+
+                        <div class="sm-stat-grid" id="sm-stat-grid">
+                            <div class="sm-stat">
+                                <span class="sm-stat__val" id="sm-stat-sitemaps">—</span>
+                                <span class="sm-stat__lbl">Сайтмапов</span>
+                            </div>
+                            <div class="sm-stat">
+                                <span class="sm-stat__val" id="sm-stat-urls">—</span>
+                                <span class="sm-stat__lbl">URL</span>
+                            </div>
+                            <div class="sm-stat">
+                                <span class="sm-stat__val" id="sm-stat-errors">—</span>
+                                <span class="sm-stat__lbl">Ошибок</span>
+                            </div>
+                            <div class="sm-stat">
+                                <span class="sm-stat__val" id="sm-stat-depth">—</span>
+                                <span class="sm-stat__lbl">Макс. глубина</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </aside>
+
+                <!-- CENTER: tree + log -->
+                <section class="tool-main">
+                    <div class="mode-tabs" id="sm-mode-tabs">
+                        <button class="mode-tab active" data-sm-pane="sm-pane-tree">
+                            <span class="material-symbols-outlined" style="font-size:15px">account_tree</span> Дерево URL
+                        </button>
+                        <button class="mode-tab" data-sm-pane="sm-pane-sitemaps">
+                            <span class="material-symbols-outlined" style="font-size:15px">list</span> Сайтмапы
+                        </button>
+                        <button class="mode-tab" data-sm-pane="sm-pane-log">
+                            <span class="material-symbols-outlined" style="font-size:15px">terminal</span> Лог
+                        </button>
+                    </div>
+
+                    <!-- Tree pane -->
+                    <div class="sm-pane active" id="sm-pane-tree">
+                        <div class="sm-tree-toolbar">
+                            <button class="md-btn md-btn--tonal md-btn--sm" id="sm-expand-all-btn" disabled>
+                                <span class="material-symbols-outlined">unfold_more</span> Развернуть всё
+                            </button>
+                            <button class="md-btn md-btn--outlined md-btn--sm" id="sm-collapse-all-btn" disabled>
+                                <span class="material-symbols-outlined">unfold_less</span> Свернуть всё
+                            </button>
+                            <div style="flex:1;"></div>
+                            <input type="search" class="md-field" id="sm-tree-search"
+                                placeholder="Фильтр по пути…" style="width:200px;padding:4px 10px;font-size:12px;" disabled>
+                        </div>
+                        <div class="sm-tree-wrap" id="sm-tree-root">
+                            <div class="empty-state">
+                                <span class="material-symbols-outlined">account_tree</span>
+                                <div class="empty-state__title">Введите URL сайтмапа</div>
+                                <div class="empty-state__sub">Рекурсивный обход index-сайтмапов поддерживается</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sitemaps list pane -->
+                    <div class="sm-pane" id="sm-pane-sitemaps">
+                        <div class="table-wrap" style="flex:1;overflow:auto;">
+                            <table class="data-table" id="sm-sitemaps-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width:50%">URL сайтмапа</th>
+                                        <th style="width:15%">Тип</th>
+                                        <th style="width:20%">URL / дочерних</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sm-sitemaps-tbody">
+                                    <tr><td colspan="3" style="text-align:center;color:var(--md-sys-color-on-surface-variant);">Нет данных</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Log pane -->
+                    <div class="sm-pane" id="sm-pane-log">
+                        <div class="parser-log" id="sm-log-area"></div>
+                    </div>
+                </section>
+
+                <!-- RIGHT: export -->
+                <aside class="tool-sidebar tool-sidebar--right">
+                    <div class="sidebar-header">
+                        <span class="material-symbols-outlined sidebar-header__icon">download</span>
+                        <span class="sidebar-header__title">Экспорт</span>
+                    </div>
+                    <div class="sidebar-body">
+                        <button class="md-btn md-btn--tonal md-btn--block" id="sm-export-md-btn" disabled>
+                            <span class="material-symbols-outlined">description</span> Сохранить MD
+                        </button>
+                        <button class="md-btn md-btn--outlined md-btn--block" id="sm-export-json-btn" disabled>
+                            <span class="material-symbols-outlined">data_object</span> Сохранить JSON
+                        </button>
+
+                        <div class="divider"></div>
+                        <div class="section-label">Визуализация дерева</div>
+                        <div style="display:flex;flex-direction:column;gap:6px;">
+                            <label class="form-label" style="margin-bottom:0;">Авто-раскрытие до уровня</label>
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <input type="range" class="md-range" id="sm-auto-depth" min="1" max="10" value="5" style="flex:1;">
+                                <strong id="sm-auto-depth-val">5</strong>
+                            </div>
+                        </div>
+                        <button class="md-btn md-btn--outlined md-btn--block" id="sm-redraw-btn" disabled>
+                            <span class="material-symbols-outlined">refresh</span> Перерисовать дерево
+                        </button>
+
+                        <div class="divider"></div>
+                        <div class="section-label">Информация</div>
+                        <div id="sm-info-panel" class="text-muted" style="font-size:12px;line-height:1.6;">
+                            Нет данных
+                        </div>
+                    </div>
+                </aside>
+
+            </div>
+        </div><!-- /#panel-sitemap -->
+
     </main><!-- /.tab-panels -->
 
     <!-- Toast -->
@@ -1074,5 +1246,6 @@
 <script src="clusterer-app.js"></script>
 <script src="prompts-data.js"></script>
 <script src="prompts-app.js"></script>
+<script src="sitemap-app.js"></script>
 </body>
 </html>

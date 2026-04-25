@@ -62,4 +62,12 @@ contextBridge.exposeInMainWorld('api', {
         onLog: (cb) => ipcRenderer.on('clusterer-log', (_, d) => cb(d)),
         removeLogListener: () => ipcRenderer.removeAllListeners('clusterer-log'),
     },
+
+    // ── Sitemap Analyser ─────────────────────────────────────────────────
+    sitemap: {
+        crawl:    (url, opts)       => ipcRenderer.invoke('sitemap:crawl', url, opts),
+        save:     (content, format) => ipcRenderer.invoke('sitemap:save', content, format),
+        onProgress: (cb) => ipcRenderer.on('sitemap-progress', (_, d) => cb(d)),
+        removeProgressListener: () => ipcRenderer.removeAllListeners('sitemap-progress'),
+    },
 });

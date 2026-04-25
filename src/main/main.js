@@ -8,6 +8,7 @@ const { generateRules, generateRule, checkChain } = require('./redirects');
 const optimizer  = require('./optimizer');
 const { parseUrl }       = require('./parser');
 const { downloadImages } = require('./downloader');
+const { crawl: crawlSitemap } = require('./sitemap');
 
 Menu.setApplicationMenu(null);
 
@@ -322,5 +323,30 @@ ipcMain.handle('clusterer:save-result', async (_, clusters, fmt) => {
             fs.writeFileSync(filePath, rows.join('\n'), 'utf8');
             return { success: true, filePath };
         }
+    } catch(e) { return { success: false, error: e.message }; }
+});
+
+// ── SITEMAP ANALYSER ──────────────────────────────────────────────────────────
+ipcMain.handle('sitemap:crawl', async (_, url, opts) => {
+    try {
+        const result = await crawlSitemap(url, {
+            concurrency: opts?.concurrency || 3,
+            onProgress: (p) => mainWindow?.webContents.send('sitemap-progress', p),
+        });
+        return { success: true, ...result };
+    } catch(e) { return { success: false, error: e.message }; }
+});
+
+ipcMain.handle('sitemap:save', async (_, content, format) => {
+    try {
+        const ext  = format === 'json' ? 'json' : 'md';
+        const { filePath } = await dialog.showSaveDialog(mainWindow, {
+            title:       `Сохранить ${ext.toUpperCase()}`,
+            defaultPath: `sitemap-analysis-${Date.now()}.${ext}`,
+            filters:     [{ name: ext.toUpperCase(), extensions: [ext] }],
+        });
+        if (!filePath) return { success: false, error: 'Отменено' };
+        fs.writeFileSync(filePath, content, 'utf8');
+        return { success: true, filePath };
     } catch(e) { return { success: false, error: e.message }; }
 });
