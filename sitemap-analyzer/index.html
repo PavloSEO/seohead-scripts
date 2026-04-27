@@ -304,6 +304,10 @@ input[type=range]::-webkit-slider-thumb:active{cursor:grabbing;transform:scale(1
         </select>
       </div>
       <div class="swatch-row" id="palette-preview"></div>
+      <div class="export-row" style="margin-top:12px">
+        <button class="btn btn-tonal" id="mm-expand-all">📂  Раскрыть</button>
+        <button class="btn btn-tonal" id="mm-collapse-all">📁  Свернуть</button>
+      </div>
     </div>
 
     <div class="sb-section" id="export-sec" style="display:none">
@@ -357,7 +361,7 @@ input[type=range]::-webkit-slider-thumb:active{cursor:grabbing;transform:scale(1
     <div class="panel hidden mindmap-wrap" id="panel-mindmap" style="padding:0;overflow:hidden">
       <canvas id="mindmap-canvas"></canvas>
       <div class="mm-hint">
-        <kbd>ЛКМ</kbd> перетащить · <kbd>колесо</kbd> зум · <kbd>ПКМ</kbd> меню
+        <kbd>клик</kbd> свернуть/раскрыть · <kbd>тащить</kbd> панорама · <kbd>колесо</kbd> зум · <kbd>ПКМ</kbd> меню
       </div>
       <div class="mm-controls">
         <button class="mm-btn" id="mm-fit" title="По размеру">⊡  По размеру</button>
@@ -382,6 +386,9 @@ input[type=range]::-webkit-slider-thumb:active{cursor:grabbing;transform:scale(1
   <div class="ctx-item" id="ctx-copy-branch"><span class="ci">🌿</span> Копировать ветку (текст)</div>
   <div class="ctx-item" id="ctx-copy-md"><span class="ci">📝</span> Копировать ветку как Markdown</div>
   <div class="ctx-item" id="ctx-copy-urls-list"><span class="ci">📄</span> Копировать все URLs раздела</div>
+  <div class="ctx-sep" id="ctx-sep-collapse" style="display:none"></div>
+  <div class="ctx-item" id="ctx-mm-collapse" style="display:none"><span class="ci">📁</span> Свернуть раздел</div>
+  <div class="ctx-item" id="ctx-mm-expand" style="display:none"><span class="ci">📂</span> Развернуть раздел</div>
 </div>
 
 <div class="toast" id="toast"></div>
