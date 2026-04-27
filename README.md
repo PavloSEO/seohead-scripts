@@ -1,44 +1,45 @@
-# SEO Scripts v2 — by seohead.tech
+# SEO Scripts — seohead.tech
 
-Настольное приложение на Electron для SEO-специалистов.
+Десктопное приложение на Electron для SEO-специалистов. 7 инструментов в одном окне, тёмная тема Material Design 3, работает на Windows без интернета.
 
-## Вкладки
+## Инструменты
 
-| # | Вкладка | Цвет | Описание |
-|---|---|---|---|
-| 1 | **Redirect Builder** | 🔵 Синий | Генерация правил (Apache/Nginx/etc) + live-проверка цепочки редиректов |
-| 2 | **Image Optimizer** | ⚪ Серый | Сжатие JPG/PNG/WebP/SVG с предпросмотром и бэкапом |
-| 3 | **SEO Parser** | 🟢 Зелёный | Парсинг мета, OG, заголовков, JSON-LD, ссылок → MD |
-| 4 | **Image Downloader** | 🟣 Фиолетовый | Скачивание изображений по списку URL с сохранением структуры |
-| 5 | **Keyword Clusterer** | 🟠 Оранжевый | Кластеризация 10k+ ключей (Python + scikit-learn) |
-| 6 | **Prompt Library** | 🔹 Бирюзовый | Библиотека SEO-промптов, фильтры, копирование и экспорт в MD |
-| 7 | **Sitemap Analyser** | 🟢 Изумрудный | Обход sitemap index / urlset, дерево URL, карта (canvas), экспорт MD, JSON и PNG |
+| # | Вкладка | Что делает |
+|---|---|---|
+| 1 | **Redirect Builder** | Генерирует правила редиректов Apache / Nginx / кастомный шаблон. Импорт из Excel, массовая вставка, live-проверка цепочки редиректов. |
+| 2 | **Image Optimizer** | Сжимает JPG, PNG, WebP, GIF, SVG, TIFF через Sharp. Пресеты, ресайз, конвертация форматов, бэкапы, сравнение до/после. |
+| 3 | **SEO Parser** | Парсит Title, Description, OG, H1–H6, JSON-LD, ссылки, текст. Режимы HTTP и JS-рендеринг (Chromium). Экспорт в Markdown. |
+| 4 | **Image Downloader** | Скачивает изображения по списку URL, сохраняет структуру папок или плоско, конвертирует в WebP, докачка без повторов. |
+| 5 | **Keyword Clusterer** | Кластеризует 50 000+ ключевых слов: K-Means, DBSCAN, Agglomerative. Требует Python 3 + scikit-learn. Экспорт CSV / XLSX. |
+| 6 | **Prompt Library** | Библиотека SEO-промптов с фильтрами по модели (ChatGPT / Claude / Gemini), тегам, категориям. Подстановка переменных, экспорт MD. |
+| 7 | **Sitemap Analyser** | Рекурсивный обход sitemap index / urlset, поддержка gzip. Дерево URL, mindmap-карта на canvas, экспорт MD / JSON / PNG. |
 
-В репозитории сохранена папка **`sitemap-analyzer/`** — отдельное Electron-приложение (свой `npm start`). Основная функциональность сайтмапов — во вкладке **Sitemap Analyser** (`src/main/sitemap.js`, `src/renderer/sitemap-app.js`).
-
-## Установка
+## Быстрый старт
 
 ```bash
 npm install
 npm start
 ```
 
-### Для Keyword Clusterer (Python необходим)
+## Keyword Clusterer — Python
 
 ```bash
-pip install scikit-learn numpy
-# Опционально для стемминга:
-pip install nltk
+pip install scikit-learn numpy nltk
 python3 -m nltk.downloader stopwords
 ```
 
 ## Сборка EXE
 
 ```bash
+# Папка dist/ без установщика
+npm run build:unpacked
+
+# NSIS-установщик
 npm run build:installer
 ```
 
 ## Требования
 
 - Node.js 18+
-- Python 3.8+ (только для Keyword Clusterer)
+- Electron 28
+- Python 3.8+ — только для Keyword Clusterer
