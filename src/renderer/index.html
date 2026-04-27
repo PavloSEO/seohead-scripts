@@ -1140,6 +1140,9 @@
                         <button class="mode-tab active" data-sm-pane="sm-pane-tree">
                             <span class="material-symbols-outlined" style="font-size:15px">account_tree</span> Дерево URL
                         </button>
+                        <button class="mode-tab" data-sm-pane="sm-pane-mindmap">
+                            <span class="material-symbols-outlined" style="font-size:15px">schema</span> Карта
+                        </button>
                         <button class="mode-tab" data-sm-pane="sm-pane-sitemaps">
                             <span class="material-symbols-outlined" style="font-size:15px">list</span> Сайтмапы
                         </button>
@@ -1167,6 +1170,19 @@
                                 <div class="empty-state__title">Введите URL сайтмапа</div>
                                 <div class="empty-state__sub">Рекурсивный обход index-сайтмапов поддерживается</div>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Mindmap (canvas) -->
+                    <div class="sm-pane" id="sm-pane-mindmap">
+                        <div class="sm-mindmap-toolbar">
+                            <button class="md-btn md-btn--tonal md-btn--sm" id="sm-mindmap-redraw" type="button" disabled>
+                                <span class="material-symbols-outlined">refresh</span> Перерисовать
+                            </button>
+                            <span class="text-muted" style="font-size:11px;margin-left:4px;" id="sm-mindmap-hint">После анализа откройте вкладку</span>
+                        </div>
+                        <div class="sm-mindmap-host" id="sm-mindmap-host">
+                            <canvas id="sm-mindmap-canvas" width="800" height="400" aria-label="Карта структуры URL"></canvas>
                         </div>
                     </div>
 
@@ -1207,9 +1223,20 @@
                         <button class="md-btn md-btn--outlined md-btn--block" id="sm-export-json-btn" disabled>
                             <span class="material-symbols-outlined">data_object</span> Сохранить JSON
                         </button>
+                        <button class="md-btn md-btn--filled md-btn--block" id="sm-export-png-btn" disabled>
+                            <span class="material-symbols-outlined">image</span> Сохранить карту PNG
+                        </button>
 
                         <div class="divider"></div>
                         <div class="section-label">Визуализация дерева</div>
+                        <div class="form-group" style="margin-bottom:4px;">
+                            <label class="form-label" style="margin-bottom:2px;">Глубина на карте</label>
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <input type="range" class="md-range" id="sm-mindmap-depth" min="3" max="14" value="10" style="flex:1;">
+                                <strong id="sm-mindmap-depth-val" style="min-width:22px;text-align:right;">10</strong>
+                            </div>
+                            <small class="text-muted" style="font-size:11px;">Узлы глубже уровня показываются как один блок</small>
+                        </div>
                         <div style="display:flex;flex-direction:column;gap:6px;">
                             <label class="form-label" style="margin-bottom:0;">Авто-раскрытие до уровня</label>
                             <div style="display:flex;align-items:center;gap:10px;">

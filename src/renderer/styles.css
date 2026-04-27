@@ -1228,6 +1228,28 @@ input[type=range]::-moz-range-thumb {
     font-size:13px;
 }
 
+/* ── Mindmap pane ────────────────────────────────────────────────────────── */
+.sm-mindmap-toolbar {
+    display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+    padding:8px 12px; flex-shrink:0;
+    border-bottom:1px solid var(--md-sys-color-outline-variant);
+    background:var(--md-sys-color-surface-container-low);
+}
+.sm-mindmap-host {
+    flex:1; min-height:0; overflow:auto;
+    padding:12px;
+    background:var(--md-sys-color-background);
+    display:flex; align-items:flex-start; justify-content:flex-start;
+}
+#sm-mindmap-canvas {
+    display:block;
+    max-width:100%;
+    height:auto;
+    border-radius:var(--md-sys-shape-corner-medium);
+    border:1px solid var(--md-sys-color-outline-variant);
+    box-shadow:var(--md-sys-elevation-1);
+}
+
 /* ── Tree node ──────────────────────────────────────────────────────────── */
 .sm-node { display:block; }
 

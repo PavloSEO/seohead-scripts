@@ -12,7 +12,7 @@
 | 4 | **Image Downloader** | 🟣 Фиолетовый | Скачивание изображений по списку URL с сохранением структуры |
 | 5 | **Keyword Clusterer** | 🟠 Оранжевый | Кластеризация 10k+ ключей (Python + scikit-learn) |
 | 6 | **Prompt Library** | 🔹 Бирюзовый | Библиотека SEO-промптов, фильтры, копирование и экспорт в MD |
-| 7 | **Sitemap Analyser** | 🟢 Изумрудный | Обход sitemap index / urlset, дерево URL, экспорт MD и JSON |
+| 7 | **Sitemap Analyser** | 🟢 Изумрудный | Обход sitemap index / urlset, дерево URL, карта (canvas), экспорт MD, JSON и PNG |
 
 Отдельный прототип в папке `sitemap-analyzer/` больше не ведётся: вся функциональность сайтмапов — во вкладке **Sitemap Analyser** (`src/main/sitemap.js`, `src/renderer/sitemap-app.js`).
 

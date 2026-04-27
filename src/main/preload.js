@@ -67,6 +67,7 @@ contextBridge.exposeInMainWorld('api', {
     sitemap: {
         crawl:    (url, opts)       => ipcRenderer.invoke('sitemap:crawl', url, opts),
         save:     (content, format) => ipcRenderer.invoke('sitemap:save', content, format),
+        savePng:  (dataUrl, defaultBase) => ipcRenderer.invoke('sitemap:savePng', dataUrl, defaultBase),
         onProgress: (cb) => ipcRenderer.on('sitemap-progress', (_, d) => cb(d)),
         removeProgressListener: () => ipcRenderer.removeAllListeners('sitemap-progress'),
     },

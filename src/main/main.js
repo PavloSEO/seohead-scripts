@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog, shell, Menu } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, shell, Menu, nativeImage } = require('electron');
 const path       = require('path');
 const fs         = require('fs');
 const { spawn }  = require('child_process');
@@ -349,4 +349,24 @@ ipcMain.handle('sitemap:save', async (_, content, format) => {
         fs.writeFileSync(filePath, content, 'utf8');
         return { success: true, filePath };
     } catch(e) { return { success: false, error: e.message }; }
+});
+
+ipcMain.handle('sitemap:savePng', async (_, dataUrl, defaultBase) => {
+    try {
+        const image = nativeImage.createFromDataURL(dataUrl);
+        if (image.isEmpty()) return { success: false, error: 'Пустое изображение' };
+        const buf = image.toPNG();
+        const base = (typeof defaultBase === 'string' && defaultBase.trim())
+            ? defaultBase.trim().replace(/[^a-zA-Z0-9._-]+/g, '_').slice(0, 80)
+            : `sitemap-map-${Date.now()}`;
+        const { filePath } = await dialog.showSaveDialog(mainWindow, {
+            title:       'Сохранить карту PNG',
+            defaultPath: `${base}.png`,
+            filters:     [{ name: 'PNG', extensions: ['png'] }],
+        });
+        if (!filePath) return { success: false, error: 'Отменено' };
+        fs.writeFileSync(filePath, buf);
+        shell.showItemInFolder(filePath);
+        return { success: true, filePath };
+    } catch (e) { return { success: false, error: e.message }; }
 });

@@ -29,8 +29,16 @@
     const treeSearch      = $('sm-tree-search');
     const exportMdBtn     = $('sm-export-md-btn');
     const exportJsonBtn   = $('sm-export-json-btn');
+    const exportPngBtn    = $('sm-export-png-btn');
     const sitemapsTbody   = $('sm-sitemaps-tbody');
     const infoPanel       = $('sm-info-panel');
+
+    const mindmapCanvas    = $('sm-mindmap-canvas');
+    const mindmapHost      = $('sm-mindmap-host');
+    const mindmapRedrawBtn = $('sm-mindmap-redraw');
+    const mindmapDepthEl   = $('sm-mindmap-depth');
+    const mindmapDepthVal  = $('sm-mindmap-depth-val');
+    const mindmapHint      = $('sm-mindmap-hint');
 
     const statSitemaps = $('sm-stat-sitemaps');
     const statUrls     = $('sm-stat-urls');
@@ -45,6 +53,7 @@
             btn.classList.add('active');
             const pane = $(btn.dataset.smPane);
             if (pane) pane.classList.add('active');
+            if (btn.dataset.smPane === 'sm-pane-mindmap') scheduleMindmapDraw();
         });
     });
 
@@ -52,6 +61,10 @@
     concurrencyEl.addEventListener('input', () => { concurrencyVal.textContent = concurrencyEl.value; });
     leafThresholdEl.addEventListener('input', () => { leafThresholdV.textContent = leafThresholdEl.value; });
     autoDepthEl.addEventListener('input', () => { autoDepthVal.textContent = autoDepthEl.value; });
+    mindmapDepthEl.addEventListener('input', () => {
+        mindmapDepthVal.textContent = mindmapDepthEl.value;
+        scheduleMindmapDraw();
+    });
 
     /* ── Log helpers ───────────────────────────────────────────────────────── */
     function appendLog(msg, type = 'info') {
@@ -331,10 +344,12 @@
         stopBtn.disabled = false;
         exportMdBtn.disabled   = true;
         exportJsonBtn.disabled = true;
+        exportPngBtn.disabled  = true;
         expandAllBtn.disabled  = true;
         collapseAllBtn.disabled = true;
         treeSearch.disabled    = true;
-        redrawBtn.disabled     = true;
+        redrawBtn.disabled       = true;
+        mindmapRedrawBtn.disabled = true;
 
         logArea.innerHTML = '';
         treeRoot_el.innerHTML = '<div class="sm-loading"><span class="material-symbols-outlined spin">sync</span> Загрузка…</div>';
@@ -380,10 +395,12 @@
         // Enable controls
         exportMdBtn.disabled    = false;
         exportJsonBtn.disabled  = false;
+        exportPngBtn.disabled   = false;
         expandAllBtn.disabled   = false;
         collapseAllBtn.disabled = false;
         treeSearch.disabled     = false;
-        redrawBtn.disabled      = false;
+        redrawBtn.disabled        = false;
+        mindmapRedrawBtn.disabled = false;
 
         // Switch to tree pane
         document.querySelector('[data-sm-pane="sm-pane-tree"]')?.click();
@@ -532,6 +549,245 @@
             }
         }
         return out;
+    }
+
+    /* ── Mindmap (canvas) + PNG export ─────────────────────────────────────── */
+    mindmapRedrawBtn.addEventListener('click', () => scheduleMindmapDraw());
+    exportPngBtn.addEventListener('click', () => exportMindmapPng());
+
+    let mindmapEdges = [];
+    let lastMindmapW = 800;
+    let lastMindmapH = 400;
+    let mmDrawTimer = null;
+
+    function scheduleMindmapDraw() {
+        clearTimeout(mmDrawTimer);
+        mmDrawTimer = setTimeout(drawMindmap, 60);
+    }
+
+    function clearMindmapLayout(node) {
+        if (!node) return;
+        delete node._mm;
+        if (node.children) for (const c of node.children.values()) clearMindmapLayout(c);
+    }
+
+    function assignMindmapLayout(node, depth, yCursor, maxDepth) {
+        const capped = depth >= maxDepth;
+        const children = (!capped && node.children && node.children.size)
+            ? [...node.children.values()] : [];
+        const depthX = depth * 210 + 32;
+        const lab = depth === 0 ? (node.domain || '/') : '/' + node.label;
+        const shortLabel = lab.length > 28 ? lab.slice(0, 26) + '…' : lab;
+
+        if (children.length === 0) {
+            let lbl = shortLabel;
+            if (capped && node.children && node.children.size)
+                lbl = `${shortLabel} (+${node.children.size})`;
+            node._mm = { x: depthX, y: yCursor, w: 200, h: 32, label: lbl, count: node.urlCount };
+            return yCursor + 46;
+        }
+
+        let y = yCursor;
+        let top = Infinity;
+        let bottom = -Infinity;
+        for (const ch of children) {
+            y = assignMindmapLayout(ch, depth + 1, y, maxDepth);
+            top = Math.min(top, ch._mm.y);
+            bottom = Math.max(bottom, ch._mm.y + ch._mm.h);
+            mindmapEdges.push({ p: node, c: ch });
+        }
+        const pcy = (top + bottom) / 2 - 16;
+        node._mm = { x: depthX, y: pcy, w: 200, h: 32, label: shortLabel, count: node.urlCount };
+        return y;
+    }
+
+    function normalizeMindmapBoxes(root) {
+        const boxes = [];
+        (function walk(n) {
+            if (n._mm) boxes.push(n._mm);
+            if (n.children) for (const c of n.children.values()) walk(c);
+        }(root));
+        if (!boxes.length) return { w: 640, h: 360 };
+
+        let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+        for (const b of boxes) {
+            minX = Math.min(minX, b.x);
+            minY = Math.min(minY, b.y);
+            maxX = Math.max(maxX, b.x + b.w);
+            maxY = Math.max(maxY, b.y + b.h);
+        }
+        const pad = 28;
+        const dx = pad - minX, dy = pad - minY;
+        for (const b of boxes) {
+            b.x += dx;
+            b.y += dy;
+        }
+        return {
+            w: Math.max(480, Math.ceil(maxX - minX + pad * 2)),
+            h: Math.max(260, Math.ceil(maxY - minY + pad * 2)),
+        };
+    }
+
+    function collectMindmapStyle() {
+        const cs = getComputedStyle(document.body);
+        return {
+            accent:    cs.getPropertyValue('--tab-accent').trim() || '#34d399',
+            accentDim: cs.getPropertyValue('--tab-accent-dim').trim() || 'rgba(52,211,153,.2)',
+            surface:   cs.getPropertyValue('--md-sys-color-surface-container-high').trim() || '#1e2a3a',
+            border:    cs.getPropertyValue('--md-sys-color-outline-variant').trim() || '#2d3748',
+            text:      cs.getPropertyValue('--md-sys-color-on-surface').trim() || '#e2e8f0',
+            muted:     cs.getPropertyValue('--md-sys-color-on-surface-variant').trim() || '#94a3b8',
+            bg:        cs.getPropertyValue('--md-sys-color-background').trim() || '#0d1117',
+        };
+    }
+
+    function mmRoundedRect(ctx, x, y, w, h, rad, fill, stroke) {
+        ctx.beginPath();
+        ctx.moveTo(x + rad, y);
+        ctx.arcTo(x + w, y, x + w, y + h, rad);
+        ctx.arcTo(x + w, y + h, x, y + h, rad);
+        ctx.arcTo(x, y + h, x, y, rad);
+        ctx.arcTo(x, y, x + w, y, rad);
+        ctx.closePath();
+        ctx.fillStyle = fill;
+        ctx.fill();
+        if (stroke) {
+            ctx.strokeStyle = stroke;
+            ctx.lineWidth = 1.25;
+            ctx.stroke();
+        }
+    }
+
+    function drawMindmapNodeText(ctx, box, st) {
+        ctx.textBaseline = 'middle';
+        ctx.font = '500 12px Roboto, system-ui, sans-serif';
+        ctx.fillStyle = st.text;
+        const midY = box.y + box.h / 2;
+        let label = box.label;
+        const maxW = box.w - 58;
+        while (label.length > 2 && ctx.measureText(label).width > maxW)
+            label = label.slice(0, -2) + '…';
+        ctx.fillText(label, box.x + 10, midY);
+        const chip = String(box.count.toLocaleString('ru'));
+        ctx.font = '500 11px Roboto, system-ui, sans-serif';
+        const chipW = ctx.measureText(chip).width + 10;
+        ctx.fillStyle = st.accentDim;
+        ctx.fillRect(box.x + box.w - chipW - 8, box.y + 7, chipW, 18);
+        ctx.fillStyle = st.accent;
+        ctx.fillText(chip, box.x + box.w - chipW + 3, midY);
+    }
+
+    function drawMindmapInto(ctx, st) {
+        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = st.border;
+        for (let i = 0; i < mindmapEdges.length; i++) {
+            const e = mindmapEdges[i];
+            if (!e.p._mm || !e.c._mm) continue;
+            const p = e.p._mm;
+            const c = e.c._mm;
+            const x1 = p.x + p.w;
+            const y1 = p.y + p.h / 2;
+            const x2 = c.x;
+            const y2 = c.y + c.h / 2;
+            const mid = (x1 + x2) / 2;
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(mid, y1);
+            ctx.lineTo(mid, y2);
+            ctx.lineTo(x2, y2);
+            ctx.stroke();
+        }
+
+        const ordered = [];
+        (function walkCollect(n) {
+            if (!n._mm) return;
+            if (n !== treeRoot) ordered.push(n);
+            if (n.children) for (const c of n.children.values()) walkCollect(c);
+        }(treeRoot));
+
+        for (let i = 0; i < ordered.length; i++) {
+            const b = ordered[i]._mm;
+            mmRoundedRect(ctx, b.x, b.y, b.w, b.h, 8, st.surface, st.border);
+            drawMindmapNodeText(ctx, b, st);
+        }
+        if (treeRoot && treeRoot._mm) {
+            const r = treeRoot._mm;
+            mmRoundedRect(ctx, r.x, r.y, r.w, r.h, 8, st.accentDim, st.accent);
+            drawMindmapNodeText(ctx, r, st);
+        }
+    }
+
+    function countMmNodes(node) {
+        let n = node._mm ? 1 : 0;
+        if (node.children) for (const c of node.children.values()) n += countMmNodes(c);
+        return n;
+    }
+
+    function drawMindmap() {
+        if (!mindmapCanvas || !treeRoot) return;
+
+        mindmapEdges = [];
+        clearMindmapLayout(treeRoot);
+        const maxD = Math.max(3, Math.min(14, parseInt(mindmapDepthEl.value, 10) || 10));
+        assignMindmapLayout(treeRoot, 0, 28, maxD);
+        const { w, h } = normalizeMindmapBoxes(treeRoot);
+
+        lastMindmapW = w;
+        lastMindmapH = h;
+        mindmapCanvas.width = w;
+        mindmapCanvas.height = h;
+        mindmapCanvas.style.width = '';
+        mindmapCanvas.style.height = '';
+
+        const ctx = mindmapCanvas.getContext('2d');
+        const st = collectMindmapStyle();
+        ctx.fillStyle = st.bg;
+        ctx.fillRect(0, 0, w, h);
+        drawMindmapInto(ctx, st);
+
+        if (mindmapHint) {
+            const nn = countMmNodes(treeRoot);
+            mindmapHint.textContent = `Узлов: ${nn} · глубина карты ≤ ${maxD}`;
+        }
+
+        fitMindmapCanvasCss();
+    }
+
+    function fitMindmapCanvasCss() {
+        if (!mindmapCanvas || !mindmapHost || !lastMindmapW) return;
+        const avail = mindmapHost.clientWidth - 8;
+        if (avail <= 0) return;
+        const s = Math.min(1, avail / lastMindmapW);
+        mindmapCanvas.style.width = `${Math.floor(lastMindmapW * s)}px`;
+        mindmapCanvas.style.height = `${Math.floor(lastMindmapH * s)}px`;
+    }
+
+    async function exportMindmapPng() {
+        if (!treeRoot) { showToast('Нет данных для карты', 'warning'); return; }
+        drawMindmap();
+        if (!treeRoot._mm) { showToast('Не удалось построить карту', 'error'); return; }
+
+        const scale = 2;
+        const c = document.createElement('canvas');
+        c.width = Math.ceil(lastMindmapW * scale);
+        c.height = Math.ceil(lastMindmapH * scale);
+        const ctx = c.getContext('2d');
+        const st = collectMindmapStyle();
+        ctx.scale(scale, scale);
+        ctx.fillStyle = st.bg;
+        ctx.fillRect(0, 0, lastMindmapW, lastMindmapH);
+        drawMindmapInto(ctx, st);
+
+        const dataUrl = c.toDataURL('image/png');
+        let base = 'sitemap-map';
+        try { base = new URL(urlInput.value.trim()).hostname.replace(/[^a-z0-9.-]+/gi, '_'); } catch {}
+        const res = await window.api.sitemap.savePng(dataUrl, base);
+        if (res.success) showToast('PNG сохранён', 'success');
+        else if (res.error !== 'Отменено') showToast(res.error, 'error');
+    }
+
+    if (mindmapHost && typeof ResizeObserver !== 'undefined') {
+        new ResizeObserver(() => fitMindmapCanvasCss()).observe(mindmapHost);
     }
 
 })();
