@@ -1,16 +1,30 @@
+'use strict';
+
 const https = require('https');
 const http  = require('http');
+const zlib  = require('zlib');
+const { XMLParser } = require('fast-xml-parser');
 
-/* ── HTTP fetch with redirect follow ──────────────────────────────────────── */
-function fetchUrl(url, timeoutMs = 20000, redirectCount = 0) {
-    if (redirectCount > 5) return Promise.reject(new Error(`Too many redirects: ${url}`));
+const xmlParser = new XMLParser({
+    ignoreAttributes: false,
+    parseTagValue: true,
+    parseAttributeValue: false,
+    trimValues: true,
+    processEntities: true,
+    allowBooleanAttributes: true,
+    removeNSPrefix: true,
+});
+
+/* ── HTTP fetch with redirect follow + gzip support ──────────────────────── */
+function fetchUrl(url, timeoutMs = 25000, redirectCount = 0) {
+    if (redirectCount > 8) return Promise.reject(new Error(`Too many redirects: ${url}`));
     return new Promise((resolve, reject) => {
         const lib = url.startsWith('https') ? https : http;
         const req = lib.get(url, {
             headers: {
-                'User-Agent': 'Mozilla/5.0 (compatible; SitemapAnalyser/1.0)',
-                'Accept':     'application/xml,text/xml,*/*',
-                'Accept-Encoding': 'identity',
+                'User-Agent':      'Mozilla/5.0 (compatible; SitemapAnalyzer/2.0)',
+                'Accept':          'application/xml,text/xml,application/gzip,*/*',
+                'Accept-Encoding': 'gzip, deflate, identity',
             }
         }, (res) => {
             if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
@@ -26,77 +40,72 @@ function fetchUrl(url, timeoutMs = 20000, redirectCount = 0) {
                 reject(new Error(`HTTP ${res.statusCode}`));
                 return;
             }
+
+            const enc = (res.headers['content-encoding'] || '').toLowerCase();
+            let stream = res;
+            if (enc === 'gzip') stream = res.pipe(zlib.createGunzip());
+            else if (enc === 'deflate') stream = res.pipe(zlib.createInflate());
+
             const chunks = [];
-            res.on('data', c => chunks.push(c));
-            res.on('end',  () => resolve(Buffer.concat(chunks).toString('utf8')));
-            res.on('error', reject);
+            stream.on('data', c => chunks.push(c));
+            stream.on('end',  () => resolve(Buffer.concat(chunks).toString('utf8')));
+            stream.on('error', reject);
         });
         req.setTimeout(timeoutMs, () => { req.destroy(); reject(new Error('Timeout')); });
         req.on('error', reject);
     });
 }
 
-/* ── XML helpers ──────────────────────────────────────────────────────────── */
-function decodeXmlEntities(s) {
-    return s.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
-            .replace(/&quot;/g, '"').replace(/&apos;/g, "'");
-}
+/* ── XML parsing (fast-xml-parser) ───────────────────────────────────────── */
+function parseSitemap(xml) {
+    let parsed;
+    try { parsed = xmlParser.parse(xml); }
+    catch (e) { throw new Error(`XML parse error: ${e.message}`); }
 
-function extractTagContent(xml, tag) {
-    const re = new RegExp(`<${tag}[^>]*>([\\s\\S]*?)<\\/${tag}>`, 'i');
-    const m  = re.exec(xml);
-    return m ? decodeXmlEntities(m[1].trim()) : null;
-}
-
-function isIndexSitemap(xml) {
-    return /<sitemapindex[\s>]/i.test(xml);
-}
-
-function parseSitemapIndex(xml) {
-    const items = [];
-    const re    = /<sitemap[\s>]([\s\S]*?)<\/sitemap>/gi;
-    let m;
-    while ((m = re.exec(xml)) !== null) {
-        const loc = extractTagContent(m[1], 'loc');
-        if (loc) items.push({ loc, lastmod: extractTagContent(m[1], 'lastmod') });
+    if (parsed.sitemapindex) {
+        const raw = parsed.sitemapindex.sitemap;
+        const sitemaps = (Array.isArray(raw) ? raw : [raw])
+            .filter(Boolean)
+            .map(s => ({
+                loc:     String(s.loc || s['#text'] || '').trim(),
+                lastmod: s.lastmod || null,
+            }))
+            .filter(s => s.loc);
+        return { isSitemapIndex: true, sitemaps, urls: [] };
     }
-    return items;
-}
 
-function parseUrlset(xml) {
-    const urls = [];
-    const re   = /<url[\s>]([\s\S]*?)<\/url>/gi;
-    let m;
-    while ((m = re.exec(xml)) !== null) {
-        const block = m[1];
-        const loc   = extractTagContent(block, 'loc');
-        if (!loc) continue;
-        urls.push({
-            loc,
-            lastmod:    extractTagContent(block, 'lastmod'),
-            changefreq: extractTagContent(block, 'changefreq'),
-            priority:   parseFloat(extractTagContent(block, 'priority') || '') || null,
-        });
+    if (parsed.urlset) {
+        const raw = parsed.urlset.url;
+        const urls = (Array.isArray(raw) ? raw : [raw])
+            .filter(Boolean)
+            .map(u => ({
+                loc:        String(u.loc || u['#text'] || '').trim(),
+                lastmod:    u.lastmod    || null,
+                changefreq: u.changefreq || null,
+                priority:   u.priority   != null ? parseFloat(u.priority) || null : null,
+            }))
+            .filter(u => u.loc);
+        return { isSitemapIndex: false, sitemaps: [], urls };
     }
-    return urls;
+
+    return { isSitemapIndex: false, sitemaps: [], urls: [] };
 }
 
-/* ── Concurrent promise pool ──────────────────────────────────────────────── */
+/* ── Concurrent worker pool ───────────────────────────────────────────────── */
 async function runPool(tasks, concurrency) {
     let i = 0;
     const worker = async () => {
-        while (i < tasks.length) {
-            await tasks[i++]();
-        }
+        while (i < tasks.length) await tasks[i++]();
     };
     await Promise.all(Array.from({ length: Math.min(concurrency, tasks.length) }, worker));
 }
 
 /* ── Main crawl entry point ───────────────────────────────────────────────── */
-async function crawl(rootUrl, { concurrency = 3, onProgress = null } = {}) {
+async function crawl(rootUrl, { concurrency = 5, onProgress = null } = {}) {
     const visited  = new Set();
     const queue    = [rootUrl];
     const sitemaps = [];
+    const seenLocs = new Set();
     const allUrls  = [];
     const errors   = [];
 
@@ -110,20 +119,26 @@ async function crawl(rootUrl, { concurrency = 3, onProgress = null } = {}) {
             onProgress?.({ type: 'fetching', url, visitedCount: visited.size });
 
             try {
-                const xml = await fetchUrl(url);
+                const xml  = await fetchUrl(url);
+                const data = parseSitemap(xml);
 
-                if (isIndexSitemap(xml)) {
-                    const children = parseSitemapIndex(xml);
-                    sitemaps.push({ url, type: 'index', childCount: children.length });
-                    onProgress?.({ type: 'index', url, childCount: children.length });
-                    for (const { loc } of children) {
-                        if (!visited.has(loc)) queue.push(loc);
+                if (data.isSitemapIndex) {
+                    sitemaps.push({ url, type: 'index', childCount: data.sitemaps.length });
+                    onProgress?.({ type: 'index', url, childCount: data.sitemaps.length });
+                    for (const s of data.sitemaps) {
+                        if (!visited.has(s.loc)) queue.push(s.loc);
                     }
                 } else {
-                    const urls = parseUrlset(xml);
-                    sitemaps.push({ url, type: 'urlset', urlCount: urls.length });
-                    allUrls.push(...urls);
-                    onProgress?.({ type: 'urlset', url, urlCount: urls.length, totalUrls: allUrls.length });
+                    let added = 0;
+                    for (const u of data.urls) {
+                        if (!seenLocs.has(u.loc)) {
+                            seenLocs.add(u.loc);
+                            allUrls.push(u);
+                            added++;
+                        }
+                    }
+                    sitemaps.push({ url, type: 'urlset', urlCount: added });
+                    onProgress?.({ type: 'urlset', url, urlCount: added, totalUrls: allUrls.length });
                 }
             } catch (e) {
                 errors.push({ url, error: e.message });

@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "electron-store": "^8.1.0",
+    "fast-xml-parser": "^5.7.2",
     "klaw": "^4.1.0",
     "sharp": "^0.33.5",
     "svgo": "^3.2.0",
