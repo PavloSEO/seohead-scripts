@@ -734,12 +734,15 @@
 
         lastMindmapW = w;
         lastMindmapH = h;
-        mindmapCanvas.width = w;
-        mindmapCanvas.height = h;
-        mindmapCanvas.style.width = '';
-        mindmapCanvas.style.height = '';
+
+        const dpr = window.devicePixelRatio || 1;
+        mindmapCanvas.width  = Math.ceil(w * dpr);
+        mindmapCanvas.height = Math.ceil(h * dpr);
+        mindmapCanvas.style.width  = w + 'px';
+        mindmapCanvas.style.height = h + 'px';
 
         const ctx = mindmapCanvas.getContext('2d');
+        ctx.scale(dpr, dpr);
         const st = collectMindmapStyle();
         ctx.fillStyle = st.bg;
         ctx.fillRect(0, 0, w, h);
