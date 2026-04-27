@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Sitemap Analyzer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,400;8..144,500;8..144,600;8..144,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+/* ════════════════════════════════════════════════════════════════════
+   Material Design 3 — Expressive Dark
+   Tonal palette · state layers · elevation · motion
+   ═══════════════════════════════════════════════════════════════════ */
+:root {
+  /* Primary tonal palette */
+  --p10:#21005d; --p20:#381e72; --p30:#4f378b; --p40:#6750a4;
+  --p50:#7f67be; --p60:#9a82db; --p70:#b69df8; --p80:#d0bcff; --p90:#eaddff;
+  --s30:#4a4458; --s40:#625b71; --s80:#ccc2dc; --s90:#e8def8;
+  --t30:#633b48; --t40:#7d5260; --t80:#efb8c8; --t90:#ffd8e4;
+  --er30:#8c1d18; --er40:#b3261e; --er80:#f2b8b5; --er90:#f9dedc;
+  /* Surface tonal levels (dark) */
+  --surface:#141218;
+  --s-dim:#0e0c12;
+  --sc-lo:#1d1b20;
+  --sc:#211f26;
+  --sc-hi:#2b2930;
+  --sc-hii:#36343b;
+  --on-s:#e6e1e5;
+  --on-s-v:#cac4d0;
+  --outline:#938f99;
+  --outline-v:#49454f;
+  --outline-vv:#2d2b32;
+  --inverse-surface:#e6e1e5;
+  --inverse-on:#322f35;
+
+  --primary:var(--p80);
+  --on-primary:var(--p20);
+  --primary-container:var(--p30);
+  --on-primary-container:var(--p90);
+
+  --e1: 0 1px 2px rgba(0,0,0,.30), 0 1px 3px 1px rgba(0,0,0,.15);
+  --e2: 0 1px 2px rgba(0,0,0,.30), 0 2px 6px 2px rgba(0,0,0,.15);
+  --e3: 0 4px 8px 3px rgba(0,0,0,.15), 0 1px 3px rgba(0,0,0,.30);
+  --e4: 0 6px 10px 4px rgba(0,0,0,.15), 0 2px 3px rgba(0,0,0,.30);
+
+  --sh-xs: 4px;
+  --sh-s : 8px;
+  --sh-m : 12px;
+  --sh-l : 16px;
+  --sh-xl: 28px;
+  --sh-pill: 9999px;
+
+  --ease-emph: cubic-bezier(.2,0,0,1);
+  --ease-std : cubic-bezier(.4,0,.2,1);
+  --d-short  : 100ms;
+  --d-med    : 200ms;
+  --d-long   : 300ms;
+
+  --font: 'Roboto Flex', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--surface);color:var(--on-s);font-family:var(--font);font-size:14px;line-height:1.5;overflow:hidden;font-variation-settings:"opsz" 14}
+button,input,select{font-family:inherit}
+
+.app{display:grid;grid-template-rows:64px 1fr;grid-template-columns:320px 1fr;grid-template-areas:"top top" "side main";height:100vh;background:var(--s-dim)}
+
+/* TOP APP BAR */
+.topbar{grid-area:top;display:flex;align-items:center;gap:14px;padding:0 20px;background:var(--sc);border-bottom:1px solid var(--outline-vv);z-index:10;-webkit-app-region:drag}
+.topbar-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--p80),var(--p70));color:var(--p20);border-radius:var(--sh-m);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;-webkit-app-region:no-drag;box-shadow:var(--e1)}
+.topbar-title{font-size:22px;font-weight:600;letter-spacing:-.2px;flex:1;font-variation-settings:"opsz" 22, "wght" 600}
+.topbar-badge{font-size:11px;color:var(--on-s-v);background:var(--sc-hi);padding:4px 10px;border-radius:var(--sh-pill);-webkit-app-region:no-drag;letter-spacing:.5px;font-weight:500}
+
+/* SIDEBAR */
+.sidebar{grid-area:side;background:var(--sc-lo);border-right:1px solid var(--outline-vv);display:flex;flex-direction:column;overflow:hidden}
+.sb-scroll{flex:1;overflow-y:auto;overflow-x:hidden}
+.sb-section{padding:16px 18px;border-bottom:1px solid var(--outline-vv)}
+.sb-section:last-of-type{border-bottom:0}
+.sb-title{font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--on-s-v);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.sb-title::before{content:"";width:4px;height:4px;border-radius:50%;background:var(--p80)}
+
+/* TEXT FIELD — MD3 outlined */
+.field{position:relative;margin-bottom:6px}
+.field input{width:100%;background:transparent;border:1px solid var(--outline-v);border-radius:var(--sh-xs);padding:14px 14px 12px;color:var(--on-s);font-family:var(--mono);font-size:11.5px;outline:none;transition:border-color var(--d-short);letter-spacing:.2px}
+.field input:hover{border-color:var(--on-s-v)}
+.field input:focus{border-color:var(--p80);border-width:2px;padding:13px 13px 11px}
+.field input::placeholder{color:var(--on-s-v);opacity:.55}
+.field-label{position:absolute;top:-7px;left:10px;background:var(--sc-lo);padding:0 6px;font-size:10px;color:var(--on-s-v);letter-spacing:.4px;font-weight:500;pointer-events:none}
+.field input:focus + .field-label{color:var(--p80)}
+
+.slider-row{display:flex;align-items:center;gap:10px;margin-top:14px}
+.slider-label{font-size:11px;color:var(--on-s-v);white-space:nowrap;font-weight:500}
+input[type=range]{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;background:var(--outline-v);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--p80);border:0;box-shadow:var(--e1);cursor:grab;transition:transform var(--d-short)}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15)}
+input[type=range]::-webkit-slider-thumb:active{cursor:grabbing;transform:scale(1.3);box-shadow:0 0 0 8px rgba(208,188,255,.12),var(--e1)}
+.slider-val{min-width:24px;text-align:center;font-size:13px;font-weight:600;color:var(--p80);font-variant-numeric:tabular-nums}
+
+.setting-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.setting-row:last-child{margin-bottom:0}
+.setting-label{font-size:11.5px;color:var(--on-s-v);font-weight:500;flex:1}
+.setting-select{appearance:none;-webkit-appearance:none;background:var(--sc);border:1px solid var(--outline-v);border-radius:var(--sh-s);color:var(--on-s);padding:7px 28px 7px 11px;font-size:11.5px;cursor:pointer;outline:none;min-width:120px;transition:background var(--d-short),border-color var(--d-short);background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'><path d='M2 4l3 3 3-3' stroke='%23cac4d0' stroke-width='1.4' fill='none' stroke-linecap='round'/></svg>");background-repeat:no-repeat;background-position:right 10px center}
+.setting-select:hover{background-color:var(--sc-hi);border-color:var(--on-s-v)}
+.setting-select:focus{border-color:var(--p80);border-width:2px;padding:6px 27px 6px 10px}
+
+/* BUTTONS — MD3 */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 22px;border-radius:var(--sh-pill);border:none;cursor:pointer;font-family:var(--font);font-size:13px;font-weight:600;letter-spacing:.1px;transition:all var(--d-short) var(--ease-std);white-space:nowrap;position:relative;overflow:hidden}
+.btn::before{content:"";position:absolute;inset:0;background:currentColor;opacity:0;transition:opacity var(--d-short)}
+.btn:hover::before{opacity:.08}
+.btn:focus-visible::before{opacity:.12}
+.btn:active::before{opacity:.16}
+.btn:active{transform:scale(.98)}
+.btn-filled{background:var(--p80);color:var(--p20);box-shadow:var(--e1);width:100%;margin-top:14px;padding:13px 24px;font-size:14px}
+.btn-filled:hover{box-shadow:var(--e2)}
+.btn-filled:disabled{opacity:.38;cursor:not-allowed;box-shadow:none}
+.btn-tonal{background:var(--sc-hi);color:var(--on-s);padding:8px 16px;font-size:12px}
+.btn-outlined{background:transparent;border:1px solid var(--outline-v);color:var(--p80);padding:7px 16px;font-size:12px}
+.btn-outlined:hover{border-color:var(--p80)}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stat-card{background:var(--sc);border-radius:var(--sh-m);padding:12px 10px;text-align:center;transition:background var(--d-short)}
+.stat-card:hover{background:var(--sc-hi)}
+.stat-card .val{font-size:22px;font-weight:700;color:var(--p80);display:block;font-variant-numeric:tabular-nums;line-height:1.1}
+.stat-card .lbl{font-size:9.5px;color:var(--on-s-v);letter-spacing:.6px;text-transform:uppercase;font-weight:500;margin-top:3px;display:block}
+
+.export-row{display:flex;gap:6px;flex-wrap:wrap}
+.export-row .btn{flex:1;min-width:0}
+
+/* LOG */
+.log-box{padding:12px 18px;display:flex;flex-direction:column;gap:1px;max-height:160px;overflow-y:auto;border-top:1px solid var(--outline-vv);background:var(--s-dim)}
+.log-line{font-family:var(--mono);font-size:10px;color:var(--on-s-v);line-height:1.6;word-break:break-all;opacity:.85}
+.log-line.ok{color:var(--p80)}
+.log-line.err{color:var(--er80)}
+.log-line.done{color:var(--p80);font-weight:600;opacity:1}
+
+/* MAIN */
+.main{grid-area:main;display:flex;flex-direction:column;overflow:hidden;position:relative;background:var(--surface)}
+.main-toolbar{display:flex;align-items:center;gap:12px;padding:12px 20px;background:var(--sc);border-bottom:1px solid var(--outline-vv);flex-shrink:0;z-index:5}
+
+/* SEGMENTED BUTTONS */
+.seg{display:inline-flex;border-radius:var(--sh-pill);border:1px solid var(--outline-v);padding:0;overflow:hidden;background:var(--sc-lo)}
+.seg-btn{padding:7px 16px;border:0;background:transparent;color:var(--on-s-v);font-family:var(--font);font-size:12px;font-weight:500;cursor:pointer;transition:all var(--d-short);display:inline-flex;align-items:center;gap:6px;border-right:1px solid var(--outline-v)}
+.seg-btn:last-child{border-right:0}
+.seg-btn:hover{background:rgba(208,188,255,.08)}
+.seg-btn.active{background:var(--p30);color:var(--p90);font-weight:600}
+
+/* SEARCH FIELD */
+.search-input{flex:1;background:var(--sc-lo);border:1px solid var(--outline-v);border-radius:var(--sh-pill);padding:9px 18px 9px 38px;color:var(--on-s);font-family:var(--font);font-size:12.5px;outline:none;transition:all var(--d-short);background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'><circle cx='6' cy='6' r='4.5' stroke='%23cac4d0' fill='none' stroke-width='1.3'/><path d='M9.5 9.5L12 12' stroke='%23cac4d0' stroke-width='1.3' stroke-linecap='round'/></svg>");background-repeat:no-repeat;background-position:14px center}
+.search-input:focus{border-color:var(--p80);background-color:var(--sc)}
+.search-input::placeholder{color:var(--on-s-v);opacity:.55}
+
+.panel{flex:1;overflow:auto;padding:14px 8px}
+.panel.hidden{display:none}
+
+/* TREE */
+.tree-node{margin:1px 0}
+.tree-row{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:var(--sh-m);cursor:pointer;transition:background var(--d-short);user-select:none;position:relative}
+.tree-row:hover{background:rgba(208,188,255,.08)}
+.tree-row.selected{background:var(--p30)}
+.tree-row.selected .tree-name{color:var(--p90)}
+.tree-toggle{width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--on-s-v);transition:transform var(--d-med) var(--ease-emph);flex-shrink:0}
+.tree-toggle.open{transform:rotate(90deg)}
+.tree-toggle.leaf{opacity:0;pointer-events:none}
+.tree-icon{font-size:14px;flex-shrink:0;width:18px;text-align:center}
+.tree-name{flex:1;font-size:13px;font-weight:500;color:var(--on-s);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tree-name.root-name{color:var(--p80);font-size:14px;font-weight:600;letter-spacing:-.1px}
+.tree-name.leaf-name{color:var(--on-s-v);font-weight:400}
+.tree-count{font-size:10.5px;padding:2px 8px;border-radius:var(--sh-pill);background:var(--sc-hi);color:var(--on-s-v);flex-shrink:0;font-variant-numeric:tabular-nums;font-weight:600;letter-spacing:.2px}
+.tree-count.big{background:var(--p30);color:var(--p90)}
+.tree-children{overflow:hidden}
+.tree-children.collapsed{display:none}
+
+.url-list{padding:2px 0 2px 36px}
+.url-item{display:flex;align-items:center;gap:6px;padding:3px 8px;border-radius:var(--sh-s);transition:background var(--d-short)}
+.url-item:hover{background:rgba(208,188,255,.06)}
+.url-dot{width:4px;height:4px;border-radius:50%;background:var(--outline-v);flex-shrink:0}
+.url-text{font-family:var(--mono);font-size:10.5px;color:var(--on-s-v);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;flex:1}
+.url-text:hover{color:var(--p80)}
+
+/* MINDMAP */
+.mindmap-wrap{flex:1;overflow:hidden;position:relative;background:radial-gradient(ellipse at center,var(--sc-lo) 0%,var(--s-dim) 100%)}
+#mindmap-canvas{position:absolute;inset:0;width:100%;height:100%;cursor:grab;display:block}
+#mindmap-canvas.dragging{cursor:grabbing}
+.mm-controls{position:absolute;bottom:18px;right:18px;display:flex;gap:4px;z-index:10;background:var(--sc-hi);border:1px solid var(--outline-v);border-radius:var(--sh-l);padding:4px;box-shadow:var(--e2)}
+.mm-btn{background:transparent;border:0;color:var(--on-s);border-radius:var(--sh-m);padding:8px 12px;font-family:var(--font);font-size:12px;font-weight:500;cursor:pointer;transition:background var(--d-short);display:inline-flex;align-items:center;gap:5px}
+.mm-btn:hover{background:rgba(208,188,255,.10)}
+.mm-btn.icon-only{padding:8px 10px;min-width:34px;justify-content:center;font-size:14px;font-weight:700}
+
+.mm-hint{position:absolute;top:14px;left:14px;background:rgba(33,31,38,.85);backdrop-filter:blur(8px);border:1px solid var(--outline-vv);border-radius:var(--sh-m);padding:8px 12px;font-size:10.5px;color:var(--on-s-v);z-index:9;pointer-events:none;opacity:.85;letter-spacing:.2px}
+.mm-hint kbd{background:var(--sc-hi);border:1px solid var(--outline-v);border-bottom-width:2px;border-radius:4px;padding:1px 5px;font-family:var(--mono);font-size:9.5px;color:var(--on-s);margin:0 2px}
+
+/* SITEMAPS TABLE */
+.sm-table{width:100%;border-collapse:collapse;font-size:12px}
+.sm-table th{text-align:left;padding:10px 14px;background:var(--sc);color:var(--on-s-v);font-weight:600;letter-spacing:.6px;text-transform:uppercase;font-size:9.5px;position:sticky;top:0;z-index:2;border-bottom:1px solid var(--outline-v)}
+.sm-table td{padding:9px 14px;border-bottom:1px solid var(--outline-vv);vertical-align:middle}
+.sm-table tr{transition:background var(--d-short)}
+.sm-table tr:hover td{background:rgba(208,188,255,.04)}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:var(--sh-pill);font-size:10px;font-weight:600;letter-spacing:.2px}
+.badge-idx{background:rgba(208,188,255,.15);color:var(--p80)}
+.badge-url{background:rgba(109,213,140,.14);color:#6dd58c}
+.badge-err{background:rgba(242,184,181,.14);color:var(--er80)}
+.url-mono{font-family:var(--mono);font-size:10.5px;color:var(--on-s-v);word-break:break-all}
+
+/* WELCOME */
+.welcome{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;color:var(--on-s-v);padding:40px;text-align:center}
+.welcome-icon{font-size:72px;opacity:.4}
+.welcome-title{font-size:24px;font-weight:600;color:var(--on-s);letter-spacing:-.3px}
+.welcome-sub{font-size:13px;max-width:420px;line-height:1.7;color:var(--on-s-v)}
+
+/* LOADER */
+.loader-overlay{position:absolute;inset:0;background:rgba(20,18,24,.88);backdrop-filter:blur(8px);display:none;flex-direction:column;align-items:center;justify-content:center;gap:22px;z-index:100}
+.loader-overlay.visible{display:flex}
+.loader-spinner{width:52px;height:52px;border:3px solid var(--outline-vv);border-top-color:var(--p80);border-right-color:var(--p70);border-radius:50%;animation:spin .9s var(--ease-emph) infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loader-text{font-size:13px;color:var(--on-s-v);font-weight:500;letter-spacing:.2px}
+
+/* CONTEXT MENU */
+.ctx-menu{position:fixed;background:var(--sc-hi);border:1px solid var(--outline-vv);border-radius:var(--sh-m);box-shadow:var(--e3);padding:8px;z-index:999;min-width:240px;display:none;animation:ctxIn var(--d-med) var(--ease-emph)}
+.ctx-menu.visible{display:block}
+@keyframes ctxIn{from{opacity:0;transform:translateY(-4px) scale(.96)}to{opacity:1;transform:none}}
+.ctx-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--sh-s);cursor:pointer;font-size:12.5px;color:var(--on-s);transition:background var(--d-short);user-select:none}
+.ctx-item:hover{background:rgba(208,188,255,.10)}
+.ctx-item .ci{font-size:14px;flex-shrink:0;width:18px;text-align:center}
+.ctx-sep{height:1px;background:var(--outline-vv);margin:6px 4px}
+
+/* TOAST — MD3 Snackbar */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--inverse-surface);color:var(--inverse-on);padding:14px 20px;border-radius:var(--sh-xs);font-size:13px;font-weight:500;box-shadow:var(--e3);opacity:0;transition:opacity var(--d-med),transform var(--d-med) var(--ease-emph);pointer-events:none;z-index:9999;white-space:nowrap;letter-spacing:.1px}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.highlight{background:rgba(208,188,255,.32);border-radius:3px;padding:0 2px}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--outline-vv);border-radius:4px;border:2px solid transparent;background-clip:content-box}
+::-webkit-scrollbar-thumb:hover{background:var(--outline-v);background-clip:content-box}
+
+.swatch-row{display:flex;gap:5px;margin-top:8px;justify-content:center}
+.swatch{width:14px;height:14px;border-radius:50%;border:1.5px solid var(--outline-v);transition:transform var(--d-short)}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="topbar-icon">🗺</div>
+    <span class="topbar-title">Sitemap Analyzer</span>
+    <span class="topbar-badge">v1.2 · MD3</span>
+  </header>
+
+  <aside class="sidebar">
+   <div class="sb-scroll">
+    <div class="sb-section">
+      <div class="sb-title">Источник</div>
+      <div class="field">
+        <input id="url-input" placeholder="https://example.com/sitemap.xml" value="https://blog.praca.by/sitemap_index.xml" spellcheck="false"/>
+        <span class="field-label">URL сайтмапа</span>
+      </div>
+      <div class="slider-row">
+        <span class="slider-label">Параллельность</span>
+        <input type="range" id="concurrency" min="1" max="30" value="10"/>
+        <span class="slider-val" id="conc-val">10</span>
+      </div>
+      <button class="btn btn-filled" id="parse-btn">▶  Анализировать</button>
+    </div>
+
+    <div class="sb-section" id="stats-sec" style="display:none">
+      <div class="sb-title">Статистика</div>
+      <div class="stats-grid">
+        <div class="stat-card"><span class="val" id="s-urls">—</span><span class="lbl">URLs</span></div>
+        <div class="stat-card"><span class="val" id="s-sitemaps">—</span><span class="lbl">Сайтмапов</span></div>
+        <div class="stat-card"><span class="val" id="s-depth">—</span><span class="lbl">Глубина</span></div>
+        <div class="stat-card"><span class="val" id="s-sections">—</span><span class="lbl">Разделов</span></div>
+      </div>
+    </div>
+
+    <div class="sb-section" id="mindmap-ctrl-sec" style="display:none">
+      <div class="sb-title">Карта сайта</div>
+      <div class="setting-row">
+        <span class="setting-label">Палитра</span>
+        <select class="setting-select" id="mm-palette">
+          <option value="purple">Фиалка</option>
+          <option value="ocean">Океан</option>
+          <option value="sunset">Закат</option>
+          <option value="forest">Лес</option>
+          <option value="mono">Монохром</option>
+        </select>
+      </div>
+      <div class="setting-row">
+        <span class="setting-label">Плотность</span>
+        <select class="setting-select" id="mm-density">
+          <option value="compact">Плотно</option>
+          <option value="comfortable" selected>Комфорт</option>
+          <option value="spacious">Просторно</option>
+        </select>
+      </div>
+      <div class="setting-row">
+        <span class="setting-label">Лимит материалов</span>
+        <select class="setting-select" id="mm-mat-limit">
+          <option value="5">5</option>
+          <option value="10" selected>10</option>
+          <option value="20">20</option>
+          <option value="9999">∞ (все)</option>
+        </select>
+      </div>
+      <div class="swatch-row" id="palette-preview"></div>
+    </div>
+
+    <div class="sb-section" id="export-sec" style="display:none">
+      <div class="sb-title">Экспорт</div>
+      <div class="export-row">
+        <button class="btn btn-outlined" id="export-md">📝  MD</button>
+        <button class="btn btn-outlined" id="export-json">🔧  JSON</button>
+        <button class="btn btn-outlined" id="export-png">🖼  PNG</button>
+      </div>
+    </div>
+
+    <div class="sb-section" id="tree-ctrl-sec" style="display:none">
+      <div class="sb-title">Управление</div>
+      <div class="export-row">
+        <button class="btn btn-tonal" id="expand-all">⬇  Раскрыть</button>
+        <button class="btn btn-tonal" id="collapse-all">⬆  Свернуть</button>
+      </div>
+    </div>
+   </div>
+
+    <div class="log-box" id="log-box">
+      <div class="log-line" style="opacity:.4">Введите URL сайтмапа и нажмите «Анализировать»</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="loader-overlay" id="loader">
+      <div class="loader-spinner"></div>
+      <span class="loader-text" id="loader-text">Загружаю сайтмапы…</span>
+    </div>
+
+    <div class="main-toolbar" id="main-toolbar" style="display:none">
+      <div class="seg">
+        <button class="seg-btn active" data-tab="tree">📁  Разделы</button>
+        <button class="seg-btn" data-tab="mindmap">🧠  Карта</button>
+        <button class="seg-btn" data-tab="sitemaps">📋  Сайтмапы</button>
+      </div>
+      <input class="search-input" id="search-input" placeholder="Поиск по URL и названиям разделов…"/>
+    </div>
+
+    <div class="welcome" id="welcome">
+      <div class="welcome-icon">🗺</div>
+      <div class="welcome-title">Sitemap Analyzer</div>
+      <div class="welcome-sub">Введите URL сайтмапа слева. Поддерживаются одиночные URLset, индексные и вложенные сайтмапы любой глубины. Дубли автоматически исключаются.</div>
+    </div>
+
+    <div class="panel hidden" id="panel-tree">
+      <div id="tree-root"></div>
+    </div>
+
+    <div class="panel hidden mindmap-wrap" id="panel-mindmap" style="padding:0;overflow:hidden">
+      <canvas id="mindmap-canvas"></canvas>
+      <div class="mm-hint">
+        <kbd>ЛКМ</kbd> перетащить · <kbd>колесо</kbd> зум · <kbd>ПКМ</kbd> меню
+      </div>
+      <div class="mm-controls">
+        <button class="mm-btn" id="mm-fit" title="По размеру">⊡  По размеру</button>
+        <button class="mm-btn icon-only" id="mm-zoomout" title="Уменьшить">－</button>
+        <button class="mm-btn icon-only" id="mm-zoomin" title="Увеличить">＋</button>
+      </div>
+    </div>
+
+    <div class="panel hidden" id="panel-sitemaps">
+      <table class="sm-table">
+        <thead><tr><th>URL сайтмапа</th><th>Тип</th><th style="text-align:right">URLs</th><th>Родитель</th></tr></thead>
+        <tbody id="sm-tbody"></tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<div class="ctx-menu" id="ctx-menu">
+  <div class="ctx-item" id="ctx-open"><span class="ci">🌐</span> Открыть в браузере</div>
+  <div class="ctx-item" id="ctx-copy-url"><span class="ci">📋</span> Копировать URL</div>
+  <div class="ctx-sep"></div>
+  <div class="ctx-item" id="ctx-copy-branch"><span class="ci">🌿</span> Копировать ветку (текст)</div>
+  <div class="ctx-item" id="ctx-copy-md"><span class="ci">📝</span> Копировать ветку как Markdown</div>
+  <div class="ctx-item" id="ctx-copy-urls-list"><span class="ci">📄</span> Копировать все URLs раздела</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="renderer.js"></script>
+</body>
+</html>

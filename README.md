@@ -14,7 +14,7 @@
 | 6 | **Prompt Library** | 🔹 Бирюзовый | Библиотека SEO-промптов, фильтры, копирование и экспорт в MD |
 | 7 | **Sitemap Analyser** | 🟢 Изумрудный | Обход sitemap index / urlset, дерево URL, карта (canvas), экспорт MD, JSON и PNG |
 
-Отдельный прототип в папке `sitemap-analyzer/` больше не ведётся: вся функциональность сайтмапов — во вкладке **Sitemap Analyser** (`src/main/sitemap.js`, `src/renderer/sitemap-app.js`).
+В репозитории сохранена папка **`sitemap-analyzer/`** — отдельное Electron-приложение (свой `npm start`). Основная функциональность сайтмапов — во вкладке **Sitemap Analyser** (`src/main/sitemap.js`, `src/renderer/sitemap-app.js`).
 
 ## Установка
 
