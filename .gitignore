@@ -1,5 +1,7 @@
 node_modules/
 dist/
+# Локальный прототип не коммитим — функциональность во вкладке Sitemap Analyser
+/sitemap-analyzer/
 *.log
 .DS_Store
 Thumbs.db
