@@ -12,6 +12,7 @@
 // ── State ────────────────────────────────────────────────────────────
 const LEAF_THRESHOLD = 20;
 const AUTO_EXPAND_DEPTH = 5;
+const AUTO_COLLAPSE_THRESHOLD = 7; // mindmap: auto-collapse folder nodes with > N folder children
 
 let currentData = null;
 let activeTab   = 'tree';
@@ -88,6 +89,9 @@ async function startParse() {
 
   currentData = result.data;
   addLog(`✅ Готово: ${currentData.totalUrls} URLs, ${currentData.totalSitemaps} сайтмапов`, 'done');
+
+  initAutoCollapse(currentData.tree);
+  mmScale = 1;
 
   renderStats(currentData);
   renderTreeView(currentData.tree);
@@ -176,7 +180,7 @@ function buildNodeEl(node, isRoot = false) {
   icon.textContent = isRoot ? '🌐' : isFolder ? '📁' : '📄';
 
   const name = document.createElement('span');
-  const displayName = isRoot ? (getHost(node.path) || '/') : '/' + node.name;
+  const displayName = isRoot ? (getHost(currentData?.rootUrl || '') || node.path) : '/' + node.name;
   name.className = 'tree-name' + (isRoot ? ' root-name' : isMaterial ? ' leaf-name' : '');
   if (searchQuery && displayName.toLowerCase().includes(searchQuery)) {
     name.innerHTML = hl(displayName, searchQuery);
@@ -188,10 +192,31 @@ function buildNodeEl(node, isRoot = false) {
   count.className = 'tree-count' + (node.totalCount >= 100 ? ' big' : '');
   count.textContent = fmt(node.totalCount);
 
-  row.appendChild(toggle);
-  row.appendChild(icon);
-  row.appendChild(name);
-  row.appendChild(count);
+  // show a subtle link-indicator on leaf nodes with a URL
+  if (isMaterial && !isRoot) {
+    const nodeUrl = getNodeUrl(node);
+    if (nodeUrl) {
+      row.title = nodeUrl;
+      const link = document.createElement('span');
+      link.className = 'tree-link-icon';
+      link.textContent = '↗';
+      row.appendChild(toggle);
+      row.appendChild(icon);
+      row.appendChild(name);
+      row.appendChild(link);
+      row.appendChild(count);
+    } else {
+      row.appendChild(toggle);
+      row.appendChild(icon);
+      row.appendChild(name);
+      row.appendChild(count);
+    }
+  } else {
+    row.appendChild(toggle);
+    row.appendChild(icon);
+    row.appendChild(name);
+    row.appendChild(count);
+  }
   wrapper.appendChild(row);
 
   row.addEventListener('contextmenu', (e) => {
@@ -213,10 +238,14 @@ function buildNodeEl(node, isRoot = false) {
   wrapper.appendChild(childrenEl);
 
   row.addEventListener('click', () => {
-    if (!isFolder) return;
-    isOpen = !isOpen;
-    childrenEl.classList.toggle('collapsed', !isOpen);
-    toggle.classList.toggle('open', isOpen);
+    if (isFolder) {
+      isOpen = !isOpen;
+      childrenEl.classList.toggle('collapsed', !isOpen);
+      toggle.classList.toggle('open', isOpen);
+    } else if (isMaterial) {
+      const nodeUrl = getNodeUrl(node);
+      if (nodeUrl) window.api.openExternal(nodeUrl);
+    }
   });
 
   return wrapper;
@@ -238,8 +267,19 @@ document.getElementById('collapse-all').addEventListener('click', () => {
    CONTEXT MENU (общее для дерева и карты)
    ═══════════════════════════════════════════════════════════════════ */
 function showCtxMenu(x, y) {
+  const isMmNode = ctxTarget?.kind === 'mm-node' || ctxTarget?.kind === 'mm-summary';
+  const ctxNode  = ctxTarget?.node;
+  const hasFolderKidsCtx = isMmNode && ctxNode && folderKids(ctxNode).length > 0 && ctxNode.depth !== 0;
+  const ctxCollapsed = hasFolderKidsCtx && isNodeCollapsed(ctxNode);
+  const elSep  = document.getElementById('ctx-sep-collapse');
+  const elColl = document.getElementById('ctx-mm-collapse');
+  const elExp  = document.getElementById('ctx-mm-expand');
+  if (elSep)  elSep.style.display  = hasFolderKidsCtx ? '' : 'none';
+  if (elColl) elColl.style.display = (hasFolderKidsCtx && !ctxCollapsed) ? '' : 'none';
+  if (elExp)  elExp.style.display  = (hasFolderKidsCtx && ctxCollapsed)  ? '' : 'none';
+
   ctxMenu.classList.add('visible');
-  const mw = 250, mh = 220;
+  const mw = 260, mh = 260;
   ctxMenu.style.left = (x + mw > window.innerWidth ? x - mw : x) + 'px';
   ctxMenu.style.top  = (y + mh > window.innerHeight ? y - mh : y) + 'px';
 }
@@ -278,6 +318,19 @@ document.getElementById('ctx-copy-urls-list').addEventListener('click', () => {
   const urls = ctxTarget.url ? [ctxTarget.url] : (ctxTarget.node ? collectAllUrls(ctxTarget.node) : []);
   copy(urls.join('\n'));
   showToast(`Скопировано ${urls.length} URL`);
+});
+
+document.getElementById('ctx-mm-collapse')?.addEventListener('click', () => {
+  if (!ctxTarget?.node || !currentData) return;
+  mmCollapsedPaths.add(ctxTarget.node.path);
+  mmLayout = buildMindmapLayout(currentData.tree);
+  drawMindmap();
+});
+document.getElementById('ctx-mm-expand')?.addEventListener('click', () => {
+  if (!ctxTarget?.node || !currentData) return;
+  mmCollapsedPaths.delete(ctxTarget.node.path);
+  mmLayout = buildMindmapLayout(currentData.tree);
+  drawMindmap();
 });
 
 function copy(text) {
@@ -348,6 +401,7 @@ let mmDragStart = { x: 0, y: 0, ox: 0, oy: 0 };
 let mmLayout    = null;
 let mmHover     = null;     // { node, kind, parent }
 let mmSelected  = null;
+const mmCollapsedPaths = new Set(); // paths of manually/auto-collapsed mindmap nodes
 let mmDpr       = window.devicePixelRatio || 1;
 
 // ── Settings (UI-driven) ─────────────────────────────────────────────
@@ -424,8 +478,39 @@ function materialBadges(node) {
   return { items: m, summary: 0 };
 }
 
+// ── Collapse / expand state ───────────────────────────────────────────
+function isNodeCollapsed(node) { return mmCollapsedPaths.has(node.path); }
+
+function effectiveFolderKids(node) {
+  if (isNodeCollapsed(node)) return [];
+  return folderKids(node);
+}
+
+function effectiveMaterialBadges(node) {
+  if (isNodeCollapsed(node)) {
+    // Show a single "folded" badge representing all hidden children
+    return { items: [], summary: 0, folded: true, foldedCount: node.totalCount };
+  }
+  return materialBadges(node);
+}
+
+function initAutoCollapse(root) {
+  mmCollapsedPaths.clear();
+  function visit(node, depth) {
+    const fk = folderKids(node);
+    if (depth > 0 && fk.length > AUTO_COLLAPSE_THRESHOLD) {
+      mmCollapsedPaths.add(node.path);
+    } else {
+      for (const c of fk) visit(c, depth + 1);
+    }
+  }
+  visit(root, 0);
+}
+
 function materialsBlockH(node) {
-  const { items, summary } = materialBadges(node);
+  const eff = effectiveMaterialBadges(node);
+  if (eff.folded) return MM_LH; // fold indicator badge
+  const { items, summary } = eff;
   const n = summary > 0 ? 1 : items.length;
   if (n === 0) return 0;
   return n * MM_LH + (n - 1) * MM_LGAP;
@@ -433,7 +518,7 @@ function materialsBlockH(node) {
 
 // Высота bbox узла = max(собственная высота, высота блока детей-папок, высота материалов).
 function subH(node) {
-  const fk = folderKids(node);
+  const fk = effectiveFolderKids(node);
   const matH = materialsBlockH(node);
   if (fk.length === 0) return Math.max(MM_H, matH);
   let total = 0;
@@ -453,7 +538,7 @@ function buildMindmapLayout(root) {
     // расходиться вверх/вниз и не залезать к соседям.
     pos.set(node, { x: depth * MM_COL, y: slotMid - MM_H / 2 });
 
-    const fk = folderKids(node);
+    const fk = effectiveFolderKids(node);
     if (fk.length === 0) return;
 
     // Дети-папки центрированы внутри слота
@@ -489,7 +574,6 @@ function cssH() { return parseInt(canvas.style.height, 10) || canvas.height; }
 function renderMindmap(root) {
   resizeCanvasToWrap();
   mmLayout = buildMindmapLayout(root);
-  // По центру
   mmOffX = 60;
   mmOffY = Math.max(20, cssH() / 2 - mmLayout.totalH * mmScale / 2);
   drawMindmap();
@@ -553,11 +637,16 @@ function leafBW(node, summary) {
 }
 
 // ── Connections ──────────────────────────────────────────────────────
+function foldBadgeW(foldedCount) {
+  const txt = `▶ ${fmt(foldedCount)} разделов`;
+  return Math.min(Math.max(txt.length * 6.4 + 30, 130), 210);
+}
+
 function drawConns(node, pos, colorMap) {
   const p = pos.get(node);
   if (!p) return;
   const color = colorMap.get(node) || '#cac4d0';
-  const fk    = folderKids(node);
+  const fk    = effectiveFolderKids(node);
   const nw    = nodeW(node);
 
   for (const c of fk) {
@@ -575,8 +664,25 @@ function drawConns(node, pos, colorMap) {
     drawConns(c, pos, colorMap);
   }
 
+  const eff = effectiveMaterialBadges(node);
+
+  // link to fold badge (collapsed node)
+  if (eff.folded) {
+    const lx = p.x + nw + 18;
+    const ly = p.y + MM_H / 2;
+    ctx.beginPath();
+    ctx.moveTo(p.x + nw, ly);
+    ctx.bezierCurveTo(p.x + nw + 8, ly, lx - 10, ly, lx, ly);
+    ctx.strokeStyle = color + '66';
+    ctx.lineWidth = 1.2;
+    ctx.setLineDash([4, 3]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    return;
+  }
+
   // links to material badges
-  const { items, summary } = materialBadges(node);
+  const { items, summary } = eff;
   const badgeCount = summary > 0 ? 1 : items.length;
   if (badgeCount > 0) {
     const blockH = badgeCount * MM_LH + (badgeCount - 1) * MM_LGAP;
@@ -602,13 +708,14 @@ function drawAllNodes(node, pos, colorMap) {
   const color  = colorMap.get(node) || '#cac4d0';
   const isRoot = node.depth === 0;
   const nw     = nodeW(node);
+  const collapsed = !isRoot && isNodeCollapsed(node);
 
   const isHover    = mmHover && mmHover.kind === 'node' && mmHover.node === node;
   const isSelected = mmSelected && mmSelected.kind === 'node' && mmSelected.node === node;
 
   // glow
   ctx.shadowColor   = color + (isHover || isRoot ? '88' : '44');
-  ctx.shadowBlur    = isRoot ? 22 : isHover ? 16 : 10;
+  ctx.shadowBlur    = isRoot ? 22 : isHover ? 16 : collapsed ? 14 : 10;
   ctx.shadowOffsetY = 2;
 
   ctx.beginPath();
@@ -616,23 +723,33 @@ function drawAllNodes(node, pos, colorMap) {
   ctx.fillStyle = isRoot ? color + 'ee'
                  : isSelected ? color + '50'
                  : isHover ? color + '38'
+                 : collapsed ? color + '30'
                  : color + '22';
   ctx.fill();
 
   ctx.shadowBlur = 0; ctx.shadowColor = 'transparent'; ctx.shadowOffsetY = 0;
-  ctx.strokeStyle = color + (isRoot ? 'ff' : isSelected ? 'ff' : 'cc');
-  ctx.lineWidth   = isRoot ? 2 : isSelected ? 2 : 1.5;
-  ctx.stroke();
 
-  // count pill
+  // collapsed nodes get a dashed border to signal they can expand
+  if (collapsed) {
+    ctx.setLineDash([5, 3]);
+    ctx.strokeStyle = color + 'dd';
+    ctx.lineWidth   = 1.8;
+  } else {
+    ctx.strokeStyle = color + (isRoot ? 'ff' : isSelected ? 'ff' : 'cc');
+    ctx.lineWidth   = isRoot ? 2 : isSelected ? 2 : 1.5;
+  }
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // count pill — show ▶ prefix when collapsed
   ctx.font = 'bold 10.5px "Roboto Flex", sans-serif';
-  const cntTxt = fmt(node.totalCount);
+  const cntTxt = (collapsed ? '▶ ' : '') + fmt(node.totalCount);
   const cntW   = ctx.measureText(cntTxt).width + 14;
   const px     = p.x + nw - cntW - 5;
   const py     = p.y + (MM_H - 18) / 2;
   ctx.beginPath();
   ctx.roundRect(px, py, cntW, 18, 9);
-  ctx.fillStyle = color + (isRoot ? '55' : '44');
+  ctx.fillStyle = color + (isRoot ? '55' : collapsed ? '55' : '44');
   ctx.fill();
   ctx.fillStyle = isRoot ? '#1c1b1f' : color + 'ff';
   ctx.fillText(cntTxt, px + 7, p.y + MM_H / 2 + 4);
@@ -644,54 +761,71 @@ function drawAllNodes(node, pos, colorMap) {
   ctx.fillStyle = isRoot ? '#1c1b1f' : color + 'ff';
   ctx.fillText(truncLabel(label, maxLW), p.x + 14, p.y + MM_H / 2 + 4);
 
-  // material badges
-  const { items, summary } = materialBadges(node);
-  if (summary > 0) {
-    const lx = p.x + nw + 18;
-    const ly = p.y + MM_H / 2 - MM_LH / 2;
-    const txt = `📄 ${fmt(summary)} материалов`;
-    ctx.font = '500 10.5px "Roboto Flex", sans-serif';
-    const lw = leafBW(null, summary);
+  const eff = effectiveMaterialBadges(node);
 
-    const isSumHover = mmHover && mmHover.kind === 'summary' && mmHover.parent === node;
+  // fold badge (when node is collapsed)
+  if (eff.folded) {
+    const lx  = p.x + nw + 18;
+    const lw  = foldBadgeW(eff.foldedCount);
+    const ly  = p.y + MM_H / 2 - MM_LH / 2;
+    const txt = `▶ ${fmt(eff.foldedCount)} разделов`;
+    const isFoldHover = mmHover && mmHover.kind === 'fold' && mmHover.node === node;
+    ctx.font = '600 10.5px "Roboto Flex", sans-serif';
     ctx.beginPath();
     ctx.roundRect(lx, ly, lw, MM_LH, MM_LH / 2);
-    ctx.fillStyle = color + (isSumHover ? '28' : '14');
+    ctx.fillStyle = color + (isFoldHover ? '30' : '1a');
     ctx.fill();
-    ctx.strokeStyle = color + '55';
-    ctx.lineWidth = 1;
-    ctx.setLineDash([3, 3]);
+    ctx.strokeStyle = color + '88';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 3]);
     ctx.stroke();
     ctx.setLineDash([]);
-    ctx.fillStyle = color + 'cc';
+    ctx.fillStyle = color + 'ee';
     ctx.fillText(truncLabel(txt, lw - 14), lx + 8, ly + MM_LH / 2 + 3.6);
-  } else if (items.length > 0) {
-    const blockH = items.length * MM_LH + (items.length - 1) * MM_LGAP;
-    const lx     = p.x + nw + 18;
-    const startY = p.y + MM_H / 2 - blockH / 2;
-
-    items.forEach((lc, i) => {
-      const ly = startY + i * (MM_LH + MM_LGAP);
-      const lw = leafBW(lc);
-      const isMHover    = mmHover    && mmHover.kind === 'material'    && mmHover.node === lc;
-      const isMSelected = mmSelected && mmSelected.kind === 'material' && mmSelected.node === lc;
-
+  } else {
+    const { items, summary } = eff;
+    if (summary > 0) {
+      const lx = p.x + nw + 18;
+      const ly = p.y + MM_H / 2 - MM_LH / 2;
+      const txt = `📄 ${fmt(summary)} материалов`;
+      ctx.font = '500 10.5px "Roboto Flex", sans-serif';
+      const lw = leafBW(null, summary);
+      const isSumHover = mmHover && mmHover.kind === 'summary' && mmHover.parent === node;
       ctx.beginPath();
       ctx.roundRect(lx, ly, lw, MM_LH, MM_LH / 2);
-      ctx.fillStyle = isMSelected ? color + '50'
-                     : isMHover    ? color + '30'
-                     : color + '18';
+      ctx.fillStyle = color + (isSumHover ? '28' : '14');
       ctx.fill();
-      ctx.strokeStyle = color + (isMSelected ? 'cc' : '55');
+      ctx.strokeStyle = color + '55';
       ctx.lineWidth = 1;
+      ctx.setLineDash([3, 3]);
       ctx.stroke();
-      ctx.font      = '500 10px "Roboto Flex", sans-serif';
-      ctx.fillStyle = color + 'd6';
-      ctx.fillText(truncLabel('/' + lc.name, lw - 16), lx + 8, ly + MM_LH / 2 + 3.4);
-    });
+      ctx.setLineDash([]);
+      ctx.fillStyle = color + 'cc';
+      ctx.fillText(truncLabel(txt, lw - 14), lx + 8, ly + MM_LH / 2 + 3.6);
+    } else if (items.length > 0) {
+      const blockH = items.length * MM_LH + (items.length - 1) * MM_LGAP;
+      const lx     = p.x + nw + 18;
+      const startY = p.y + MM_H / 2 - blockH / 2;
+      items.forEach((lc, i) => {
+        const ly = startY + i * (MM_LH + MM_LGAP);
+        const lw = leafBW(lc);
+        const isMHover    = mmHover    && mmHover.kind === 'material'    && mmHover.node === lc;
+        const isMSelected = mmSelected && mmSelected.kind === 'material' && mmSelected.node === lc;
+        ctx.beginPath();
+        ctx.roundRect(lx, ly, lw, MM_LH, MM_LH / 2);
+        ctx.fillStyle = isMSelected ? color + '50' : isMHover ? color + '30' : color + '18';
+        ctx.fill();
+        ctx.strokeStyle = color + (isMSelected ? 'cc' : '55');
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        ctx.font      = '500 10px "Roboto Flex", sans-serif';
+        ctx.fillStyle = color + 'd6';
+        ctx.fillText(truncLabel('/' + lc.name, lw - 16), lx + 8, ly + MM_LH / 2 + 3.4);
+      });
+    }
   }
 
-  for (const c of folderKids(node)) drawAllNodes(c, pos, colorMap);
+  for (const c of effectiveFolderKids(node)) drawAllNodes(c, pos, colorMap);
 }
 
 function truncLabel(text, maxW) {
@@ -701,37 +835,43 @@ function truncLabel(text, maxW) {
 }
 
 // ── Hit testing ──────────────────────────────────────────────────────
-// Возвращает { kind: 'node'|'material'|'summary', node, parent? } или null.
+// Возвращает { kind: 'node'|'material'|'summary'|'fold', node, parent? } или null.
 function hitTest(cssX, cssY) {
   if (!mmLayout) return null;
   const x = (cssX - mmOffX) / mmScale;
   const y = (cssY - mmOffY) / mmScale;
 
-  // Перебор всех узлов в layout (включая root)
   for (const [node, p] of mmLayout.pos) {
     const nw = nodeW(node);
     // 1) сам узел
     if (x >= p.x && x <= p.x + nw && y >= p.y && y <= p.y + MM_H) {
       return { kind: 'node', node };
     }
-    // 2) badges материалов рядом с узлом
-    const { items, summary } = materialBadges(node);
-    if (summary > 0) {
+    // 2) badges (fold / summary / material)
+    const eff = effectiveMaterialBadges(node);
+    if (eff.folded) {
+      const lx = p.x + nw + 18;
+      const lw = foldBadgeW(eff.foldedCount);
+      const ly = p.y + MM_H / 2 - MM_LH / 2;
+      if (x >= lx && x <= lx + lw && y >= ly && y <= ly + MM_LH) {
+        return { kind: 'fold', node };
+      }
+    } else if (eff.summary > 0) {
       const lx = p.x + nw + 18;
       const ly = p.y + MM_H / 2 - MM_LH / 2;
-      const lw = leafBW(null, summary);
+      const lw = leafBW(null, eff.summary);
       if (x >= lx && x <= lx + lw && y >= ly && y <= ly + MM_LH) {
         return { kind: 'summary', parent: node };
       }
-    } else if (items.length > 0) {
-      const blockH = items.length * MM_LH + (items.length - 1) * MM_LGAP;
+    } else if (eff.items.length > 0) {
+      const blockH = eff.items.length * MM_LH + (eff.items.length - 1) * MM_LGAP;
       const lx     = p.x + nw + 18;
       const startY = p.y + MM_H / 2 - blockH / 2;
-      for (let i = 0; i < items.length; i++) {
+      for (let i = 0; i < eff.items.length; i++) {
         const ly = startY + i * (MM_LH + MM_LGAP);
-        const lw = leafBW(items[i]);
+        const lw = leafBW(eff.items[i]);
         if (x >= lx && x <= lx + lw && y >= ly && y <= ly + MM_LH) {
-          return { kind: 'material', node: items[i], parent: node };
+          return { kind: 'material', node: eff.items[i], parent: node };
         }
       }
     }
@@ -768,7 +908,7 @@ window.addEventListener('mousemove', e => {
   const same = (a, b) => (!a && !b) || (a && b && a.kind === b.kind && a.node === b.node && a.parent === b.parent);
   if (!same(hit, mmHover)) {
     mmHover = hit;
-    canvas.style.cursor = hit ? 'pointer' : (mmDragging ? 'grabbing' : 'grab');
+    canvas.style.cursor = hit ? (hit.kind === 'node' && folderKids(hit.node).length > 0 && hit.node.depth !== 0 ? 'pointer' : 'pointer') : (mmDragging ? 'grabbing' : 'grab');
     drawMindmap();
   }
 });
@@ -779,16 +919,36 @@ window.addEventListener('mouseup', e => {
   canvas.classList.remove('dragging');
   if (mmDragMoved) return; // это был drag, не click
 
-  // Click: select hit-target и опционально открываем URL
+  // Click: toggle collapse (folder nodes) or select
   const rect = canvas.getBoundingClientRect();
   const cx = e.clientX - rect.left;
   const cy = e.clientY - rect.top;
   if (cx < 0 || cy < 0 || cx > rect.width || cy > rect.height) return;
   const hit = hitTest(cx, cy);
   if (hit) {
-    if (hit.kind === 'node' || hit.kind === 'material') {
+    if (hit.kind === 'node') {
+      const hasFolderKids = folderKids(hit.node).length > 0;
+      if (hasFolderKids && hit.node.depth !== 0) {
+        if (mmCollapsedPaths.has(hit.node.path)) {
+          mmCollapsedPaths.delete(hit.node.path);
+        } else {
+          mmCollapsedPaths.add(hit.node.path);
+        }
+        mmLayout = buildMindmapLayout(currentData.tree);
+      }
       mmSelected = hit;
       drawMindmap();
+    } else if (hit.kind === 'fold') {
+      // clicking fold badge expands the node
+      mmCollapsedPaths.delete(hit.node.path);
+      mmLayout = buildMindmapLayout(currentData.tree);
+      mmSelected = { kind: 'node', node: hit.node };
+      drawMindmap();
+    } else if (hit.kind === 'material') {
+      mmSelected = hit;
+      drawMindmap();
+      const url = getNodeUrl(hit.node);
+      if (url) window.api.openExternal(url);
     }
   } else {
     if (mmSelected) { mmSelected = null; drawMindmap(); }
@@ -806,12 +966,13 @@ canvas.addEventListener('contextmenu', e => {
   if (hit.kind === 'node') {
     ctxTarget = { node: hit.node, url: null, kind: 'mm-node' };
     mmSelected = hit;
+  } else if (hit.kind === 'fold') {
+    ctxTarget = { node: hit.node, url: null, kind: 'mm-node' };
+    mmSelected = { kind: 'node', node: hit.node };
   } else if (hit.kind === 'material') {
-    // материал — показываем URL и ветку через узел
     ctxTarget = { node: hit.node, url: getNodeUrl(hit.node), kind: 'mm-material' };
     mmSelected = hit;
   } else if (hit.kind === 'summary') {
-    // сводный — действуем над родительским узлом
     ctxTarget = { node: hit.parent, url: null, kind: 'mm-summary' };
     mmSelected = { kind: 'node', node: hit.parent };
   }
@@ -847,6 +1008,24 @@ document.getElementById('mm-zoomin').addEventListener('click', () => {
 document.getElementById('mm-zoomout').addEventListener('click', () => {
   mmScale = Math.max(0.2, mmScale * 0.8); drawMindmap();
 });
+document.getElementById('mm-expand-all')?.addEventListener('click', () => {
+  if (!currentData) return;
+  mmCollapsedPaths.clear();
+  mmLayout = buildMindmapLayout(currentData.tree);
+  drawMindmap();
+});
+document.getElementById('mm-collapse-all')?.addEventListener('click', () => {
+  if (!currentData) return;
+  function collapseAll(node, depth) {
+    const fk = folderKids(node);
+    if (depth > 0 && fk.length > 0) mmCollapsedPaths.add(node.path);
+    for (const c of fk) collapseAll(c, depth + 1);
+  }
+  mmCollapsedPaths.clear();
+  collapseAll(currentData.tree, 0);
+  mmLayout = buildMindmapLayout(currentData.tree);
+  drawMindmap();
+});
 
 function fitMindmap() {
   if (!mmLayout) return;
@@ -858,13 +1037,16 @@ function fitMindmap() {
     minY = Math.min(minY, p.y);
     maxX = Math.max(maxX, p.x + nw);
     maxY = Math.max(maxY, p.y + MM_H);
-    const { items, summary } = materialBadges(node);
-    if (summary > 0 || items.length > 0) {
-      const badgeCount = summary > 0 ? 1 : items.length;
+    const eff = effectiveMaterialBadges(node);
+    if (eff.folded) {
+      const lx = p.x + nw + 18;
+      maxX = Math.max(maxX, lx + foldBadgeW(eff.foldedCount));
+    } else if (eff.summary > 0 || eff.items.length > 0) {
+      const badgeCount = eff.summary > 0 ? 1 : eff.items.length;
       const blockH = badgeCount * MM_LH + (badgeCount - 1) * MM_LGAP;
       const lx = p.x + nw + 18;
       const startY = p.y + MM_H / 2 - blockH / 2;
-      const lwMax = summary > 0 ? leafBW(null, summary) : Math.max(...items.map(i => leafBW(i)));
+      const lwMax = eff.summary > 0 ? leafBW(null, eff.summary) : Math.max(...eff.items.map(i => leafBW(i)));
       maxX = Math.max(maxX, lx + lwMax);
       minY = Math.min(minY, startY);
       maxY = Math.max(maxY, startY + blockH);
@@ -909,13 +1091,16 @@ async function exportMindmapPng() {
     minY = Math.min(minY, p.y);
     maxX = Math.max(maxX, p.x + nw);
     maxY = Math.max(maxY, p.y + MM_H);
-    const { items, summary } = materialBadges(node);
-    if (summary > 0 || items.length > 0) {
-      const badgeCount = summary > 0 ? 1 : items.length;
+    const eff = effectiveMaterialBadges(node);
+    if (eff.folded) {
+      const lx = p.x + nw + 18;
+      maxX = Math.max(maxX, lx + foldBadgeW(eff.foldedCount));
+    } else if (eff.summary > 0 || eff.items.length > 0) {
+      const badgeCount = eff.summary > 0 ? 1 : eff.items.length;
       const blockH = badgeCount * MM_LH + (badgeCount - 1) * MM_LGAP;
       const lx = p.x + nw + 18;
       const startY = p.y + MM_H / 2 - blockH / 2;
-      const lwMax = summary > 0 ? leafBW(null, summary) : Math.max(...items.map(i => leafBW(i)));
+      const lwMax = eff.summary > 0 ? leafBW(null, eff.summary) : Math.max(...eff.items.map(i => leafBW(i)));
       maxX = Math.max(maxX, lx + lwMax);
       minY = Math.min(minY, startY);
       maxY = Math.max(maxY, startY + blockH);
@@ -977,7 +1162,7 @@ function drawMindmapTo(c, scale, pad, minX, minY, W, H) {
     const p = pos.get(node);
     if (!p) return;
     const color = colorMap.get(node) || '#cac4d0';
-    const fk    = folderKids(node);
+    const fk    = effectiveFolderKids(node);
     const nw    = nodeW(node);
 
     for (const cc of fk) {
@@ -994,21 +1179,35 @@ function drawMindmapTo(c, scale, pad, minX, minY, W, H) {
       c.stroke();
       drawConnsTo(cc);
     }
-    const { items, summary } = materialBadges(node);
-    const badgeCount = summary > 0 ? 1 : items.length;
-    if (badgeCount > 0) {
-      const blockH = badgeCount * MM_LH + (badgeCount - 1) * MM_LGAP;
-      const lx     = p.x + nw + 18;
-      const startY = p.y + MM_H / 2 - blockH / 2;
-      for (let i = 0; i < badgeCount; i++) {
-        const ly  = startY + i * (MM_LH + MM_LGAP) + MM_LH / 2;
-        const cx2 = lx - 10;
-        c.beginPath();
-        c.moveTo(p.x + nw, p.y + MM_H / 2);
-        c.bezierCurveTo(p.x + nw + 8, p.y + MM_H / 2, cx2, ly, lx, ly);
-        c.strokeStyle = color + '55';
-        c.lineWidth = 1;
-        c.stroke();
+    const eff = effectiveMaterialBadges(node);
+    if (eff.folded) {
+      const lx = p.x + nw + 18;
+      const ly = p.y + MM_H / 2;
+      c.beginPath();
+      c.moveTo(p.x + nw, ly);
+      c.bezierCurveTo(p.x + nw + 8, ly, lx - 10, ly, lx, ly);
+      c.strokeStyle = color + '66';
+      c.lineWidth = 1.2;
+      c.setLineDash([4, 3]);
+      c.stroke();
+      c.setLineDash([]);
+    } else {
+      const { items, summary } = eff;
+      const badgeCount = summary > 0 ? 1 : items.length;
+      if (badgeCount > 0) {
+        const blockH = badgeCount * MM_LH + (badgeCount - 1) * MM_LGAP;
+        const lx     = p.x + nw + 18;
+        const startY = p.y + MM_H / 2 - blockH / 2;
+        for (let i = 0; i < badgeCount; i++) {
+          const ly  = startY + i * (MM_LH + MM_LGAP) + MM_LH / 2;
+          const cx2 = lx - 10;
+          c.beginPath();
+          c.moveTo(p.x + nw, p.y + MM_H / 2);
+          c.bezierCurveTo(p.x + nw + 8, p.y + MM_H / 2, cx2, ly, lx, ly);
+          c.strokeStyle = color + '55';
+          c.lineWidth = 1;
+          c.stroke();
+        }
       }
     }
   }
@@ -1020,26 +1219,33 @@ function drawMindmapTo(c, scale, pad, minX, minY, W, H) {
     const isRoot = node.depth === 0;
     const nw     = nodeW(node);
 
+    const collapsed = !isRoot && isNodeCollapsed(node);
     c.shadowColor = color + (isRoot ? '88' : '44');
-    c.shadowBlur  = isRoot ? 22 : 10;
+    c.shadowBlur  = isRoot ? 22 : collapsed ? 14 : 10;
     c.shadowOffsetY = 2;
     c.beginPath();
     c.roundRect(p.x, p.y, nw, MM_H, MM_H / 2);
-    c.fillStyle = isRoot ? color + 'ee' : color + '22';
+    c.fillStyle = isRoot ? color + 'ee' : collapsed ? color + '30' : color + '22';
     c.fill();
     c.shadowBlur = 0; c.shadowColor = 'transparent'; c.shadowOffsetY = 0;
-    c.strokeStyle = color + (isRoot ? 'ff' : 'cc');
-    c.lineWidth = isRoot ? 2 : 1.5;
+    if (collapsed) {
+      c.setLineDash([5, 3]);
+      c.strokeStyle = color + 'dd';
+      c.lineWidth = 1.8;
+    } else {
+      c.strokeStyle = color + (isRoot ? 'ff' : 'cc');
+      c.lineWidth = isRoot ? 2 : 1.5;
+    }
     c.stroke();
-
+    c.setLineDash([]);
     c.font = 'bold 10.5px "Roboto Flex", sans-serif';
-    const cntTxt = fmt(node.totalCount);
+    const cntTxt = (collapsed ? '▶ ' : '') + fmt(node.totalCount);
     const cntW   = c.measureText(cntTxt).width + 14;
     const px     = p.x + nw - cntW - 5;
     const py     = p.y + (MM_H - 18) / 2;
     c.beginPath();
     c.roundRect(px, py, cntW, 18, 9);
-    c.fillStyle = color + (isRoot ? '55' : '44');
+    c.fillStyle = color + (isRoot ? '55' : collapsed ? '55' : '44');
     c.fill();
     c.fillStyle = isRoot ? '#1c1b1f' : color + 'ff';
     c.fillText(cntTxt, px + 7, p.y + MM_H / 2 + 4);
@@ -1050,44 +1256,64 @@ function drawMindmapTo(c, scale, pad, minX, minY, W, H) {
     c.fillStyle = isRoot ? '#1c1b1f' : color + 'ff';
     c.fillText(truncLabelTo(c, label, maxLW), p.x + 14, p.y + MM_H / 2 + 4);
 
-    const { items, summary } = materialBadges(node);
-    if (summary > 0) {
-      const lx = p.x + nw + 18;
-      const ly = p.y + MM_H / 2 - MM_LH / 2;
-      const txt = `📄 ${fmt(summary)} материалов`;
-      c.font = '500 10.5px "Roboto Flex", sans-serif';
-      const lw = leafBW(null, summary);
+    const eff = effectiveMaterialBadges(node);
+    if (eff.folded) {
+      const lx  = p.x + nw + 18;
+      const lw  = foldBadgeW(eff.foldedCount);
+      const ly  = p.y + MM_H / 2 - MM_LH / 2;
+      const txt = `▶ ${fmt(eff.foldedCount)} разделов`;
+      c.font = '600 10.5px "Roboto Flex", sans-serif';
       c.beginPath();
       c.roundRect(lx, ly, lw, MM_LH, MM_LH / 2);
-      c.fillStyle = color + '14';
+      c.fillStyle = color + '1a';
       c.fill();
-      c.strokeStyle = color + '55';
-      c.lineWidth = 1;
-      c.setLineDash([3, 3]);
+      c.strokeStyle = color + '88';
+      c.lineWidth = 1.5;
+      c.setLineDash([4, 3]);
       c.stroke();
       c.setLineDash([]);
-      c.fillStyle = color + 'cc';
+      c.fillStyle = color + 'ee';
       c.fillText(truncLabelTo(c, txt, lw - 14), lx + 8, ly + MM_LH / 2 + 3.6);
-    } else if (items.length > 0) {
-      const blockH = items.length * MM_LH + (items.length - 1) * MM_LGAP;
-      const lx     = p.x + nw + 18;
-      const startY = p.y + MM_H / 2 - blockH / 2;
-      items.forEach((lc, i) => {
-        const ly = startY + i * (MM_LH + MM_LGAP);
-        const lw = leafBW(lc);
+    } else {
+      const { items, summary } = eff;
+      if (summary > 0) {
+        const lx = p.x + nw + 18;
+        const ly = p.y + MM_H / 2 - MM_LH / 2;
+        const txt = `📄 ${fmt(summary)} материалов`;
+        c.font = '500 10.5px "Roboto Flex", sans-serif';
+        const lw = leafBW(null, summary);
         c.beginPath();
         c.roundRect(lx, ly, lw, MM_LH, MM_LH / 2);
-        c.fillStyle = color + '18';
+        c.fillStyle = color + '14';
         c.fill();
         c.strokeStyle = color + '55';
         c.lineWidth = 1;
+        c.setLineDash([3, 3]);
         c.stroke();
-        c.font = '500 10px "Roboto Flex", sans-serif';
-        c.fillStyle = color + 'd6';
-        c.fillText(truncLabelTo(c, '/' + lc.name, lw - 16), lx + 8, ly + MM_LH / 2 + 3.4);
-      });
+        c.setLineDash([]);
+        c.fillStyle = color + 'cc';
+        c.fillText(truncLabelTo(c, txt, lw - 14), lx + 8, ly + MM_LH / 2 + 3.6);
+      } else if (items.length > 0) {
+        const blockH = items.length * MM_LH + (items.length - 1) * MM_LGAP;
+        const lx     = p.x + nw + 18;
+        const startY = p.y + MM_H / 2 - blockH / 2;
+        items.forEach((lc, i) => {
+          const ly = startY + i * (MM_LH + MM_LGAP);
+          const lw = leafBW(lc);
+          c.beginPath();
+          c.roundRect(lx, ly, lw, MM_LH, MM_LH / 2);
+          c.fillStyle = color + '18';
+          c.fill();
+          c.strokeStyle = color + '55';
+          c.lineWidth = 1;
+          c.stroke();
+          c.font = '500 10px "Roboto Flex", sans-serif';
+          c.fillStyle = color + 'd6';
+          c.fillText(truncLabelTo(c, '/' + lc.name, lw - 16), lx + 8, ly + MM_LH / 2 + 3.4);
+        });
+      }
     }
-    for (const cc of folderKids(node)) drawNodesTo(cc);
+    for (const cc of effectiveFolderKids(node)) drawNodesTo(cc);
   }
 
   drawConnsTo(root);
