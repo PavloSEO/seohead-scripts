@@ -170,6 +170,9 @@ input[type=range]::-webkit-slider-thumb:active{cursor:grabbing;transform:scale(1
 .tree-name.leaf-name{color:var(--on-s-v);font-weight:400}
 .tree-count{font-size:10.5px;padding:2px 8px;border-radius:var(--sh-pill);background:var(--sc-hi);color:var(--on-s-v);flex-shrink:0;font-variant-numeric:tabular-nums;font-weight:600;letter-spacing:.2px}
 .tree-count.big{background:var(--p30);color:var(--p90)}
+.tree-link-icon{font-size:10px;color:var(--p80);opacity:0;flex-shrink:0;transition:opacity var(--d-short);margin-right:2px;margin-left:-2px}
+.tree-row:hover .tree-link-icon{opacity:.7}
+.tree-row:has(.tree-link-icon){cursor:pointer}
 .tree-children{overflow:hidden}
 .tree-children.collapsed{display:none}
 
@@ -361,7 +364,7 @@ input[type=range]::-webkit-slider-thumb:active{cursor:grabbing;transform:scale(1
     <div class="panel hidden mindmap-wrap" id="panel-mindmap" style="padding:0;overflow:hidden">
       <canvas id="mindmap-canvas"></canvas>
       <div class="mm-hint">
-        <kbd>клик</kbd> свернуть/раскрыть · <kbd>тащить</kbd> панорама · <kbd>колесо</kbd> зум · <kbd>ПКМ</kbd> меню
+        <kbd>папка</kbd> свернуть/раскрыть · <kbd>страница</kbd> открыть URL · <kbd>тащить</kbd> панорама · <kbd>колесо</kbd> зум · <kbd>ПКМ</kbd> меню
       </div>
       <div class="mm-controls">
         <button class="mm-btn" id="mm-fit" title="По размеру">⊡  По размеру</button>

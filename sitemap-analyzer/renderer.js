@@ -192,10 +192,31 @@ function buildNodeEl(node, isRoot = false) {
   count.className = 'tree-count' + (node.totalCount >= 100 ? ' big' : '');
   count.textContent = fmt(node.totalCount);
 
-  row.appendChild(toggle);
-  row.appendChild(icon);
-  row.appendChild(name);
-  row.appendChild(count);
+  // show a subtle link-indicator on leaf nodes with a URL
+  if (isMaterial && !isRoot) {
+    const nodeUrl = getNodeUrl(node);
+    if (nodeUrl) {
+      row.title = nodeUrl;
+      const link = document.createElement('span');
+      link.className = 'tree-link-icon';
+      link.textContent = '↗';
+      row.appendChild(toggle);
+      row.appendChild(icon);
+      row.appendChild(name);
+      row.appendChild(link);
+      row.appendChild(count);
+    } else {
+      row.appendChild(toggle);
+      row.appendChild(icon);
+      row.appendChild(name);
+      row.appendChild(count);
+    }
+  } else {
+    row.appendChild(toggle);
+    row.appendChild(icon);
+    row.appendChild(name);
+    row.appendChild(count);
+  }
   wrapper.appendChild(row);
 
   row.addEventListener('contextmenu', (e) => {
@@ -217,10 +238,14 @@ function buildNodeEl(node, isRoot = false) {
   wrapper.appendChild(childrenEl);
 
   row.addEventListener('click', () => {
-    if (!isFolder) return;
-    isOpen = !isOpen;
-    childrenEl.classList.toggle('collapsed', !isOpen);
-    toggle.classList.toggle('open', isOpen);
+    if (isFolder) {
+      isOpen = !isOpen;
+      childrenEl.classList.toggle('collapsed', !isOpen);
+      toggle.classList.toggle('open', isOpen);
+    } else if (isMaterial) {
+      const nodeUrl = getNodeUrl(node);
+      if (nodeUrl) window.api.openExternal(nodeUrl);
+    }
   });
 
   return wrapper;
@@ -684,7 +709,6 @@ function drawAllNodes(node, pos, colorMap) {
   const isRoot = node.depth === 0;
   const nw     = nodeW(node);
   const collapsed = !isRoot && isNodeCollapsed(node);
-  const hasFolderKids = !isRoot && folderKids(node).length > 0;
 
   const isHover    = mmHover && mmHover.kind === 'node' && mmHover.node === node;
   const isSelected = mmSelected && mmSelected.kind === 'node' && mmSelected.node === node;
@@ -923,6 +947,8 @@ window.addEventListener('mouseup', e => {
     } else if (hit.kind === 'material') {
       mmSelected = hit;
       drawMindmap();
+      const url = getNodeUrl(hit.node);
+      if (url) window.api.openExternal(url);
     }
   } else {
     if (mmSelected) { mmSelected = null; drawMindmap(); }
